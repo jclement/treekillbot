@@ -5,7 +5,7 @@
 # The build context is GoReleaser's temporary directory: one subdirectory per
 # platform, no source tree. Hence $TARGETPLATFORM, which buildx sets per leg
 # of the multi-platform build.
-FROM alpine:3.23
+FROM alpine:3.24
 
 ARG TARGETPLATFORM
 
