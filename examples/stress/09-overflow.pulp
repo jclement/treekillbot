@@ -42,9 +42,6 @@ section
   border-left-width: 2pt
   border-color: gray(0.6)
   padding-left: 9pt
-  text "warning: W031 `width` on a `section` has no effect"
-    font: IBM Plex Mono
-    font-size: 6.5pt
   text "warning: W030 `line-height` sets text leading, not the spacing of ruled lines"
     font: IBM Plex Mono
     font-size: 6.5pt
@@ -111,13 +108,16 @@ section
       font-size: 7.5pt
       padding-top: 3pt
 
-# W031 — a width on a section has nothing to divide. Sections always fill their
-# parent's width; to divide space horizontally you put columns inside them.
+# `width` outside a row. It used to be ignored on everything except a column,
+# and a section got W031 for the trouble. It is honoured everywhere now, so this
+# band is 200pt wide and there is no warning to show.
 section
   height: 24pt
   width: 200pt
+  border-width: 0.4pt
+  border-color: gray(0.6)
   valign: bottom
-  text "W031 — this section carries `width: 200pt` and is still full width."
+  text "`width: 200pt` — honoured, no warning"
     font-size: 7.5pt
     color: gray(0.3)
 

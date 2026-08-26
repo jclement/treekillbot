@@ -121,11 +121,19 @@ once, and every geometry function names which rule it follows:
 - **Rule B — line decorations are centre-aligned.** A rule at `y` covers
   `[y-w/2, y+w/2]`. A writing rule *is* the line; changing its weight must not move it.
 
-At `gap: 0` with uniform child borders, two flush panels produce a `2w` internal line. The
-intended fix is for the **container to draw the lattice** — its outer rect plus the interior
-lines, each centred on the shared edge — with children drawing no border. **That is not
-implemented.** A grid of bordered cells at `gap: 0` currently has doubled interior lines, and
-the workaround is to give cells borders on two sides only (`examples/habit.pulp` does this).
+Two boxes that touch exactly would each stroke the edge they share, making it twice as heavy
+as the lines around it. **Shared edges collapse**: a box does not stroke its left or top edge
+when another box with an identical pen already strokes that exact line. Whoever is above or
+to the left keeps it, so precisely one stroke survives. `border-collapse: false` opts out
+where a deliberate double rule is wanted.
+
+The rule is stated on the *edges*, not on the tree, and that is the part worth remembering.
+An earlier version of this document said the container should draw the lattice while its
+children drew nothing — but the boxes whose borders touch are frequently not siblings. A row
+of columns each holding one bordered panel has the panels as grandchildren of the row, and
+their edges coincide without their parents' doing so. Comparing edges works at any nesting
+depth, and it is only safe to compare them for exact equality because the engine works in
+integer ticks (D1); with float geometry the rule would fire almost at random.
 
 ### D5 — Every line is a node
 
@@ -423,10 +431,9 @@ this is where they are recorded.
 | `baseline-on-rule` | `Decoration.Baselines()` is computed correctly and the painter never asks for it, so text in a ruled box flows normally instead of snapping to the rules. |
 | `grid` element | Accepted, and lays out exactly like `box`. The repeating lattice its documentation promises is not there; use `repeat` or `for`. |
 
-Two smaller ones: `width` is honoured only on a `column` (a `section` warns with W031; a
-`box`, `panel` or `text` silently fills), and a ternary condition can only compare a path
-against a literal, so `{a.n == b.n ? … }` compares against the *characters* of `b.n` and is
-always false, with no diagnostic.
+One smaller one: a ternary condition can only compare a path against a literal, so
+`{a.n == b.n ? … }` compares against the *characters* of `b.n` and is always false, with no
+diagnostic.
 
 ---
 

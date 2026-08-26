@@ -70,7 +70,11 @@ func TestNoDocumentationForCodesNothingEmits(t *testing.T) {
 		if err != nil {
 			return err
 		}
-		if entry.IsDir() || !strings.HasSuffix(path, ".go") || strings.Contains(path, "internal/docs/") {
+		// Test files are excluded deliberately. A code named only in a test's
+		// expectation list is not emitted by anything, and counting it here
+		// would let a retired code keep its documentation indefinitely.
+		if entry.IsDir() || !strings.HasSuffix(path, ".go") ||
+			strings.HasSuffix(path, "_test.go") || strings.Contains(path, "internal/docs/") {
 			return nil
 		}
 		data, err := os.ReadFile(path)

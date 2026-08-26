@@ -140,6 +140,7 @@ const (
 	PBorderColor
 	PBorderStyle
 	PBorderRadius
+	PBorderCollapse
 	POpacity
 
 	// ---- Panel chrome ----
@@ -295,7 +296,9 @@ var props = [NumProps]PropDef{
 	PBorderColor:  {Name: "border-color", Kind: KindColor, Default: "gray(0.75)", AppliesTo: boxElements, Doc: "Border colour."},
 	PBorderStyle:  {Name: "border-style", Kind: KindEnum, Default: "solid", AppliesTo: append(append([]string{}, boxElements...), ERule), Enum: []string{"solid", "dashed", "dotted", "none"}, Doc: "Border line style."},
 	PBorderRadius: {Name: "border-radius", Kind: KindLength, Default: "0pt", AppliesTo: boxElements, Doc: "Corner radius. Describes the outer silhouette; the fill and the border share it."},
-	POpacity:      {Name: "opacity", Kind: KindNumber, Default: "1", AppliesTo: boxElements, Doc: "Opacity from 0 to 1. Discouraged: transparency and print do not always agree."},
+	PBorderCollapse: {Name: "border-collapse", Kind: KindBool, Inherited: true, Default: "true", AppliesTo: boxElements,
+		Doc: "Draw a shared edge between two touching boxes once rather than twice. On by default; turn it off to get a deliberate double rule."},
+	POpacity: {Name: "opacity", Kind: KindNumber, Default: "1", AppliesTo: boxElements, Doc: "Opacity from 0 to 1. Discouraged: transparency and print do not always agree."},
 
 	// ---- Panel chrome ----
 	PTitle:           {Name: "title", Kind: KindString, AppliesTo: []string{EPanel, EBox, EGrid}, Doc: "Panel title. Usually written as the panel's argument instead."},

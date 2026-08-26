@@ -199,7 +199,13 @@ func (p *Props) SetIDs() []PropID {
 // Tick returns an absolute length.
 func (p *Props) Tick(id PropID, fallback geom.Tick) geom.Tick {
 	v, ok := p.First(id)
-	if !ok || v.Kind != pulp.KindLength {
+	if !ok {
+		return fallback
+	}
+	if isZeroLength(v) {
+		return 0
+	}
+	if v.Kind != pulp.KindLength {
 		return fallback
 	}
 	return v.Length
@@ -210,6 +216,9 @@ func (p *Props) Dimension(id PropID, fallback geom.Dimension) geom.Dimension {
 	v, ok := p.First(id)
 	if !ok {
 		return fallback
+	}
+	if isZeroLength(v) {
+		return geom.Fixed(0)
 	}
 	switch v.Kind {
 	case pulp.KindLength:
@@ -306,6 +315,10 @@ func (p *Props) Edges(id PropID, fallback geom.Edges) geom.Edges {
 	vs := p.Values(id)
 	lengths := make([]geom.Tick, 0, 4)
 	for _, v := range vs {
+		if isZeroLength(v) {
+			lengths = append(lengths, 0)
+			continue
+		}
 		if v.Kind != pulp.KindLength {
 			continue
 		}

@@ -6,7 +6,8 @@
 #
 # The lattice is drawn by the cells themselves: every cell carries a right and
 # a bottom border only, and the frame supplies the top and left edges. Giving
-# each cell all four sides would double every interior line.
+# each cell all four sides would work too — shared edges collapse automatically
+# now — but this way emits half as many strokes for the same picture.
 #
 # Change first: `repeat 14` — the number of habit rows — and the 118pt label
 # column width.

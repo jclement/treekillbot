@@ -150,7 +150,9 @@ func groupChildren(children []*Node) []group {
 func measureGroup(g group, contentWidth, gap geom.Tick, env *Env) geom.Tick {
 	if g.single != nil {
 		margin := g.single.Props.Edges(schema.PMargin, geom.Edges{})
-		return childContribution(g.single, contentWidth-margin.Horizontal(), env) + margin.Vertical()
+		available := contentWidth - margin.Horizontal()
+		measured := narrowToWidth(g.single, geom.Rect{W: available}).W
+		return childContribution(g.single, measured, env) + margin.Vertical()
 	}
 
 	widths := resolveColumnWidths(g.columns, contentWidth, gap)
@@ -163,6 +165,26 @@ func measureGroup(g group, contentWidth, gap geom.Tick, env *Env) geom.Tick {
 		}
 	}
 	return tallest
+}
+
+// narrowToWidth honours an explicit `width` on a box outside a row.
+//
+// Width used to be negotiated only between columns, so `width: 50mm` on a box,
+// panel or text node was silently ignored and it filled instead. Only `section`
+// warned. Honouring it everywhere is less surprising than a property that does
+// nothing on most of the elements it is declared for.
+//
+// The box keeps the start of the axis. There is no `margin: 0 auto`, so
+// centring is done with an explicit left margin — which at least says what it
+// means.
+func narrowToWidth(n *Node, rect geom.Rect) geom.Rect {
+	dim := n.Props.Dimension(schema.PWidth, geom.Fill)
+	resolved, ok := dim.Resolve(rect.W)
+	if !ok || resolved <= 0 || resolved >= rect.W {
+		return rect
+	}
+	rect.W = resolved
+	return rect
 }
 
 // childContribution is how much height a child demands of a parent that is
@@ -255,7 +277,7 @@ func Arrange(n *Node, border geom.Rect, env *Env) {
 func arrangeGroup(g group, rect geom.Rect, gap geom.Tick, env *Env) {
 	if g.single != nil {
 		margin := g.single.Props.Edges(schema.PMargin, geom.Edges{})
-		Arrange(g.single, rect.Inset(margin), env)
+		Arrange(g.single, narrowToWidth(g.single, rect.Inset(margin)), env)
 		return
 	}
 

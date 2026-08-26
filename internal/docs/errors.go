@@ -344,12 +344,6 @@ var errorDocs = []ErrorDoc{
 		Example: "panel \"Notes\"\n  line-style: ruled\n  line-pitch: 15pt   # the distance between rules",
 	},
 	{
-		Code:        "W031",
-		Title:       "`width` on a section has no effect",
-		Explanation: "Sections always fill their parent's width. Width is only negotiated between columns in a row.",
-		Fix:         "To divide space horizontally, put `column` nodes inside the section and give them widths.",
-	},
-	{
 		Code:        "W210",
 		Title:       "Unresolved variable rendered as empty",
 		Explanation: "The same condition as E210, downgraded by `--allow-undefined`.",

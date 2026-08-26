@@ -270,3 +270,117 @@ func TestNotchTitleSitsOnTheBorder(t *testing.T) {
 		t.Fatal("the notch band must sit above the content box, not inside the padding")
 	}
 }
+
+// Two boxes that touch exactly would each stroke the edge they share, making it
+// twice as heavy as every other line on the page. Exactly one stroke must
+// survive (DESIGN.md D4).
+func TestSharedBordersCollapse(t *testing.T) {
+	page := layout.NewNode(layout.KindPage)
+	left := layout.NewNode(layout.KindBox)
+	right := layout.NewNode(layout.KindBox)
+	for _, box := range []*layout.Node{left, right} {
+		setProp(t, box, "border-width", "1pt")
+		setProp(t, box, "border-color", "gray(0)")
+		setProp(t, box, "width", "50%")
+	}
+	// Placed by hand so the two share an edge exactly, which is the condition
+	// the collapse is defined on.
+	env := &layout.Env{Diags: &pulp.Diagnostics{}}
+	layout.Arrange(left, geom.Rect{X: 0, Y: 0, W: geom.Pt(100), H: geom.Pt(50)}, env)
+	layout.Arrange(right, geom.Rect{X: geom.Pt(100), Y: 0, W: geom.Pt(100), H: geom.Pt(50)}, env)
+	page.Append(left)
+	page.Append(right)
+	page.Frame = left.Frame
+
+	collapsed := collapseBorders(page, &Env{})
+	if skip := collapsed[right]; !skip.left {
+		t.Fatal("the right-hand box should not stroke the edge its neighbour already strokes")
+	}
+	if skip := collapsed[left]; skip.left || skip.top {
+		t.Fatal("the left-hand box keeps every edge; nothing precedes it")
+	}
+}
+
+func TestCollapseRequiresAnIdenticalPen(t *testing.T) {
+	tests := []struct {
+		name       string
+		rightProps map[string]string
+		wantSkip   bool
+	}{
+		{"identical pens collapse", map[string]string{"border-width": "1pt", "border-color": "gray(0)"}, true},
+		{"a different width does not", map[string]string{"border-width": "2pt", "border-color": "gray(0)"}, false},
+		{"a different colour does not", map[string]string{"border-width": "1pt", "border-color": "gray(0.5)"}, false},
+		{"a different style does not", map[string]string{"border-width": "1pt", "border-color": "gray(0)", "border-style": "dashed"}, false},
+		{"opting out does not", map[string]string{"border-width": "1pt", "border-color": "gray(0)", "border-collapse": "false"}, false},
+		// A rounded corner has no straight edge to share, and collapsing would
+		// leave a gap where the curve pulls away from the join.
+		{"a radius does not", map[string]string{"border-width": "1pt", "border-color": "gray(0)", "border-radius": "3pt"}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			page := layout.NewNode(layout.KindPage)
+			left := layout.NewNode(layout.KindBox)
+			setProp(t, left, "border-width", "1pt")
+			setProp(t, left, "border-color", "gray(0)")
+			right := layout.NewNode(layout.KindBox)
+			for name, value := range tt.rightProps {
+				setProp(t, right, name, value)
+			}
+			env := &layout.Env{Diags: &pulp.Diagnostics{}}
+			layout.Arrange(left, geom.Rect{W: geom.Pt(100), H: geom.Pt(50)}, env)
+			layout.Arrange(right, geom.Rect{X: geom.Pt(100), W: geom.Pt(100), H: geom.Pt(50)}, env)
+			page.Append(left)
+			page.Append(right)
+
+			if got := collapseBorders(page, &Env{})[right].left; got != tt.wantSkip {
+				t.Fatalf("collapsed = %v, want %v", got, tt.wantSkip)
+			}
+		})
+	}
+}
+
+// Boxes that merely line up on one axis but do not touch must both keep their
+// borders, or a gap would lose a line.
+func TestSeparatedBoxesDoNotCollapse(t *testing.T) {
+	page := layout.NewNode(layout.KindPage)
+	left := layout.NewNode(layout.KindBox)
+	right := layout.NewNode(layout.KindBox)
+	for _, box := range []*layout.Node{left, right} {
+		setProp(t, box, "border-width", "1pt")
+		setProp(t, box, "border-color", "gray(0)")
+	}
+	env := &layout.Env{Diags: &pulp.Diagnostics{}}
+	layout.Arrange(left, geom.Rect{W: geom.Pt(100), H: geom.Pt(50)}, env)
+	// One tick of gap is still a gap.
+	layout.Arrange(right, geom.Rect{X: geom.Pt(100) + 1, W: geom.Pt(100), H: geom.Pt(50)}, env)
+	page.Append(left)
+	page.Append(right)
+
+	if collapseBorders(page, &Env{})[right].left {
+		t.Fatal("boxes one tick apart do not share an edge and must both keep their borders")
+	}
+}
+
+// The collapse is defined on edges, not on the tree, because the boxes that
+// touch are often not siblings: a row of columns each holding one bordered
+// panel has the panels as grandchildren of the row.
+func TestCollapseWorksAcrossNesting(t *testing.T) {
+	page := layout.NewNode(layout.KindPage)
+	var panels []*layout.Node
+	for i := 0; i < 2; i++ {
+		column := layout.NewNode(layout.KindColumn)
+		panel := layout.NewNode(layout.KindPanel)
+		setProp(t, panel, "border-width", "0.5pt")
+		setProp(t, panel, "border-color", "gray(0.2)")
+		setProp(t, panel, "height", "fill")
+		column.Append(panel)
+		page.Append(column)
+		panels = append(panels, panel)
+	}
+	env := &layout.Env{Diags: &pulp.Diagnostics{}}
+	layout.Layout(page, geom.Rect{W: geom.Pt(200), H: geom.Pt(50)}, env)
+
+	if !collapseBorders(page, &Env{})[panels[1]].left {
+		t.Fatal("panels in adjacent columns share an edge even though they are not siblings")
+	}
+}

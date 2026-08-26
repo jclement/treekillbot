@@ -176,7 +176,7 @@ func TestExamplesCompile(t *testing.T) {
 // make the sheet a lie.
 func assertOverflowSheetDiagnostics(t *testing.T, result *Result) {
 	t.Helper()
-	want := []string{"W010", "W020", "W020", "W021", "W030", "W031"}
+	want := []string{"W010", "W020", "W020", "W021", "W030"}
 
 	var got []string
 	for _, d := range result.Diags {

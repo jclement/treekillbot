@@ -377,3 +377,57 @@ func TestMinHeightRaisesTheContribution(t *testing.T) {
 		t.Fatalf("auto section = %.2fpt, want 60pt", got.Points())
 	}
 }
+
+// `width` used to be negotiated only between columns, so an explicit width on a
+// box, panel or text node was silently ignored and it filled instead.
+func TestWidthIsHonouredOutsideARow(t *testing.T) {
+	page := node(t, KindPage, map[string]string{"padding": "0pt"})
+	section := node(t, KindSection, map[string]string{"height": "100pt"})
+	fixedWidth := node(t, KindBox, map[string]string{"width": "200pt", "height": "20pt"})
+	proportional := node(t, KindPanel, map[string]string{"width": "25%", "height": "20pt"})
+	fills := node(t, KindBox, map[string]string{"height": "20pt"})
+	page.Append(section)
+	for _, child := range []*Node{fixedWidth, proportional, fills} {
+		section.Append(child)
+	}
+
+	Layout(page, letter, testEnv())
+
+	if got := fixedWidth.Frame.Border.W; got != geom.Pt(200) {
+		t.Errorf("fixed width = %.2fpt, want 200pt", got.Points())
+	}
+	if want := geom.In(8.5).Scale(1, 4); proportional.Frame.Border.W != want {
+		t.Errorf("25%% = %.2fpt, want %.2fpt", proportional.Frame.Border.W.Points(), want.Points())
+	}
+	// Anything that does not ask still fills, which is the language's default.
+	if got := fills.Frame.Border.W; got != geom.In(8.5) {
+		t.Errorf("unspecified width = %.2fpt, want the full %.2fpt", got.Points(), geom.In(8.5).Points())
+	}
+}
+
+// A width wider than the space available is ignored rather than allowed to
+// overflow: the box was going to fill anyway, and clipping it would be worse.
+func TestWidthWiderThanAvailableFills(t *testing.T) {
+	page := node(t, KindPage, map[string]string{"padding": "0pt"})
+	box := node(t, KindBox, map[string]string{"width": "40in", "height": "20pt"})
+	page.Append(box)
+	Layout(page, letter, testEnv())
+	if got := box.Frame.Border.W; got != geom.In(8.5) {
+		t.Fatalf("over-wide box = %.2fpt, want the page width", got.Points())
+	}
+}
+
+// Zero is the one number whose unit does not matter.
+func TestUnitlessZeroIsALength(t *testing.T) {
+	page := node(t, KindPage, map[string]string{"padding": "0"})
+	section := node(t, KindSection, map[string]string{"height": "50pt", "gap": "0", "margin": "0"})
+	page.Append(section)
+	Layout(page, letter, testEnv())
+
+	if page.Frame.Content != page.Frame.Border {
+		t.Fatalf("padding: 0 left %s of padding", page.Frame.Border)
+	}
+	if got := section.Props.Tick(schema.PGap, geom.Pt(99)); got != 0 {
+		t.Fatalf("gap: 0 read back as %d ticks, want 0", got)
+	}
+}

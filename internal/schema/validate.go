@@ -227,12 +227,12 @@ func (v *validator) checkKind(n *pulp.Node, id PropID, def *PropDef, values []pu
 
 	switch def.Kind {
 	case KindLength:
-		if first.Kind != pulp.KindLength {
+		if first.Kind != pulp.KindLength && !isZeroLength(first) {
 			v.badLength(n, def, first)
 		}
 	case KindEdges:
 		for _, val := range values {
-			if val.Kind != pulp.KindLength {
+			if val.Kind != pulp.KindLength && !isZeroLength(val) {
 				v.badLength(n, def, val)
 				return
 			}
@@ -243,6 +243,9 @@ func (v *validator) checkKind(n *pulp.Node, id PropID, def *PropDef, values []pu
 				WithHelp("One value sets all sides, two set vertical then horizontal, four set top, right, bottom, left.")
 		}
 	case KindSize:
+		if isZeroLength(first) {
+			return
+		}
 		if !first.IsSize() {
 			if first.Kind == pulp.KindNumber {
 				v.badLength(n, def, first)
@@ -269,6 +272,16 @@ func (v *validator) checkKind(n *pulp.Node, id PropID, def *PropDef, values []pu
 	case KindEnum:
 		v.checkEnum(id, def, first)
 	}
+}
+
+// isZeroLength reports whether a value is a bare zero.
+//
+// Zero is the one number whose unit does not matter: `gap: 0` and `gap: 0pt`
+// describe the same amount of nothing. Requiring a unit there is a papercut on
+// the most common length anyone writes, and CSS has accepted unitless zero for
+// thirty years for the same reason.
+func isZeroLength(v pulp.Value) bool {
+	return v.Kind == pulp.KindNumber && v.Num == 0
 }
 
 // badLength produces the bespoke message for the single most common mistake in
@@ -389,13 +402,6 @@ func (v *validator) crossChecks(n *pulp.Node, def *ElementDef) {
 		}
 	}
 
-	// A width on something that is not in a row has nothing to divide.
-	if w := n.Child("width"); w != nil && def.Name == ESection {
-		v.diags.Warnf(v.src, w.NameSpan, "W031",
-			"`width` on a `section` has no effect").
-			WithLabel("ignored").
-			WithHelp("Sections always fill their parent's width. To divide space horizontally, put `column` nodes inside this section.")
-	}
 }
 
 // ---- helpers ----

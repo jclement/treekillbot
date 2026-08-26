@@ -62,8 +62,11 @@ That is why `panel "Notes"` can carry both a value and children, and why three s
   `fill(2)`, `40%`, `auto`, or a length.
 - **A run of consecutive `column` siblings forms a row.** That is the only horizontal
   construct.
-- **Lengths always carry a unit** — `16pt`, `0.5in`, `12mm`. A bare number is an error
-  that tells you what to write instead.
+- **Lengths carry a unit** — `16pt`, `0.5in`, `12mm`. A bare number is an error that tells
+  you what to write instead. The exception is `0`, whose unit cannot matter.
+- **Touching borders collapse.** Two boxes that share an edge draw it once, so a lattice of
+  cells has interior lines the same weight as its outer frame. `border-collapse: false` if
+  you want the double rule.
 - **Dates are built in**, which is the whole point of a planner generator:
 
 ```pulp

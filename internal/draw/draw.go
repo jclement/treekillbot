@@ -41,6 +41,10 @@ type Env struct {
 	Grayscale bool
 	// DebugLayout draws every box's rectangles over the artwork.
 	DebugLayout bool
+
+	// collapsed records borders another box already strokes. Filled by Paint;
+	// nil when nothing on the page shares an edge.
+	collapsed suppressed
 }
 
 // minStroke is the thinnest line that will be emitted. Below a quarter point a
@@ -50,6 +54,10 @@ const minStroke = geom.TicksPerPt / 4
 
 // Paint draws a whole page.
 func Paint(root *layout.Node, canvas render.Canvas, env *Env) {
+	// Shared edges are resolved across the whole page before anything is drawn,
+	// because the boxes that touch are often not siblings and no single node
+	// can see the pairing from where it sits.
+	env.collapsed = collapseBorders(root, env)
 	paintNode(root, canvas, env)
 	if env.DebugLayout {
 		paintDebugOverlay(root, canvas)
@@ -109,12 +117,19 @@ func paintBorder(n *layout.Node, canvas render.Canvas, env *Env, radius geom.Tic
 		return
 	}
 
-	if width.Uniform() {
+	skip := env.collapsed[n]
+	if width.Uniform() && !skip.left && !skip.top {
 		w := clampStroke(width.Top)
 		canvas.SetStroke(strokeFor(color, w, style))
 		canvas.AddRect(n.Frame.Border.InsetUniform(w/2), adjustRadius(radius, w))
 		canvas.Stroke()
 		return
+	}
+	if skip.left {
+		width.Left = 0
+	}
+	if skip.top {
+		width.Top = 0
 	}
 	paintPerSideBorder(n.Frame.Border, width, color, style, canvas)
 }
