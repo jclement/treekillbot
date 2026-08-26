@@ -1,0 +1,68 @@
+# Drafting-table technical: a 5mm lattice, heavy fifths, and sans labels over a rule.
+#
+# Named for the drawing, not for the colour — every shipped theme is authored in
+# gray() so that the tint written is the tint the RIP receives (DESIGN.md D10).
+# What makes it read as a drawing is the metrics: a 5mm module with every fifth
+# line at nearly double weight, so the eye can count squares without a ruler,
+# and labels that interrupt the frame the way a section callout does.
+#
+# The lattice is anchored to the page, so squares run continuously across
+# adjacent panels instead of restarting inside each one.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(1)
+  ink:    gray(0.15)
+  muted:  gray(0.5)
+  rule:   gray(0.74)
+  accent: gray(0.3)
+
+
+defaults
+  # 1. Body ink.
+  font: IBM Plex Mono
+  font-size: 8.5pt
+  color: gray(0.15)
+  line-height: 1.3
+
+  # 2. The writing surface: a fine 5mm module. The minor lines are light enough
+  # to write over and the majors are the thing you actually navigate by, which
+  # is why the two weights are 0.4pt and 0.75pt rather than a subtle pair.
+  line-color: gray(0.74)
+  line-width: 0.4pt
+  line-pitch: 5mm
+  dot-pitch: 5mm
+  dot-size: 0.7pt
+  grid-major: 5
+  grid-major-width: 0.75pt
+  grid-origin: page
+  margin-rule-color: gray(0.6)
+
+  # 3. Frames: square, and darker than the lattice so a panel edge never reads
+  # as a major grid line.
+  border-color: gray(0.45)
+  border-style: solid
+  border-radius: 0pt
+
+  # 4. Labels: sans caps, small and widely tracked, over a rule — a callout on
+  # a drawing. Sans against a mono body is the drawing-office pairing.
+  #
+  # `title-style: notch`, which cuts the label into the frame the way a fieldset
+  # legend does, is the more obviously drafting-like choice and is deliberately
+  # NOT used: the notch is knocked out of the border, while the title sits
+  # inside the panel's padding, so on any panel with a `padding-top` the gap
+  # lands somewhere the text is not and the frame just looks broken. Set
+  # `padding-top: 0` on the panel and `title-style: notch` here if you want it.
+  title-font: IBM Plex Sans
+  title-color: gray(0.25)
+  title-size: 6pt
+  title-weight: bold
+  title-style: underline
+  title-transform: upper
+  title-tracking: 1.4pt
+  title-padding: 2pt 0pt 3pt
+
+  # 5. The sheet.
+  background: transparent

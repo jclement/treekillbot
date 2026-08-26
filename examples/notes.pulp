@@ -1,0 +1,71 @@
+# A full page of ruled notes: a header block to label the sheet, then nothing
+# but writing lines down to the bottom margin.
+#
+# Change first: `line-pitch` — 7mm suits an average adult hand, 6mm is tight,
+# 9mm is what a broad-nib fountain pen wants. Then `margin-rule-offset`, which
+# decides where the vertical rule sits.
+
+page
+  size: letter
+  margin: 0.6in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 9pt
+  color: gray(0.12)
+
+# A form field is a box with only a bottom border. Its label sits UNDER the
+# line rather than in the space you are meant to write in.
+style field
+  height: 17pt
+  border-bottom-width: 0.5pt
+  border-color: gray(0.62)
+
+section
+  height: 32pt
+  gap: 14pt
+  column
+    width: 150pt
+    valign: bottom
+    text "NOTES"
+      font-size: 22pt
+      font-weight: bold
+      tracking: 1.5pt
+      padding-bottom: 2pt
+  column
+    width: fill
+    valign: bottom
+    box
+      style: field
+    text "SUBJECT"
+      font-size: 6pt
+      color: gray(0.45)
+      tracking: 0.6pt
+      padding-top: 2.5pt
+  column
+    width: 125pt
+    valign: bottom
+    box
+      style: field
+    text "DATE"
+      font-size: 6pt
+      color: gray(0.45)
+      tracking: 0.6pt
+      padding-top: 2.5pt
+
+section
+  height: 16pt
+
+# The writing surface. No border: the page edge and the margin rule are all the
+# structure a sheet of ruled paper needs.
+section
+  height: fill
+  box
+    height: fill
+    line-style: ruled
+    line-pitch: 7mm
+    line-color: gray(0.80)
+    line-width: 0.4pt
+    margin-rule: true
+    margin-rule-offset: 34pt
+    margin-rule-color: gray(0.70)

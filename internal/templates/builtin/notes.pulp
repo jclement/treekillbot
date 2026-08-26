@@ -1,0 +1,53 @@
+# A ruled page for longhand: a subject line, a red-line margin, and wide rules.
+#
+# Change first: `line-pitch` on the body box — 7mm is wide-ruled, 6mm is
+# college-ruled — and `margin-rule-offset` if you want a narrower margin.
+
+page
+  size: letter
+  margin: 0.55in
+
+# ---- Header ----
+
+section
+  height: auto
+  column
+    width: auto
+    text "Notes"
+      font-size: 22pt
+      font-weight: bold
+  column
+    padding-left: 12pt
+    valign: bottom
+    align: right
+    text "{today:%A, %-d %B %Y}"
+      font-size: 9pt
+      font-weight: bold
+    text "Week {week.number} · {doc.name}"
+      font-size: 7pt
+
+# The subject line is a rule with room above it to write on, which is a nicer
+# way to say "fill this in" than a box with a label in it.
+
+section
+  height: 26pt
+  padding-top: 8pt
+  valign: bottom
+  rule
+    line-width: 0.8pt
+
+# ---- The page ----
+#
+# `margin-rule` is the vertical line down the left of a school exercise book.
+# Its colour is the one place this tool is not grey by default, and a theme can
+# change it with `margin-rule-color`.
+
+section
+  height: fill
+  padding-top: 10pt
+  box
+    height: fill
+    line-style: ruled
+    line-pitch: 7mm
+    margin-rule: true
+    margin-rule-offset: 34pt

@@ -1,0 +1,87 @@
+# Meeting notes with the two things a meeting actually produces: decisions and actions.
+#
+# Change first: the subject. `treekillbot build meeting.pulp --var subject="Q3
+# planning"` prints it in the header; leave it and the page says "Meeting".
+#
+# The layout is opinionated in one way: Decisions and Actions get a fixed strip
+# at the foot rather than whatever is left over, because they are the part
+# anyone reads afterwards and they should not be squeezed by a long notes body.
+
+page
+  size: letter
+  margin: 0.55in
+
+vars
+  subject: Meeting
+
+defaults panel
+  border-width: 0.4pt
+  padding: 6pt
+  line-style: ruled
+  line-pitch: 16pt
+
+# ---- Header ----
+
+section
+  height: auto
+  column
+    text "{subject}"
+      font-size: 22pt
+      font-weight: bold
+    text "Notes · {doc.name}"
+      font-size: 7pt
+  column
+    width: auto
+    padding-left: 16pt
+    valign: bottom
+    align: right
+    text "{today:%A, %-d %B %Y}"
+      font-size: 9pt
+      font-weight: bold
+    text "Week {week.number} · {today:%Y-%m-%d}"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 4pt
+  rule
+    line-width: 1pt
+
+# ---- Who and why ----
+
+section
+  height: 96pt
+  padding-top: 10pt
+  gap: 8pt
+  column
+    width: 42%
+    panel "Present"
+      height: fill
+      line-pitch: 14pt
+  column
+    panel "Purpose — the one sentence"
+      height: fill
+      line-pitch: 14pt
+
+# ---- Notes ----
+
+section
+  height: fill
+  padding-top: 8pt
+  panel "Notes"
+    height: fill
+
+# ---- What came out of it ----
+
+section
+  height: 150pt
+  padding-top: 8pt
+  gap: 8pt
+  column
+    panel "Decisions"
+      height: fill
+  column
+    panel "Actions — who, and by when"
+      height: fill
+      line-style: checkbox
+      line-pitch: 20pt

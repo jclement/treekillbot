@@ -1,0 +1,62 @@
+# The tool's own voice: rules and whitespace do the separating, and nothing is filled.
+#
+# This file is exactly the schema's built-in defaults, written out. `--theme
+# default` is therefore a no-op — there is a test that asserts it byte for byte
+# — and that is the point: it is the file to copy into
+# ~/.config/treekillbot/themes/ and edit when you want to change what the tool
+# does by default, rather than a second opinion layered over the first.
+#
+# There are deliberately no panel fills anywhere (DESIGN.md D10). A 10% grey
+# looks like a whisper on a monitor and halftones two or three steps darker on
+# plain 20lb stock, and the first thing anyone does with a planner is write on
+# it. Separation here comes from a 0.4pt rule and from air.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(1)
+  ink:    gray(0)
+  muted:  gray(0.45)
+  rule:   gray(0.78)
+  accent: gray(0.25)
+
+
+defaults
+  # 1. Body ink.
+  font: IBM Plex Mono
+  font-size: 9pt
+  color: gray(0)
+  line-height: 1.35
+
+  # 2. The writing surface. 0.4pt is the floor everywhere in this tool — under
+  # 0.25pt an engine snaps a stroke to one device pixel and the weight becomes
+  # a property of the printer rather than of the document.
+  line-color: gray(0.78)
+  line-width: 0.4pt
+  line-pitch: 6mm
+  dot-size: 0.7pt
+  grid-major: 5
+  grid-major-width: 0.6pt
+
+  # `margin-rule-color` is deliberately absent. It is the one non-grey default
+  # in the whole tool — the red line down a school exercise book — and every
+  # shipped theme is authored in gray() and nothing else (DESIGN.md D10).
+  # Leaving it unstated keeps that true and lets the schema's red stand.
+
+  # 3. Frames. A shade darker than the writing rules, so a panel edge reads as
+  # structure rather than as one more line to write on.
+  border-color: gray(0.75)
+  border-style: solid
+  border-radius: 0pt
+
+  # 4. Labels.
+  title-color: gray(0.35)
+  title-size: 6.5pt
+  title-weight: bold
+  title-style: plain
+  title-transform: upper
+  title-tracking: 0.5pt
+
+  # 5. The sheet.
+  background: transparent

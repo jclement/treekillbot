@@ -1,0 +1,128 @@
+# The same week as weekly.pulp, but portrait with the days stacked — the shape
+# that fits a ring binder or a clipboard.
+#
+# Each day is a row: a label column on the left, a ruled writing area on the
+# right, and a hairline under the pair. The weekend rows are given 0.62 of a
+# weekday's share of the leftover height.
+#
+# Change first: the `fill` weights on the day rows, and `line-pitch` in the
+# `writing` style.
+
+page
+  size: letter
+  margin: 0.5in
+  week-start: monday
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+style writing
+  height: fill
+  line-style: ruled
+  line-pitch: 6mm
+  line-color: gray(0.84)
+  line-width: 0.4pt
+  line-inset: 0pt 0pt 0pt 8pt
+
+section
+  height: 42pt
+  gap: 10pt
+  column
+    width: 88pt
+    valign: bottom
+    text "W{week.number}"
+      font-size: 28pt
+      font-weight: bold
+      tracking: -0.5pt
+  column
+    width: fill
+    valign: bottom
+    align: right
+    text "{week.start:%B %-d} — {week.end:%B %-d, %Y}"
+      font-size: 11pt
+      font-weight: bold
+      align: right
+    text "ISO {week.iso}"
+      font-size: 6.5pt
+      color: gray(0.45)
+      align: right
+      tracking: 0.6pt
+      padding-top: 2pt
+
+section
+  height: 7pt
+  padding-top: 2pt
+  rule
+    line-width: 0.9pt
+    line-color: gray(0.22)
+
+# One section per day. The row's own bottom border is the day divider, so the
+# rules inside never have to pretend to be one.
+#
+# The `for` is wrapped in a section: a loop written at the top level of a
+# document is currently dropped without a diagnostic.
+section
+  height: fill
+  for day in week.days
+    section
+      height: {day.weekend ? "fill(0.62)" : "fill"}
+      border-bottom-width: 0.4pt
+      border-color: gray(0.7)
+      padding-top: 4pt
+      padding-bottom: 3pt
+      column
+        width: 74pt
+        text "{day.name}"
+          font-size: 10pt
+          font-weight: {day.weekend ? "regular" : "bold"}
+          color: {day.weekend ? "gray(0.45)" : "gray(0.12)"}
+        text "{day.month.short} {day.dd}"
+          font-size: 6.5pt
+          color: gray(0.5)
+          text-transform: upper
+          tracking: 0.7pt
+          padding-top: 1pt
+      column
+        width: fill
+        box
+          style: writing
+
+section
+  height: 96pt
+  padding-top: 9pt
+  gap: 8pt
+  column
+    width: fill(38)
+    box
+      height: fill
+      border-width: 0.5pt
+      border-color: gray(0.7)
+      border-radius: 2pt
+      padding: 6pt
+      title: "Top three"
+      title-size: 6.5pt
+      title-style: underline
+      title-color: gray(0.3)
+      title-tracking: 0.7pt
+      line-style: checkbox
+      line-pitch: 7mm
+      line-color: gray(0.84)
+      checkbox-radius: 1pt
+  column
+    width: fill(62)
+    box
+      height: fill
+      border-width: 0.5pt
+      border-color: gray(0.7)
+      border-radius: 2pt
+      padding: 6pt
+      title: "Notes"
+      title-size: 6.5pt
+      title-style: underline
+      title-color: gray(0.3)
+      title-tracking: 0.7pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-color: gray(0.84)

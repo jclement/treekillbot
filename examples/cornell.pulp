@@ -1,0 +1,90 @@
+# A Cornell notes page: cue column on the left, notes to the right, summary
+# band across the foot.
+#
+# Change first: `cornell-cue` (the cue column is meant to hold questions, so
+# 63pt is the practical minimum and 90pt is comfortable) and `cornell-summary`,
+# which is a percentage of the writing area.
+
+page
+  size: letter
+  margin: 0.55in
+
+defaults
+  font: IBM Plex Serif
+  font-size: 9pt
+  color: gray(0.12)
+
+section
+  height: 30pt
+  gap: 14pt
+  column
+    width: 190pt
+    valign: bottom
+    text "CORNELL NOTES"
+      font: IBM Plex Sans
+      font-size: 12pt
+      font-weight: bold
+      tracking: 1pt
+  column
+    width: fill
+    valign: bottom
+    box
+      height: 16pt
+      border-bottom-width: 0.5pt
+      border-color: gray(0.62)
+  column
+    width: 110pt
+    valign: bottom
+    box
+      height: 16pt
+      border-bottom-width: 0.5pt
+      border-color: gray(0.62)
+
+section
+  height: auto
+  gap: 14pt
+  padding-bottom: 10pt
+  column
+    width: 190pt
+  column
+    width: fill
+    text "TOPIC"
+      font: IBM Plex Sans
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.6pt
+  column
+    width: 110pt
+    text "DATE"
+      font: IBM Plex Sans
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.6pt
+
+# The cue divider and the summary rule are drawn by the decoration itself, at
+# 1.5x the writing-rule weight, so the three regions separate without a border
+# round any of them. `line-distribute: end` pushes each band's leftover height
+# to the TOP of that band, which lands the last writing rule exactly on the
+# summary divider instead of a point and a half above it — otherwise the two
+# read as one accidentally doubled line.
+section
+  height: fill
+  box
+    height: fill
+    line-style: cornell
+    line-pitch: 7mm
+    line-color: gray(0.82)
+    line-width: 0.4pt
+    cornell-cue: 90pt
+    cornell-summary: 18%
+    line-distribute: end
+
+section
+  height: 14pt
+  valign: bottom
+  text "CUE  ·  NOTES  ·  SUMMARY"
+    font: IBM Plex Sans
+    font-size: 5.5pt
+    color: gray(0.5)
+    tracking: 0.8pt
+    align: right

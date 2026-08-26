@@ -1,0 +1,290 @@
+# THE STRESS TEST — cover sheet and index.
+#
+# A document is one page (there is no page break in Pulp yet), so the stress
+# test is a numbered SET under examples/stress/ and this is its cover. Print
+# the lot and you have a reference pack; build the lot in CI and you have the
+# visual-regression corpus.
+#
+#   for f in examples/stress/*.pulp; do
+#     treekillbot build "$f" -o "out/$(basename "${f%.pulp}").pdf" --date 2026-09-09
+#   done
+#
+# Sheet 09 is the exception: it needs --allow-overflow, because overflowing is
+# what it is for.
+
+page
+  size: letter
+  margin: 0.6in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 66pt
+  column
+    width: fill
+    text "STRESS TEST"
+      font: IBM Plex Mono
+      font-size: 26pt
+      font-weight: bold
+      tracking: 2pt
+    text "treekillbot · every property, one concern per sheet"
+      font-size: 8pt
+      color: gray(0.45)
+      padding-top: 4pt
+  column
+    width: 150pt
+    valign: bottom
+    align: right
+    text "built {today.iso}"
+      font: IBM Plex Mono
+      font-size: 7pt
+      color: gray(0.5)
+      align: right
+
+section
+  height: 8pt
+  rule
+    line-width: 1pt
+    line-color: gray(0.2)
+
+section
+  height: 24pt
+  valign: bottom
+  text "Fourteen sheets. Each one is a printable reference in its own right; together they touch every element, every property and every enum value in the schema."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 14pt
+
+# ---- the index ----
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "01  UNITS"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "Eight 50mm bars written seven different ways plus two apportioned ones, all ending on one line. A ruler in millimetres and in eighths of an inch, and a staircase of bars one tick (1/16pt) apart."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "02  COLOURS"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "A 21-step gray() ramp with its values printed — a printer calibration strip worth keeping — the same ramp at 3mm and as 0.4pt rules, and every colour form the parser accepts."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "03  HAIRLINES"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "0.1pt to 3pt with the values printed, horizontal and vertical, in black and in grey, plus the same ruled panel at five line-widths. Find the first weight your printer really resolves."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "04  LINE DECORATIONS"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "Landscape. All seven line-styles at three pitches, side by side. 04b tunes them: line-distribute, line-partial, lines, line-inset, margin-rule, every checkbox knob, and the page versus box lattice."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "05  SIZING"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "fill and fill(n), percentages that sum exactly, auto, fixed, min-height and max-height. 05b adds five levels of nesting, three gaps, and the border-box model."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "06  TYPOGRAPHY"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "Three families by four faces, a 5pt-to-32pt size ramp, text-transform and tracking. 06b is the flow: align including justify, valign, line-height, wrapping and the figures."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "07  BORDERS"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "Every border-style at two weights, per-side widths, shorthand arity, the radius ramp, and borders over decorations. 07b is the chrome: four title-styles, four positions, alignment and the title font."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "08  UNICODE"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "What the three embedded faces actually draw, verified by building it. Greek is Sans only; box drawing is Mono only; CJK, emoji and RTL are nowhere. 08b is dates: every built-in, the ISO week edge cases and the month clamp."
+      font-size: 7.5pt
+
+section
+  height: 40pt
+  border-bottom-width: 0.4pt
+  border-color: gray(0.8)
+  padding-bottom: 4pt
+  padding-top: 4pt
+  gap: 12pt
+  column
+    width: 96pt
+    text "09  OVERFLOW"
+      font: IBM Plex Mono
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: fill
+    text "Deliberately does not fit. Needs --allow-overflow, and prints the six warnings it expects to provoke so you can check the tool said what it should."
+      font-size: 7.5pt
+
+section
+  height: 24pt
+  valign: bottom
+  text "What each sheet is FOR: a golden-file diff tells you something moved; these tell you whether the thing that moved was supposed to."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 12pt
+
+section
+  height: fill
+  gap: 16pt
+  column
+    width: fill
+    box
+      height: fill
+      border-width: 0.5pt
+      border-color: gray(0.7)
+      border-radius: 2pt
+      padding: 8pt
+      title: "Print settings that make these sheets honest"
+      title-size: 6.5pt
+      title-style: underline
+      title-color: gray(0.3)
+      title-tracking: 0.7pt
+      spacer
+        height: 16pt
+      text "Scale 100%. Not `fit to page`, not `shrink oversized pages`."
+        font-size: 7pt
+        padding-bottom: 4pt
+      text "Actual paper, not a screen. A 5% tint is a whisper on a monitor and two steps darker on plain 20lb stock."
+        font-size: 7pt
+        padding-bottom: 4pt
+      text "600dpi or better, greyscale, toner saver OFF. Toner saver is what turns a 0.25pt rule into nothing."
+        font-size: 7pt
+        padding-bottom: 4pt
+      text "Build with a fixed --date so two prints of the same sheet are the same sheet."
+        font-size: 7pt
+        padding-bottom: 4pt
+      text "Sheet 09 needs --allow-overflow; every other sheet must build clean."
+        font-size: 7pt
+  column
+    width: fill
+    box
+      height: fill
+      border-width: 0.5pt
+      border-color: gray(0.7)
+      border-radius: 2pt
+      padding: 8pt
+      title: "Printer, paper, date"
+      title-size: 6.5pt
+      title-style: underline
+      title-color: gray(0.3)
+      title-tracking: 0.7pt
+      line-style: ruled
+      line-pitch: 7mm
+      line-color: gray(0.84)
+
+section
+  height: 22pt
+  valign: bottom
+  text "Scale must be 100% — no `fit to page`, no `shrink oversized pages`. Everything on sheet 01 is a lie at any other scale."
+    font-size: 6.5pt
+    color: gray(0.5)

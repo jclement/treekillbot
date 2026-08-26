@@ -1,0 +1,117 @@
+# A week to a landscape page: seven day columns over a strip of week-level
+# panels. This is the sheet the tool was written for.
+#
+# Print next week today with --date 2026-09-14, and start the week on Sunday
+# with --week-start sunday (which rotates the columns and leaves the ISO week
+# number alone, because ISO weeks are Monday-based by definition).
+#
+# Change first: the `fill` weights on the day columns — `fill(0.68)` gives the
+# weekend two thirds of a weekday — and `line-pitch` in the `day` style.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.45in
+  week-start: monday
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+defaults panel
+  border-width: 0.5pt
+  border-color: gray(0.7)
+  border-radius: 2pt
+  padding: 5pt
+  title-size: 6.5pt
+  title-style: underline
+  title-tracking: 0.7pt
+  line-color: gray(0.83)
+  line-width: 0.4pt
+
+style day
+  height: fill
+  line-style: ruled
+  line-pitch: 6mm
+
+section
+  height: 40pt
+  gap: 10pt
+  column
+    width: 96pt
+    valign: bottom
+    text "W{week.number}"
+      font-size: 30pt
+      font-weight: bold
+      tracking: -0.5pt
+  column
+    width: fill
+    valign: bottom
+    text "{week.start:%A, %B %-d} — {week.end:%A, %B %-d, %Y}"
+      font-size: 12pt
+      font-weight: bold
+    text "ISO {week.iso}  ·  {week.start.month} {week.start:%Y}"
+      font-size: 6.5pt
+      color: gray(0.45)
+      text-transform: upper
+      tracking: 0.6pt
+      padding-top: 2pt
+  column
+    width: 150pt
+    valign: bottom
+    align: right
+    text "{quarter.name} {quarter.year}"
+      font: IBM Plex Mono
+      font-size: 6.5pt
+      color: gray(0.5)
+      align: right
+      text-transform: upper
+      tracking: 0.8pt
+
+section
+  height: 7pt
+  padding-top: 2pt
+  rule
+    line-width: 0.9pt
+    line-color: gray(0.22)
+
+# The week. Today's column is drawn with a heavier, darker frame so the sheet
+# tells you where you are without a fill.
+section
+  height: fill
+  padding-top: 8pt
+  gap: 5pt
+  for day in week.days
+    column
+      width: {day.weekend ? "fill(0.68)" : "fill"}
+      panel "{day.short} {day.dd}"
+        style: day
+        border-width: {day.today ? "1pt" : "0.5pt"}
+        border-color: {day.today ? "gray(0.25)" : "gray(0.7)"}
+        title-color: {day.weekend ? "gray(0.55)" : "gray(0.28)"}
+
+section
+  height: 122pt
+  padding-top: 7pt
+  gap: 5pt
+  column
+    width: fill(28)
+    panel "Top three this week"
+      height: fill
+      line-style: checkbox
+      line-pitch: 10mm
+      checkbox-radius: 1pt
+  column
+    width: fill(44)
+    panel "Notes"
+      height: fill
+      line-style: ruled
+      line-pitch: 6mm
+  column
+    width: fill(28)
+    panel "Next week"
+      height: fill
+      line-style: checkbox
+      line-pitch: 10mm
+      checkbox-radius: 1pt

@@ -1,0 +1,270 @@
+# STRESS 05 — SIZING
+#
+# fill, fill(n), percentages, auto, fixed, min-height, max-height, and five
+# levels of nesting.
+#
+# The claim being tested is DESIGN.md D2: every split of space goes through
+# geom.DistributeTicks, which guarantees the parts sum to the whole EXACTLY.
+# So the right edge of the last column in each row below must be the right
+# edge of the row, with no crack and no overhang, at every page size. Rebuild
+# with --page-size a4 or --page-size '200mm 300mm' and check again — those are
+# widths that divide badly.
+
+page
+  size: letter
+  margin: 0.45in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 7pt
+  color: gray(0.12)
+
+style bar
+  height: 26pt
+  border-width: 0.4pt
+  border-color: gray(0.55)
+  valign: middle
+  align: center
+
+section
+  height: 28pt
+  text "05 · SIZING"
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 20pt
+  text "fill weights. Six columns whose weights are 1, 2, 3, 1, 0.5 and 0.25 — a total of 7.75 shares of the content width."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 34pt
+  column
+    width: fill
+    box
+      style: bar
+      text "fill"
+        align: center
+  column
+    width: fill(2)
+    box
+      style: bar
+      text "fill(2)"
+        align: center
+  column
+    width: fill(3)
+    box
+      style: bar
+      text "fill(3)"
+        align: center
+  column
+    width: fill(1)
+    box
+      style: bar
+      text "fill(1)"
+        align: center
+  column
+    width: fill(0.5)
+    box
+      style: bar
+      text "0.5"
+        align: center
+  column
+    width: fill(0.25)
+    box
+      style: bar
+      text ".25"
+        align: center
+
+section
+  height: 22pt
+  valign: bottom
+  text "Percentages. 10 + 15 + 25 + 50 = 100, and the sum is exact rather than nearly exact."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 34pt
+  column
+    width: 10%
+    box
+      style: bar
+      text "10%"
+        align: center
+  column
+    width: 15%
+    box
+      style: bar
+      text "15%"
+        align: center
+  column
+    width: 25%
+    box
+      style: bar
+      text "25%"
+        align: center
+  column
+    width: 50%
+    box
+      style: bar
+      text "50%"
+        align: center
+
+section
+  height: 22pt
+  valign: bottom
+  text "Mixed: two fixed columns, one percentage, and two fills sharing what is left. Fixed and percentage are taken out first."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 34pt
+  column
+    width: 72pt
+    box
+      style: bar
+      text "72pt"
+        align: center
+  column
+    width: 1in
+    box
+      style: bar
+      text "1in"
+        align: center
+  column
+    width: 20%
+    box
+      style: bar
+      text "20%"
+        align: center
+  column
+    width: fill
+    box
+      style: bar
+      text "fill"
+        align: center
+  column
+    width: fill(2)
+    box
+      style: bar
+      text "fill(2)"
+        align: center
+
+section
+  height: 26pt
+  valign: bottom
+  text "Extremes. 1% of 522pt is 5.22pt and survives; the remaining 99% is one column. A total above 100% overflows and is an error, so it is not on this sheet."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 30pt
+  column
+    width: 1%
+    box
+      style: bar
+  column
+    width: 99%
+    box
+      style: bar
+      text "99%"
+        align: center
+
+section
+  height: 40pt
+  valign: bottom
+  text "Heights on a 158pt band. Left: fixed, percentage, auto, and two fills sharing the remainder. Right: min-height and max-height, which clamp an auto or a fill child and are IGNORED on a fixed height — a fixed length freezes the child before the bounds pass runs."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 158pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 40pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "40pt"
+        align: center
+    box
+      height: 20%
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "20%"
+        align: center
+    box
+      height: auto
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      align: center
+      text "auto"
+        align: center
+    box
+      height: fill
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "fill"
+        align: center
+    box
+      height: fill(2)
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "fill(2)"
+        align: center
+
+  # min-height and max-height clamp whatever the other rules produced.
+  column
+    width: fill
+    box
+      height: auto
+      min-height: 54pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      align: center
+      text "auto, min-height 54pt"
+        align: center
+    box
+      height: 60pt
+      max-height: 30pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "60pt + max-height 30pt: still 60pt"
+        align: center
+    box
+      height: fill
+      max-height: 30pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "fill, max-height 30pt"
+        align: center
+    box
+      height: fill
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      align: center
+      text "fill takes the rest"
+        align: center
+
+section
+  height: fill
+  valign: bottom
+  text "min-height and max-height are honoured on `auto` and `fill` children and IGNORED on a fixed height: ResolveAxis freezes a fixed child in step 2, before the bounds pass in step 6 ever looks at it. Sheet 05b carries nesting, gap and the box model."
+    font-size: 6.5pt
+    color: gray(0.5)

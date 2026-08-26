@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} — treekillbot</title>
+<link rel="stylesheet" href="/api/fonts.css?t={{.Token}}">
+<style>
+  /* The editor is deliberately a plain textarea with a highlighted <pre>
+     behind it, rather than a bundled code-editor library. Two reasons: the
+     release pipeline stays a single `go build` with no npm step, which is the
+     same promise the binary makes about external tools; and we own the Pulp
+     lexer, so the highlighting is exact rather than a YAML mode that would
+     mis-colour `#ddd` as a comment. */
+  :root {
+    --bg: #16171b;
+    --panel: #1c1e23;
+    --border: #2c2f36;
+    --text: #dfe2e8;
+    --dim: #7d838f;
+    --brand: #ff8a3d;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --err: #f85149;
+    --name: #79c0ff;
+    --element: #d2a8ff;
+    --value: #a5d6ff;
+    --number: #ffab70;
+    --string: #9ecbff;
+    --interp: #7ee787;
+    --comment: #6a7180;
+    --editor-font: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    --editor-size: 13px;
+    --editor-leading: 1.55;
+    --editor-pad: 16px;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f4f2; --panel: #ffffff; --border: #dfe0dd; --text: #1c1e22;
+      --dim: #6b7280; --brand: #b0530a; --ok: #1a7f37; --warn: #9a6700; --err: #cf222e;
+      --name: #0550ae; --element: #6639ba; --value: #0a3069; --number: #953800;
+      --string: #0a3069; --interp: #116329; --comment: #8b949e;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 13px/1.5 ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 14px; border-bottom: 1px solid var(--border);
+    background: var(--panel); flex: none;
+  }
+  .brand { font-weight: 700; color: var(--brand); letter-spacing: .01em; }
+  .path { color: var(--dim); font-family: var(--editor-font); font-size: 12px; }
+  .dirty {
+    display: none; align-items: center; gap: 5px;
+    color: var(--warn); font-size: 12px; font-weight: 600;
+  }
+  body.dirty .dirty { display: inline-flex; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .spacer { flex: 1; }
+  .status { font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .status.err { color: var(--err); }
+  .status.ok { color: var(--ok); }
+  button {
+    font: inherit; font-weight: 600; font-size: 12px;
+    padding: 6px 13px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: transparent; color: var(--text);
+  }
+  button:hover { border-color: var(--dim); }
+  button.primary { background: var(--brand); border-color: var(--brand); color: #16171b; }
+  button.primary:disabled { opacity: .35; cursor: default; }
+  @media (prefers-color-scheme: light) { button.primary { color: #fff; } }
+
+  main { flex: 1; display: flex; min-height: 0; }
+  .pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .left { width: 46%; border-right: 1px solid var(--border); }
+  .right { flex: 1; background: var(--bg); }
+  .splitter { width: 5px; cursor: col-resize; background: var(--border); flex: none; }
+  .splitter:hover { background: var(--brand); }
+
+  /* --- editor --- */
+  .editor-wrap { position: relative; flex: 1; min-height: 0; overflow: auto; background: var(--panel); }
+  .editor-wrap pre, .editor-wrap textarea {
+    margin: 0; padding: var(--editor-pad) var(--editor-pad) 40vh calc(var(--editor-pad) + 42px);
+    font-family: var(--editor-font); font-size: var(--editor-size); line-height: var(--editor-leading);
+    white-space: pre; tab-size: 2; border: 0; outline: none;
+    letter-spacing: 0; word-spacing: 0;
+  }
+  .editor-wrap pre {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    color: var(--text);
+  }
+  .editor-wrap textarea {
+    position: relative; width: 100%; min-height: 100%; display: block;
+    background: transparent; color: transparent; caret-color: var(--brand);
+    resize: none;
+  }
+  .editor-wrap textarea::selection { background: rgba(255,138,61,.28); }
+  .gutter {
+    position: absolute; top: 0; left: 0; width: 42px;
+    padding: var(--editor-pad) 8px 0 0; text-align: right;
+    font-family: var(--editor-font); font-size: var(--editor-size); line-height: var(--editor-leading);
+    color: var(--comment); pointer-events: none; user-select: none;
+  }
+  .gutter .ln.has-error { color: var(--err); font-weight: 700; }
+  .gutter .ln.has-warning { color: var(--warn); font-weight: 700; }
+
+  .tok-comment { color: var(--comment); font-style: italic; }
+  .tok-element { color: var(--element); font-weight: 600; }
+  .tok-name    { color: var(--name); }
+  .tok-punct   { color: var(--dim); }
+  .tok-number  { color: var(--number); }
+  .tok-string  { color: var(--string); }
+  .tok-interp  { color: var(--interp); }
+  .tok-keyword { color: var(--brand); }
+  .tok-color   { color: var(--value); border-bottom: 2px solid currentColor; }
+  .tok-text    { color: var(--text); }
+
+  /* --- diagnostics --- */
+  .diags { flex: none; max-height: 34%; overflow: auto; border-top: 1px solid var(--border); background: var(--panel); }
+  .diags:empty { display: none; }
+  .diag { display: flex; gap: 9px; padding: 7px 14px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 12px; }
+  .diag:hover { background: rgba(127,127,127,.08); }
+  .diag .where { color: var(--dim); font-family: var(--editor-font); flex: none; }
+  .diag .msg { flex: 1; }
+  .diag .help { color: var(--dim); display: block; margin-top: 2px; }
+  .diag.error .mark { color: var(--err); }
+  .diag.warning .mark { color: var(--warn); }
+  .mark { font-weight: 700; flex: none; }
+
+  /* --- preview --- */
+  .preview { flex: 1; display: grid; place-items: center; padding: 22px; overflow: auto; min-height: 0; }
+  .paper {
+    background: #fff; box-shadow: 0 2px 24px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.15);
+    max-width: 100%; max-height: 100%;
+  }
+  .paper svg { display: block; width: 100%; height: 100%; }
+  .preview.stale .paper { opacity: .55; transition: opacity .12s; }
+  .preview-bar {
+    flex: none; display: flex; align-items: center; gap: 12px;
+    padding: 7px 14px; border-bottom: 1px solid var(--border); background: var(--panel);
+    font-size: 12px; color: var(--dim);
+  }
+  kbd {
+    font: 11px var(--editor-font); border: 1px solid var(--border);
+    border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; color: var(--dim);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="brand">🪓 treekillbot</span>
+  <span class="path">{{.Path}}</span>
+  <span class="dirty"><span class="dot"></span> unsaved</span>
+  <span class="spacer"></span>
+  <span class="status" id="status">ready</span>
+  <button class="primary" id="save" disabled>Save <kbd>⌘S</kbd></button>
+</header>
+
+<main>
+  <section class="pane left" id="left">
+    <div class="editor-wrap" id="wrap">
+      <pre aria-hidden="true"><code id="highlight"></code></pre>
+      <div class="gutter" id="gutter"></div>
+      <textarea id="source" spellcheck="false" autocapitalize="off" autocorrect="off">{{.Source}}</textarea>
+    </div>
+    <div class="diags" id="diags"></div>
+  </section>
+
+  <div class="splitter" id="splitter"></div>
+
+  <section class="pane right">
+    <div class="preview-bar">
+      <span id="pagemeta">—</span>
+      <span class="spacer"></span>
+      <span id="timing"></span>
+    </div>
+    <div class="preview" id="preview">
+      <div class="paper" id="paper"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const TOKEN = {{.Token}};
+const source   = document.getElementById('source');
+const highlight= document.getElementById('highlight');
+const gutter   = document.getElementById('gutter');
+const paper    = document.getElementById('paper');
+const preview  = document.getElementById('preview');
+const diagsEl  = document.getElementById('diags');
+const statusEl = document.getElementById('status');
+const saveBtn  = document.getElementById('save');
+
+let savedText = source.value;
+let diagnostics = [];
+
+// ---- Pulp syntax highlighting -------------------------------------------
+// This mirrors internal/pulp's scanner closely enough to be honest about the
+// two rules a generic highlighter always gets wrong: `#ddd` is a colour and not
+// a comment, and a line's first word is a name whether or not a colon follows.
+
+const ELEMENTS = new Set(['page','section','column','panel','box','grid','text','rule',
+  'spacer','image','vars','defaults','style','let','theme','for','repeat','include',
+  'row','col','hr','space']);
+const KEYWORDS = new Set(['fill','auto','none','true','false','yes','no','on','off',
+  'left','right','center','centre','top','bottom','middle','justify','portrait','landscape',
+  'ruled','dotted','graph','checkbox','cornell','time-grid','solid','dashed','bold','italic',
+  'regular','normal','upper','lower','title','plain','bar','notch','underline','clip','error',
+  'shrink','visible','start','end','grow','page','box','monday','sunday','saturday','baseline',
+  'tabular','proportional']);
+
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const span = (cls, s) => `<span class="tok-${cls}">${esc(s)}</span>`;
+
+// isHexColour matches internal/pulp's rule: a # followed by exactly 3, 4, 6 or
+// 8 hex digits and then a terminator.
+function hexAt(text, i) {
+  const m = /^#([0-9a-fA-F]+)/.exec(text.slice(i));
+  if (!m) return 0;
+  const n = m[1].length;
+  if (n !== 3 && n !== 4 && n !== 6 && n !== 8) return 0;
+  const after = text[i + 1 + n];
+  if (after === undefined || ' \t,)"\';'.includes(after)) return 1 + n;
+  return 0;
+}
+
+// commentAt: a # starts a comment only at the start or after whitespace, and
+// only when it is not a colour.
+function commentAt(text, i) {
+  if (text[i] !== '#') return false;
+  if (i > 0 && text[i-1] !== ' ' && text[i-1] !== '\t') return false;
+  return hexAt(text, i) === 0;
+}
+
+function highlightArgument(text) {
+  let out = '', i = 0, run = '';
+  const flush = () => { if (run) { out += span('text', run); run = ''; } };
+
+  while (i < text.length) {
+    const c = text[i];
+
+    if (commentAt(text, i)) { flush(); out += span('comment', text.slice(i)); return out; }
+
+    const hex = hexAt(text, i);
+    if (hex) { flush(); out += span('color', text.slice(i, i + hex)); i += hex; continue; }
+
+    if (c === '"' || c === "'") {
+      let j = i + 1;
+      while (j < text.length && text[j] !== c) { if (text[j] === '\\' && c === '"') j++; j++; }
+      flush(); out += span('string', text.slice(i, Math.min(j + 1, text.length))); i = j + 1; continue;
+    }
+    if (c === '{') {
+      const j = text.indexOf('}', i);
+      const end = j < 0 ? text.length : j + 1;
+      flush(); out += span('interp', text.slice(i, end)); i = end; continue;
+    }
+    const num = /^-?\d*\.?\d+(pt|px|mm|cm|in|pc|em|ex|%)?/.exec(text.slice(i));
+    if (num && num[0] && /\d/.test(num[0])) {
+      flush(); out += span('number', num[0]); i += num[0].length; continue;
+    }
+    const word = /^[A-Za-z][A-Za-z0-9_-]*/.exec(text.slice(i));
+    if (word) {
+      flush();
+      out += span(KEYWORDS.has(word[0].toLowerCase()) ? 'keyword' : 'text', word[0]);
+      i += word[0].length; continue;
+    }
+    run += c; i++;
+  }
+  flush();
+  return out;
+}
+
+function highlightLine(line) {
+  const indentMatch = /^[ \t]*/.exec(line);
+  const indent = indentMatch[0];
+  const rest = line.slice(indent.length);
+  if (rest === '') return esc(line);
+  if (commentAt(rest, 0)) return esc(indent) + span('comment', rest);
+
+  const name = /^[A-Za-z_][A-Za-z0-9_-]*/.exec(rest);
+  if (!name) return esc(line);
+
+  const cls = ELEMENTS.has(name[0]) ? 'element' : 'name';
+  let out = esc(indent) + span(cls, name[0]);
+  let after = rest.slice(name[0].length);
+  if (after.startsWith(':')) { out += span('punct', ':'); after = after.slice(1); }
+  const lead = /^[ \t]*/.exec(after)[0];
+  out += esc(lead);
+  return out + highlightArgument(after.slice(lead.length));
+}
+
+function renderHighlight() {
+  const text = source.value;
+  highlight.innerHTML = text.split('\n').map(highlightLine).join('\n') + '\n';
+
+  const bad = new Map();
+  for (const d of diagnostics) {
+    const current = bad.get(d.line);
+    if (!current || d.severity === 'error') bad.set(d.line, d.severity);
+  }
+  const lines = text.split('\n').length;
+  let g = '';
+  for (let n = 1; n <= lines; n++) {
+    const mark = bad.get(n);
+    g += `<div class="ln${mark ? ' has-' + mark : ''}">${n}</div>`;
+  }
+  gutter.innerHTML = g;
+}
+
+// ---- dirty tracking ------------------------------------------------------
+function updateDirty() {
+  const dirty = source.value !== savedText;
+  document.body.classList.toggle('dirty', dirty);
+  saveBtn.disabled = !dirty;
+}
+
+// ---- rendering -----------------------------------------------------------
+let renderTimer = null, inFlight = false, pending = false;
+
+async function requestRender() {
+  if (inFlight) { pending = true; return; }
+  inFlight = true;
+  preview.classList.add('stale');
+  try {
+    const response = await fetch('/api/render?t=' + TOKEN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Treekillbot-Token': TOKEN },
+      body: JSON.stringify({ source: source.value }),
+    });
+    if (!response.ok) throw new Error(await response.text());
+    const data = await response.json();
+
+    diagnostics = data.diagnostics || [];
+    showDiagnostics();
+    renderHighlight();
+
+    if (data.svg) {
+      paper.innerHTML = data.svg;
+      fitPaper(data.width, data.height);
+      document.getElementById('pagemeta').textContent =
+        `${(data.width/72).toFixed(2)} × ${(data.height/72).toFixed(2)} in` +
+        (data.width > data.height ? ' · landscape' : ' · portrait');
+    }
+    document.getElementById('timing').textContent = data.ms.toFixed(1) + ' ms';
+
+    const errors = diagnostics.filter(d => d.severity === 'error').length;
+    const warnings = diagnostics.filter(d => d.severity === 'warning').length;
+    statusEl.className = 'status' + (errors ? ' err' : warnings ? '' : ' ok');
+    statusEl.textContent = errors
+      ? `${errors} error${errors > 1 ? 's' : ''}`
+      : warnings ? `${warnings} warning${warnings > 1 ? 's' : ''}` : 'ok';
+  } catch (err) {
+    statusEl.className = 'status err';
+    statusEl.textContent = String(err.message || err);
+  } finally {
+    inFlight = false;
+    preview.classList.remove('stale');
+    if (pending) { pending = false; requestRender(); }
+  }
+}
+
+// The paper keeps the page's exact aspect ratio and shrinks to fit whichever
+// dimension runs out first, so a landscape spread and a portrait page both fill
+// the pane without distortion.
+function fitPaper(width, height) {
+  const box = preview.getBoundingClientRect();
+  const available = { w: box.width - 44, h: box.height - 44 };
+  const scale = Math.min(available.w / width, available.h / height);
+  paper.style.width  = Math.floor(width * scale) + 'px';
+  paper.style.height = Math.floor(height * scale) + 'px';
+  paper.dataset.w = width; paper.dataset.h = height;
+}
+
+function showDiagnostics() {
+  if (!diagnostics.length) { diagsEl.innerHTML = ''; return; }
+  diagsEl.innerHTML = diagnostics.map((d, i) => `
+    <div class="diag ${d.severity}" data-i="${i}">
+      <span class="mark">${d.severity === 'error' ? '✗' : '▲'}</span>
+      <span class="where">${d.line}:${d.column}</span>
+      <span class="msg">${esc(d.message)}${d.help ? `<span class="help">${esc(d.help)}</span>` : ''}</span>
+    </div>`).join('');
+}
+
+diagsEl.addEventListener('click', event => {
+  const row = event.target.closest('.diag');
+  if (!row) return;
+  jumpTo(diagnostics[+row.dataset.i]);
+});
+
+function jumpTo(d) {
+  const lines = source.value.split('\n');
+  let offset = 0;
+  for (let n = 0; n < d.line - 1 && n < lines.length; n++) offset += lines[n].length + 1;
+  const start = offset + Math.max(0, d.column - 1);
+  source.focus();
+  source.setSelectionRange(start, start);
+  const lineHeight = parseFloat(getComputedStyle(source).lineHeight);
+  document.getElementById('wrap').scrollTop = Math.max(0, (d.line - 6) * lineHeight);
+}
+
+// ---- saving --------------------------------------------------------------
+async function save() {
+  const text = source.value;
+  const response = await fetch('/api/save?t=' + TOKEN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Treekillbot-Token': TOKEN },
+    body: JSON.stringify({ source: text }),
+  });
+  if (!response.ok) {
+    statusEl.className = 'status err';
+    statusEl.textContent = 'save failed: ' + await response.text();
+    return;
+  }
+  savedText = text;
+  updateDirty();
+  statusEl.className = 'status ok';
+  statusEl.textContent = 'saved';
+}
+
+saveBtn.addEventListener('click', save);
+document.addEventListener('keydown', event => {
+  if ((event.metaKey || event.ctrlKey) && event.key === 's') { event.preventDefault(); save(); }
+});
+
+// ---- editor behaviour ----------------------------------------------------
+source.addEventListener('input', () => {
+  renderHighlight();
+  updateDirty();
+  clearTimeout(renderTimer);
+  renderTimer = setTimeout(requestRender, 140);
+});
+source.addEventListener('scroll', () => {
+  highlight.parentElement.scrollTop = source.scrollTop;
+  highlight.parentElement.scrollLeft = source.scrollLeft;
+});
+
+// Tab inserts two spaces. Pulp forbids tabs in indentation, so letting one
+// through would produce a hard error from a keystroke people press by reflex.
+source.addEventListener('keydown', event => {
+  if (event.key !== 'Tab') return;
+  event.preventDefault();
+  const { selectionStart: a, selectionEnd: b, value } = source;
+  source.value = value.slice(0, a) + '  ' + value.slice(b);
+  source.selectionStart = source.selectionEnd = a + 2;
+  source.dispatchEvent(new Event('input'));
+});
+
+// Enter keeps the current indentation, which is most of what an editor does
+// for you in an indentation-sensitive language.
+source.addEventListener('keydown', event => {
+  if (event.key !== 'Enter') return;
+  const { selectionStart: a, value } = source;
+  const lineStart = value.lastIndexOf('\n', a - 1) + 1;
+  const indent = /^[ ]*/.exec(value.slice(lineStart, a))[0];
+  if (!indent) return;
+  event.preventDefault();
+  source.value = value.slice(0, a) + '\n' + indent + value.slice(source.selectionEnd);
+  source.selectionStart = source.selectionEnd = a + 1 + indent.length;
+  source.dispatchEvent(new Event('input'));
+});
+
+// ---- splitter ------------------------------------------------------------
+(function () {
+  const splitter = document.getElementById('splitter');
+  const left = document.getElementById('left');
+  let dragging = false;
+  splitter.addEventListener('mousedown', () => { dragging = true; document.body.style.cursor = 'col-resize'; });
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false; document.body.style.cursor = '';
+    if (paper.dataset.w) fitPaper(+paper.dataset.w, +paper.dataset.h);
+  });
+  window.addEventListener('mousemove', event => {
+    if (!dragging) return;
+    const percent = Math.min(75, Math.max(22, (event.clientX / window.innerWidth) * 100));
+    left.style.width = percent + '%';
+  });
+})();
+
+window.addEventListener('resize', () => {
+  if (paper.dataset.w) fitPaper(+paper.dataset.w, +paper.dataset.h);
+});
+
+window.addEventListener('beforeunload', event => {
+  if (source.value !== savedText) { event.preventDefault(); event.returnValue = ''; }
+});
+
+renderHighlight();
+updateDirty();
+requestRender();
+</script>
+</body>
+</html>

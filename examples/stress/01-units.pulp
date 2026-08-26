@@ -1,0 +1,484 @@
+# STRESS 01 — UNITS
+#
+# Eight bars, each 50mm wide, each written a different way. They must all end
+# on the same vertical line. A unit conversion that is off by even a tick puts
+# one bar's right edge visibly out of the stack, which is the whole point: a
+# rounding bug in `convertUnit` is invisible in a number and obvious here.
+#
+# The two scales below are a real ruler — hold a rule against the print and the
+# 50mm mark should land on the bar ends.
+#
+#   treekillbot build examples/stress/01-units.pulp -o 01.pdf
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 8pt
+  color: gray(0.12)
+
+style label
+  width: 150pt
+  valign: middle
+  font-size: 8pt
+
+style bar
+  height: 11pt
+  border-width: 0.4pt
+  border-right-width: 1.2pt
+  border-color: gray(0.3)
+
+style row
+  height: 17pt
+
+section
+  height: 26pt
+  text "01 · UNITS"
+    font-size: 15pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 22pt
+  text "Every bar is 50mm. Every right edge must land on the same line."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  style: row
+  column
+    style: label
+    text "50mm"
+  column
+    width: 50mm
+    box
+      style: bar
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "5cm"
+  column
+    width: 5cm
+    box
+      style: bar
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "141.7323pt"
+  column
+    width: 141.7323pt
+    box
+      style: bar
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "1.9685in"
+  column
+    width: 1.9685in
+    box
+      style: bar
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "11.811pc"
+  column
+    width: 11.811pc
+    box
+      style: bar
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "188.976px"
+  column
+    width: 188.976px
+    box
+      style: bar
+  column
+    width: fill
+
+# 50% and fill both go through geom.DistributeTicks, so they agree with the
+# absolute forms to the tick rather than to within a rounding error.
+section
+  style: row
+  column
+    style: label
+    text "50% of 100mm"
+  column
+    width: 100mm
+    section
+      height: 11pt
+      column
+        width: 50%
+        box
+          style: bar
+      column
+        width: 50%
+  column
+    width: fill
+
+section
+  style: row
+  column
+    style: label
+    text "fill of 100mm, 1 of 2"
+  column
+    width: 100mm
+    section
+      height: 11pt
+      column
+        width: fill
+        box
+          style: bar
+      column
+        width: fill
+  column
+    width: fill
+
+section
+  height: 20pt
+
+# ---- the scales ----
+
+section
+  height: 13pt
+  column
+    style: label
+    valign: bottom
+    text "millimetres"
+      font-size: 7pt
+      color: gray(0.4)
+  column
+    width: 50mm
+    valign: bottom
+    section
+      height: 9pt
+      repeat 50
+        column
+          border-right-width: 0.35pt
+          border-color: gray(0.45)
+  column
+    width: fill
+
+section
+  height: 12pt
+  column
+    style: label
+  column
+    width: 50mm
+    section
+      height: 10pt
+      repeat 5
+        column
+          width: 10mm
+          align: right
+          padding-right: 1.5pt
+          text "{loop.n}0"
+            font-size: 6pt
+            color: gray(0.45)
+            align: right
+  column
+    width: fill
+
+section
+  height: 10pt
+
+section
+  height: 13pt
+  column
+    style: label
+    valign: bottom
+    text "inches, eighths"
+      font-size: 7pt
+      color: gray(0.4)
+  column
+    width: 50mm
+    valign: bottom
+    section
+      height: 9pt
+      repeat 15
+        column
+          width: 0.125in
+          border-right-width: 0.35pt
+          border-color: gray(0.45)
+      column
+        width: fill
+  column
+    width: fill
+
+section
+  height: 12pt
+  column
+    style: label
+  column
+    width: 50mm
+    section
+      height: 10pt
+      column
+        width: 0.5in
+        align: right
+        padding-right: 1.5pt
+        text "1/2"
+          font-size: 6pt
+          color: gray(0.45)
+          align: right
+      column
+        width: 0.5in
+        align: right
+        padding-right: 1.5pt
+        text "1"
+          font-size: 6pt
+          color: gray(0.45)
+          align: right
+      column
+        width: 0.5in
+        align: right
+        padding-right: 1.5pt
+        text "1 1/2"
+          font-size: 6pt
+          color: gray(0.45)
+          align: right
+      column
+        width: fill
+  column
+    width: fill
+
+section
+  height: 26pt
+  valign: bottom
+  text "The same six spellings on the vertical axis: every bar below is 25mm tall, so every bottom edge must land on one line."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+# The vertical axis takes the same conversions through a different code path —
+# a height is resolved by the axis resolver, a width by resolveColumnWidths —
+# so it is worth its own set of bars.
+section
+  height: 88pt
+  gap: 8pt
+  column
+    width: 66pt
+    box
+      height: 25mm
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "25mm"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: 66pt
+    box
+      height: 2.5cm
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "2.5cm"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: 66pt
+    box
+      height: 70.8661pt
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "70.8661pt"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: 66pt
+    box
+      height: 0.98425in
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "0.98425in"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: 66pt
+    box
+      height: 5.9055pc
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "5.9055pc"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: 66pt
+    box
+      height: 94.488px
+      border-width: 0.4pt
+      border-bottom-width: 1.2pt
+      border-color: gray(0.3)
+    text "94.488px"
+      font-size: 6.5pt
+      color: gray(0.45)
+      padding-top: 3pt
+  column
+    width: fill
+
+section
+  height: 30pt
+  valign: bottom
+  text "One tick is 1/16pt = 0.0625pt. These eight bars differ by exactly one tick each, so the staircase below is the finest distinction the engine makes — about half a device pixel at 600dpi."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 8pt
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100pt"
+  column
+    width: 100pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.0625pt"
+  column
+    width: 100.0625pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.125pt"
+  column
+    width: 100.125pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.1875pt"
+  column
+    width: 100.1875pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.25pt"
+  column
+    width: 100.25pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.3125pt"
+  column
+    width: 100.3125pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.375pt"
+  column
+    width: 100.375pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: 15pt
+  column
+    style: label
+    text "100.4375pt"
+  column
+    width: 100.4375pt
+    box
+      height: 9pt
+      border-width: 0.4pt
+      border-right-width: 1.2pt
+      border-color: gray(0.3)
+  column
+    width: fill
+
+section
+  height: fill
+  valign: bottom
+  text "50mm = 5cm = 141.7323pt = 1.9685in = 11.811pc = 188.976px = 2268 ticks of 1/16pt. 25mm = 1134 ticks. Lengths in em or ex are accepted by the parser and currently resolve to zero, so this sheet does not use them."
+    font-size: 6.5pt
+    color: gray(0.5)

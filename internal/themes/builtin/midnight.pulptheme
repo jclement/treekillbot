@@ -1,0 +1,68 @@
+# Reversed out: pale ink on a near-black sheet. Read the warning before you print it.
+#
+# THIS THEME IS A DELIBERATE EXCEPTION to everything else in the library, and to
+# DESIGN.md D10's "defaults are chosen for paper, not for a monitor". It is here
+# because a dark page genuinely is the right answer on a screen, on an e-ink
+# reader, and projected — and because refusing to ship it would only mean
+# everyone wrote a worse one.
+#
+# What it costs on paper, so nobody finds out at the printer:
+#
+#   * Roughly 90% ink coverage. On a laser printer that is most of a cartridge
+#     for a hundred sheets; on inkjet it is worse and slower.
+#   * Banding. A large flat fill is the hardest thing for a consumer engine to
+#     lay down evenly, and the seams between passes show across an A4 field.
+#   * Paper curl and offsetting. That much wet or fused toner buckles 20lb
+#     stock and can transfer to the next sheet in the tray.
+#   * You cannot write on it. Ballpoint, pencil and most gel pens are all
+#     darker than the sheet. It is a display theme.
+#
+# On screen, though, everything below is chosen the same way the light themes
+# are: the ink slots keep their relationships, so a document swapped onto this
+# theme still reads as the same document.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(0.14)
+  ink:    gray(0.92)
+  muted:  gray(0.62)
+  rule:   gray(0.4)
+  accent: gray(1)
+
+
+defaults
+  # 1. Body ink: not pure white. gray(0.92) takes the glare off a large dark
+  # field and stops the type from haloing.
+  font: IBM Plex Mono
+  font-size: 9pt
+  color: gray(0.92)
+  line-height: 1.35
+
+  # 2. The writing surface, inverted: rules sit ABOVE the sheet tint instead of
+  # below it, and the 0.5pt weight compensates for a thin light line on dark
+  # losing more to any renderer's antialiasing than a dark line on white.
+  line-color: gray(0.4)
+  line-width: 0.5pt
+  line-pitch: 6mm
+  dot-size: 0.85pt
+  grid-major: 5
+  grid-major-width: 0.7pt
+  margin-rule-color: gray(0.55)
+
+  # 3. Frames.
+  border-color: gray(0.45)
+  border-style: solid
+  border-radius: 2pt
+
+  # 4. Labels.
+  title-color: gray(0.72)
+  title-size: 6.5pt
+  title-weight: bold
+  title-style: plain
+  title-transform: upper
+  title-tracking: 0.8pt
+
+  # 5. The sheet. This is the line that costs the cartridge.
+  background: gray(0.14)

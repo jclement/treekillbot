@@ -1,0 +1,23 @@
+# The release image. GoReleaser has already cross-compiled every binary, so
+# this only wraps one — there is deliberately no builder stage, and adding a
+# `go build` here would rebuild work that is already done.
+#
+# The build context is GoReleaser's temporary directory: one subdirectory per
+# platform, no source tree. Hence $TARGETPLATFORM, which buildx sets per leg
+# of the multi-platform build.
+FROM alpine:3.23
+
+ARG TARGETPLATFORM
+
+# ca-certificates is for the update check talking to api.github.com. It is
+# a no-op in practice, since the check refuses to run in a container, but a
+# container missing root certificates is a confusing thing to debug later.
+RUN apk add --no-cache ca-certificates
+
+COPY $TARGETPLATFORM/treekillbot /usr/local/bin/treekillbot
+RUN ln -s /usr/local/bin/treekillbot /usr/local/bin/tkb
+
+# Mount your .pulp files here: docker run -v "$PWD:/work" ghcr.io/jclement/treekillbot build doc.pulp
+WORKDIR /work
+
+ENTRYPOINT ["treekillbot"]

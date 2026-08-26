@@ -1,0 +1,882 @@
+# STRESS 08b — DATES
+#
+# Everything date-shaped derives from ONE anchor, and --date reseeds it
+# wholesale, so this sheet is a printout of the entire built-in namespace for
+# whatever day you ask for.
+#
+# Build it once per edge case and check the printout against this list:
+#
+#   --date 2026-12-31   ISO 2026-W53; calendar year 2026
+#   --date 2027-01-01   ISO 2026-W53 while today's year is 2027
+#   --date 2021-01-01   ISO 2020-W53
+#   --date 2024-02-29   a leap day; year.leap is true, day-of-year 60
+#   --date 2027-02-15   month.end clamps to the 28th, not to 3 March
+#   --date 2024-02-15   the same month in a leap year: month.end is the 29th
+#   --week-start sunday rotates the day list and does NOT move week.number
+#
+# The trap this sheet exists for: "Week {week.number}, {year}" reads
+# "Week 53, 2027" on 1 January 2027 and is wrong. Pair week.number with
+# week.iso-year, never with the calendar year.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 30pt
+  column
+    width: fill
+    text "08b · DATES"
+      font: IBM Plex Mono
+      font-size: 14pt
+      font-weight: bold
+      tracking: 1.2pt
+  column
+    width: 290pt
+    valign: bottom
+    align: right
+    text "anchor {today.iso} · {today.name} · ISO {week.iso}"
+      font: IBM Plex Mono
+      font-size: 9pt
+      color: gray(0.3)
+      align: right
+
+section
+  height: 20pt
+  text "Every built-in the date anchor produces, with the value it has today."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 258pt
+  gap: 22pt
+  column
+    width: fill
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.iso"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.iso}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.name"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.name}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.short"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.short}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.dd"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.dd}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.num"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.num}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.weekend"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.weekend}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.today"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.today}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.month"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.month}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.month.short"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.month.short}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today.month.number"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.month.number}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "yesterday"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{yesterday}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "tomorrow"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{tomorrow}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "now"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{now}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "day-of-year"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{day-of-year}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "doc.name"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{doc.name}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 5pt
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.number"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.number}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.iso-year"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.iso-year}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.iso"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.iso}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.year"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.year}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.start"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.start}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "week.end"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.end}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+  column
+    width: fill
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month.name"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.name}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month.short"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.short}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month.number"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.number}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month.start"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.start}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "month.end"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.end}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 5pt
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter.number"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter.number}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter.name"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter.name}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter.year"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter.year}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter.start"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter.start}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "quarter.end"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{quarter.end}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 5pt
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "year"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{year}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "year.number"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{year.number}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "year.start"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{year.start}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "year.end"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{year.end}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "year.leap"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{year.leap}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 5pt
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today:short"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:short}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today:long"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:long}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today:date"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:date}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "today:time"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:time}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+
+section
+  height: 26pt
+  valign: bottom
+  text "The month grid, built from month.weeks — full rows that spill into the neighbouring months, because that is what a month on paper looks like. Weekends are set in grey; the SPILL days are not distinguished, because a ternary condition can only compare a path against a literal and `day.month.number == month.number` compares against the six characters of that path."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 13pt
+  padding-top: 4pt
+  for name in Mon, Tue, Wed, Thu, Fri, Sat, Sun
+    column
+      align: center
+      text "{name}"
+        font-size: 6pt
+        color: gray(0.45)
+        align: center
+        text-transform: upper
+        tracking: 0.5pt
+
+section
+  height: 156pt
+  for week in month.weeks
+    section
+      height: 26pt
+      for day in week.days
+        column
+          border-width: 0.3pt
+          border-color: gray(0.78)
+          padding: 3pt
+          text "{day.dd}"
+            font-size: 8pt
+            color: {day.weekend ? "gray(0.55)" : "gray(0.15)"}
+
+section
+  height: 24pt
+  valign: bottom
+  text "Format specs: named formats, strftime, and the Go layout escape hatch."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 59pt
+  padding-top: 4pt
+  gap: 22pt
+  column
+    width: fill
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today:iso}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:iso}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today:%A, %B %-d, %Y}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:%A, %B %-d, %Y}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today:%Y-%m-%d %j}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:%Y-%m-%d %j}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today:%a %b %e}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:%a %b %e}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{week.number:%02d}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{week.number:%02d}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+  column
+    width: fill
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today:go:\"Jan 2 2006\"}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today:go:"Jan 2 2006"}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today.name:upper}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.name:upper}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{month.name:lower}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{month.name:lower}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{today.name:trunc 2}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{today.name:trunc 2}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+    section
+      height: 11pt
+      column
+        width: 104pt
+        text "{{missing|fallback}}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.45)
+      column
+        width: fill
+        text "{missing|fallback}"
+          font: IBM Plex Mono
+          font-size: 6.5pt
+          color: gray(0.12)
+
+section
+  height: fill
+  valign: bottom
+  text "Go layouts are available only when explicitly tagged go:\"…\", because in Go's reference-time language the string `Q1 2006 review` renders as `Q8 2026 review` — the 1 is the month. strftime is the default for exactly that reason: every directive starts with %, so literal text stays literal."
+    font-size: 6.5pt
+    color: gray(0.5)

@@ -1,0 +1,76 @@
+# One day to a page: an hour grid down the left, priorities and notes down the right.
+#
+# Change first: `time-start` and `time-end` on the Schedule panel — 7:00 to 19:00
+# is an office day — and the 60% width on the schedule column if you would rather
+# have more room for notes.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults panel
+  border-width: 0.4pt
+  padding: 5pt
+
+# ---- Header ----
+
+section
+  height: auto
+  column
+    width: auto
+    text "{today:%A}"
+      font-size: 26pt
+      font-weight: bold
+  column
+    padding-left: 12pt
+    valign: bottom
+    text "{today:%-d %B %Y}"
+      font-size: 12pt
+      font-weight: bold
+    text "Week {week.number} · day {day-of-year} of {year}"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 4pt
+  rule
+    line-width: 1pt
+
+# ---- The day ----
+
+section
+  height: fill
+  padding-top: 8pt
+  gap: 8pt
+
+  column
+    width: 60%
+    panel "Schedule"
+      height: fill
+      line-style: time-grid
+      time-start: 7:00
+      time-end: 19:00
+      time-step: 60
+      time-subdivide: 2
+
+  column
+    panel "Three things"
+      height: 104pt
+      line-style: checkbox
+      line-pitch: 24pt
+      lines: 3
+    spacer 8pt
+    panel "Notes"
+      height: fill
+      line-style: ruled
+      line-pitch: 16pt
+
+# ---- Tomorrow ----
+
+section
+  height: 62pt
+  padding-top: 8pt
+  panel "Tomorrow — {tomorrow:%A %-d %B}"
+    height: fill
+    line-style: ruled
+    line-pitch: 16pt

@@ -1,0 +1,11 @@
+# The release image is built from GoReleaser's own context, not this one, so
+# this file only matters for ad-hoc `docker build .` runs. Deny by default and
+# add back what an image could plausibly need — a stray dist/ or bin/ silently
+# baking a stale binary into an image is the failure worth preventing.
+*
+
+!go.mod
+!go.sum
+!cmd/
+!internal/
+!examples/

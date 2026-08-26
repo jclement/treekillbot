@@ -1,0 +1,366 @@
+# STRESS 06b — TEXT FLOW
+#
+# Alignment, vertical alignment, wrapping, leading and justification.
+#
+# Line breaking is greedy, not Knuth-Plass (DESIGN.md section 6): the wrapper
+# takes as many words as fit and moves on. That produces a raggier right edge
+# than a paragraph optimiser would, and in exchange the output never moves
+# because somebody tuned a penalty constant — which is what makes a golden file
+# worth having.
+#
+# Justification spreads the word gaps of every line but the last, through the
+# same DistributeTicks that splits a column, so a justified line ends exactly
+# on the measure.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "06b · TEXT FLOW"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 22pt
+  text "align, on the same paragraph in four boxes of the same width."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 116pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        align: left
+    text "align: left"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        align: center
+    text "align: center"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        align: right
+    text "align: right"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        align: justify
+    text "align: justify"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "valign, with one short line in a box far taller than it needs. `baseline` puts the first baseline where `top` would have put it, which is what keeps two adjacent boxes' first lines level when their type sizes differ."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 90pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 74pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      valign: top
+      text "valign: top"
+        font-size: 8pt
+  column
+    width: fill
+    box
+      height: 74pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      valign: middle
+      text "valign: middle"
+        font-size: 8pt
+  column
+    width: fill
+    box
+      height: 74pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      valign: bottom
+      text "valign: bottom"
+        font-size: 8pt
+  column
+    width: fill
+    box
+      height: 74pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      valign: baseline
+      text "valign: baseline"
+        font-size: 8pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "line-height is text leading as a multiple of font-size. It is NOT the ruled-line spacing — that is line-pitch, and setting line-height on a ruled panel warns (W030) because it is the trap the two names create."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 116pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        line-height: 1.0
+    text "line-height: 1.0"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        line-height: 1.2
+    text "line-height: 1.2"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        line-height: 1.35
+    text "line-height: 1.35"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 100pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+        font-size: 7.5pt
+        line-height: 1.8
+    text "line-height: 1.8"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "wrap: false keeps a run on one line whatever the measure. Note that the box's `overflow: clip` does not clip it — clipping is applied to decorations, not to text — so this is how type ends up outside its box."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 56pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 44pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "wrap: true — this sentence is longer than the box and folds onto a second line."
+        font-size: 7.5pt
+        wrap: true
+  column
+    width: fill
+    box
+      height: 44pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      overflow: clip
+      text "wrap: false — longer than its box, one line, spilling right"
+        font-size: 7.5pt
+        wrap: false
+  column
+    width: fill
+
+section
+  height: 26pt
+  valign: bottom
+  text "numeric-style is in the property table with a `tabular` default, and nothing reads it: the figures below are identical. IBM Plex's default figures are already tabular in Mono, so a planner's columns of digits line up regardless."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 60pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 48pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "1111111111"
+        font: IBM Plex Mono
+        font-size: 9pt
+        numeric-style: tabular
+      text "0000000000"
+        font: IBM Plex Mono
+        font-size: 9pt
+        numeric-style: tabular
+      text "numeric-style: tabular"
+        font-size: 5.5pt
+        color: gray(0.4)
+  column
+    width: fill
+    box
+      height: 48pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "1111111111"
+        font: IBM Plex Mono
+        font-size: 9pt
+        numeric-style: proportional
+      text "0000000000"
+        font: IBM Plex Mono
+        font-size: 9pt
+        numeric-style: proportional
+      text "numeric-style: proportional"
+        font-size: 5.5pt
+        color: gray(0.4)
+  column
+    width: fill(2)
+
+section
+  height: 26pt
+  valign: bottom
+  text "Text inside a decorated box flows normally: it does not snap to the writing rules. The decoration computes its baselines and the painter does not use them, so a line of type and the rule under it are independent."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 96pt
+  gap: 8pt
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-color: gray(0.82)
+      text "Three lines of type in a 6mm ruled box at the default 1.35 leading. The type and the rules are on different rhythms."
+        font-size: 7.5pt
+    text "line-pitch 6mm, line-height 1.35"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-color: gray(0.82)
+      baseline-on-rule: false
+      text "The same box with baseline-on-rule off. Nothing moves, because nothing in the painter reads a decoration's baselines yet."
+        font-size: 7.5pt
+    text "baseline-on-rule: false"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 6pt
+      line-style: ruled
+      line-color: gray(0.82)
+      line-pitch: 13.7pt
+      text "Set line-pitch to the type's own leading — 7.5pt at 1.35 is 10.125pt, and 13.7pt here — and the two rhythms agree by construction rather than by luck."
+        font-size: 7.5pt
+    text "line-pitch tuned by hand"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+
+section
+  height: fill
+  valign: bottom
+  text "auto-shrink is not on this sheet: it works by definition only when the text does not fit, and a text that does not fit emits W020. Sheet 09 is where the deliberate warnings live."
+    font-size: 6.5pt
+    color: gray(0.5)

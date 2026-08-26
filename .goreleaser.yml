@@ -1,0 +1,138 @@
+# Release configuration. Tags trigger this; humans never build artifacts by
+# hand. `mise run release` cuts the tag, CI does everything below.
+#
+# Validate changes with `mise run release:check` before pushing a tag — a
+# broken config is only discovered at tag time otherwise, and a tag is awkward
+# to take back.
+version: 2
+
+project_name: treekillbot
+
+builds:
+  - id: treekillbot
+    main: ./cmd/treekillbot
+    binary: treekillbot
+    env:
+      # No cgo anywhere: the fonts are embedded and the PDF writer is pure Go,
+      # so there is nothing to link against and cross-compiling stays trivial.
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      # These three paths must match internal/version and mise.toml's
+      # $VERSION_PKG exactly. Get one wrong and the binary silently reports
+      # "dev", which also silently disables the update check.
+      - -s -w
+      - -X github.com/jclement/treekillbot/internal/version.Version={{.Version}}
+      - -X github.com/jclement/treekillbot/internal/version.Commit={{.ShortCommit}}
+      - -X github.com/jclement/treekillbot/internal/version.BuildDate={{.Date}}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    # The updater reconstructs this name from runtime.GOOS/GOARCH to find its
+    # own asset, so the template is part of the contract, not cosmetic.
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+signs:
+  # Keyless cosign over the checksums file. Self-update verifies this bundle
+  # against Fulcio and Rekor before it installs anything, so removing it does
+  # not just drop a nicety — it turns the update path into the attack path.
+  # Needs id-token: write on the release job.
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - "sign-blob"
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - "--yes"
+    artifacts: checksum
+    output: true
+
+# Published to jclement/homebrew-tap as a Cask, so `brew install
+# jclement/tap/treekillbot` is the install command either way.
+#
+# A Cask rather than the older `brews` Formula because `brews` is deprecated
+# as of GoReleaser 2.16, the generated Cask carries on_linux blocks so
+# Linuxbrew still works, and the tap already holds Casks for autotun and
+# clamtotal. Nothing here needs a tap_migrations.json: this project has never
+# shipped a Formula, so there is no user to migrate.
+homebrew_casks:
+  - name: treekillbot
+    repository:
+      owner: jclement
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: "https://github.com/jclement/treekillbot"
+    description: "Compiles Pulp, an indentation-based DSL, into print-ready PDF forms"
+    binaries:
+      - treekillbot
+    # tkb is the name you actually type; treekillbot is the name on the tin.
+    # `binaries` cannot express an alias, so the second symlink is raw Ruby.
+    custom_block: |
+      binary "treekillbot", target: "tkb"
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            # The binary is not notarized, so strip the quarantine flag or the
+            # first run is a Gatekeeper prompt instead of a PDF.
+            system_command "/usr/bin/xattr",
+                           args: ["-dr", "com.apple.quarantine", "#{staged_path}/treekillbot"],
+                           must_succeed: false
+          end
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+release:
+  github:
+    owner: jclement
+    name: treekillbot
+  draft: false
+  prerelease: auto
+
+# One multi-platform image per tag, built by buildx from the binaries
+# GoReleaser has already produced. dockers_v2 rather than the older
+# dockers/docker_manifests pair: it publishes exactly the same tags, but as a
+# single entry that assembles the manifest itself, and the old form is
+# deprecated as of GoReleaser 2.16.
+#
+# Dockerfile.goreleaser must COPY from $TARGETPLATFORM/ — the build context is
+# a temporary directory holding one subdirectory per platform, and it does not
+# contain the source tree.
+dockers_v2:
+  - images:
+      - "ghcr.io/jclement/treekillbot"
+    tags:
+      - "{{ .Version }}"
+      - "latest"
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    dockerfile: Dockerfile.goreleaser
+    annotations:
+      "org.opencontainers.image.description": "Compiles Pulp into print-ready PDF forms"
+      "org.opencontainers.image.source": "https://github.com/jclement/treekillbot"
+      "org.opencontainers.image.licenses": "MIT"
+      "org.opencontainers.image.revision": "{{ .FullCommit }}"
+      "org.opencontainers.image.version": "{{ .Version }}"

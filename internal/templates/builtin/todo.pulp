@@ -1,0 +1,72 @@
+# A checkbox page: today, this week, waiting on, and someday.
+#
+# Change first: the `line-pitch` in `defaults panel`, which sets both the row
+# spacing and the checkbox size, and the panel titles — the four buckets are the
+# opinion here, and yours may differ.
+
+page
+  size: letter
+  margin: 0.55in
+
+defaults panel
+  border-width: 0.4pt
+  padding: 6pt
+  line-style: checkbox
+  line-pitch: 20pt
+
+# ---- Header ----
+
+section
+  height: auto
+  column
+    width: auto
+    text "To do"
+      font-size: 22pt
+      font-weight: bold
+  column
+    padding-left: 12pt
+    valign: bottom
+    align: right
+    text "{today:%A, %-d %B %Y}"
+      font-size: 9pt
+      font-weight: bold
+    text "Week {week.number} · through {week.end:%a %-d %b}"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 4pt
+  rule
+    line-width: 1pt
+
+# ---- The buckets ----
+
+section
+  height: fill
+  padding-top: 10pt
+  gap: 8pt
+  column
+    width: 52%
+    panel "Today — {today:%A}"
+      height: fill
+  column
+    panel "This week"
+      height: 58%
+    spacer 8pt
+    panel "Waiting on"
+      height: fill
+      line-style: ruled
+      line-pitch: 18pt
+
+# ---- Someday ----
+#
+# Ruled rather than checkboxed on purpose: a someday list you can tick is a
+# someday list you will feel bad about.
+
+section
+  height: 84pt
+  padding-top: 8pt
+  panel "Someday / maybe"
+    height: fill
+    line-style: ruled
+    line-pitch: 18pt

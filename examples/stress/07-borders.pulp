@@ -1,0 +1,465 @@
+# STRESS 07 — BORDERS
+#
+# Every border-style, per-side widths, the shorthand, and the radius ramp.
+#
+# DESIGN.md D4 Rule A: a box border is EDGE-ALIGNED. A border of width w on a
+# rect strokes along that rect inset by w/2, so the stroke's outer edge lands
+# on the declared rect and the box still measures exactly what it says. That is
+# why the 6pt-bordered box below is the same size as the hairline one, and why
+# their outer silhouettes line up.
+#
+# `dotted` is drawn as very short dashes: the PDF backend has no round line
+# cap, so a true zero-length dot would deposit no ink at all.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "07 · BORDERS"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "border-style at 0.5pt. `none` is a style, not a width: the box still reserves nothing, because a zero-width border reserves nothing either."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt
+      border-style: solid
+      border-color: gray(0.35)
+    text "solid"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt
+      border-style: dashed
+      border-color: gray(0.35)
+    text "dashed"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt
+      border-style: dotted
+      border-color: gray(0.35)
+    text "dotted"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt
+      border-style: none
+      border-color: gray(0.35)
+    text "none"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border: 0.5pt dashed gray(0.35)
+    text "border: 0.5pt dashed gray(0.35)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "The same four at 2pt. The dash period is proportional to the weight — 3w on, 3w off — so a heavy dashed rule does not turn into a dotted one."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 2pt
+      border-style: solid
+      border-color: gray(0.35)
+    text "solid"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 2pt
+      border-style: dashed
+      border-color: gray(0.35)
+    text "dashed"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 2pt
+      border-style: dotted
+      border-color: gray(0.35)
+    text "dotted"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 6pt
+      border-style: solid
+      border-color: gray(0.35)
+    text "6pt solid"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border: 2pt dotted #c00
+    text "border: 2pt dotted #c00"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "Per-side widths. A per-side property refines the shorthand on one edge only, so `border-width: 0.5pt` then `border-top-width: 3pt` means what it looks like."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-top-width: 2pt
+      border-color: gray(0.35)
+    text "top only"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-right-width: 2pt
+      border-color: gray(0.35)
+    text "right only"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-bottom-width: 2pt
+      border-color: gray(0.35)
+    text "bottom only"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-left-width: 2pt
+      border-color: gray(0.35)
+    text "left only"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt
+      border-top-width: 3pt
+      border-color: gray(0.35)
+    text "0.5pt, top 3pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "border-width also takes CSS shorthand arity: one, two or four lengths, clockwise from the top."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+    text "1pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 3pt 0.5pt
+      border-color: gray(0.35)
+    text "3pt 0.5pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt 3pt
+      border-color: gray(0.35)
+    text "0.5pt 3pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0.5pt 1pt 2pt 4pt
+      border-color: gray(0.35)
+    text "0.5 1 2 4"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 0pt 0pt 2pt 0pt
+      border-color: gray(0.35)
+    text "0 0 2pt 0"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "border-radius describes the OUTER silhouette; the fill and the border share it. At 27pt the radius is half the box height and the ends are semicircles."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 0pt
+    text "0pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 2pt
+    text "2pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 6pt
+    text "6pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 14pt
+    text "14pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 54pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 27pt
+      background: gray(0.92)
+    text "27pt, with a fill"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "A border over a decoration. The decoration is painted first and clipped to the content box, so a dot lattice cannot leak under a rounded corner."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 96pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 76pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 10pt
+      line-style: dotted
+      line-pitch: 4mm
+      line-color: gray(0.6)
+    text "radius 10pt over dots"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 76pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      border-radius: 10pt
+      line-style: graph
+      line-pitch: 4mm
+      line-color: gray(0.78)
+    text "radius 10pt over graph"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 76pt
+      border-width: 2pt
+      border-style: dashed
+      border-color: gray(0.35)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.8)
+    text "dashed over ruled"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 76pt
+      border-width: 1pt
+      border-color: gray(0.35)
+      background: gray(0.94)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.78)
+    text "a gray(0.94) fill"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 76pt
+      border-left-width: 3pt
+      border-color: gray(0.35)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.8)
+      line-inset: 0pt 0pt 0pt 8pt
+    text "left rule + line-inset"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: fill
+  valign: bottom
+  text "gray(0.94) is about as dark as a fill under a writing area should go on plain stock: a 6% tint halftones two or three steps darker in print than it looks on a monitor. The shipped themes use no fills at all."
+    font-size: 6.5pt
+    color: gray(0.5)

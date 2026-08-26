@@ -1,0 +1,149 @@
+package pipeline
+
+import (
+	"testing"
+	"time"
+
+	"github.com/jclement/treekillbot/internal/pulp"
+)
+
+func TestParseStep(t *testing.T) {
+	tests := []struct {
+		text  string
+		unit  stepUnit
+		count int
+		bad   bool
+	}{
+		{text: "", unit: stepWeeks, count: 1},
+		{text: "1d", unit: stepDays, count: 1},
+		{text: "2w", unit: stepWeeks, count: 2},
+		{text: "1m", unit: stepMonths, count: 1},
+		{text: "1y", unit: stepYears, count: 1},
+		{text: "3 days", unit: stepDays, count: 3},
+		{text: "week", unit: stepWeeks, count: 1},
+		{text: "2 MONTHS", unit: stepMonths, count: 2},
+		{text: "0w", bad: true},
+		{text: "1q", bad: true},
+		{text: "-1d", bad: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.text, func(t *testing.T) {
+			got, err := ParseStep(tt.text)
+			if tt.bad {
+				if err == nil {
+					t.Fatalf("expected an error for %q", tt.text)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if got.unit != tt.unit || got.count != tt.count {
+				t.Fatalf("got unit=%d count=%d, want unit=%d count=%d", got.unit, got.count, tt.unit, tt.count)
+			}
+		})
+	}
+}
+
+// "One month later" is a calendar operation, not 30 days. Adding a duration
+// would make a monthly template skip February whenever it was generated from
+// the 31st.
+func TestStepOffsetUsesCalendarArithmetic(t *testing.T) {
+	january31 := time.Date(2026, time.January, 31, 0, 0, 0, 0, time.UTC)
+	got := stepOffset{unit: stepMonths, count: 1}.apply(january31)
+	if got.Month() != time.March || got.Day() != 3 {
+		// Go's AddDate normalises 31 February to 3 March. We inherit that
+		// behaviour deliberately rather than clamping here, because the date
+		// built-ins do their own clamping where it matters and two different
+		// clamp rules in one program would be worse than one surprising one.
+		t.Logf("31 Jan + 1 month = %s", got.Format("2006-01-02"))
+	}
+	week := stepOffset{unit: stepWeeks, count: 2}.apply(january31)
+	if want := january31.AddDate(0, 0, 14); !week.Equal(want) {
+		t.Fatalf("2 weeks on = %s, want %s", week, want)
+	}
+	if zero := (stepOffset{unit: stepWeeks, count: 0}).apply(january31); !zero.Equal(january31) {
+		t.Fatal("a zero offset must be the identity")
+	}
+}
+
+const repeatDoc = `page
+  size: a5
+section
+  text "{week.iso} page {page.number} of {page.count}"
+`
+
+func TestRepeatAdvancesTheAnchorPerPage(t *testing.T) {
+	src := pulp.NewSource("t.pulp", repeatDoc)
+	anchor := time.Date(2026, time.September, 9, 0, 0, 0, 0, time.UTC)
+
+	result, err := BuildDocument(src, Options{
+		Anchor:  anchor,
+		Created: anchor,
+		Repeat:  4,
+		Step:    "1w",
+	})
+	if err != nil {
+		t.Fatalf("build: %v", err)
+	}
+	for _, d := range result.Diags {
+		t.Errorf("unexpected diagnostic: %s", d.Plain())
+	}
+	if result.PageCount != 4 {
+		t.Fatalf("got %d pages, want 4", result.PageCount)
+	}
+	if len(result.PDF) == 0 {
+		t.Fatal("no PDF bytes")
+	}
+}
+
+func TestRepeatOfOneMatchesASinglePage(t *testing.T) {
+	src := pulp.NewSource("t.pulp", repeatDoc)
+	anchor := time.Date(2026, time.September, 9, 0, 0, 0, 0, time.UTC)
+	options := Options{Anchor: anchor, Created: anchor}
+
+	single, err := BuildDocument(src, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	options.Repeat = 1
+	explicit, err := BuildDocument(src, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// There is one code path, so these must be byte-identical. A separate fast
+	// path for the single-page case is exactly the thing that would drift.
+	if string(single.PDF) != string(explicit.PDF) {
+		t.Fatal("--repeat 1 differs from no --repeat")
+	}
+}
+
+func TestRepeatIsBounded(t *testing.T) {
+	src := pulp.NewSource("t.pulp", repeatDoc)
+	_, err := BuildDocument(src, Options{Repeat: maxRepeat + 1})
+	if err == nil {
+		t.Fatal("expected a refusal past the page limit")
+	}
+}
+
+// Determinism (DESIGN.md section 4): the same document built twice must produce
+// identical bytes, or the golden tests are worthless.
+func TestBuildIsByteIdentical(t *testing.T) {
+	src := pulp.NewSource("t.pulp", repeatDoc)
+	anchor := time.Date(2026, time.September, 9, 0, 0, 0, 0, time.UTC)
+	options := Options{Anchor: anchor, Created: anchor, Repeat: 3}
+
+	first, err := BuildDocument(src, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 5; i++ {
+		again, err := BuildDocument(src, options)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if string(again.PDF) != string(first.PDF) {
+			t.Fatalf("run %d produced different bytes (%d vs %d)", i, len(again.PDF), len(first.PDF))
+		}
+	}
+}

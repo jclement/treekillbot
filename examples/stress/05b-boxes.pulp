@@ -1,0 +1,419 @@
+# STRESS 05b — NESTING, GAP AND THE BOX MODEL
+#
+# The other half of sizing: what happens when boxes contain boxes, what `gap`
+# takes out of an axis, and where padding, border and margin go.
+#
+# DESIGN.md D4: sizing is ALWAYS border-box. `height: 60pt` means the border
+# box is 60pt, so padding and border eat into the content and never inflate the
+# box. Margin is the only one that claims extra room, and margins never
+# collapse.
+
+page
+  size: letter
+  margin: 0.45in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 7pt
+  color: gray(0.12)
+
+style bar
+  height: 26pt
+  border-width: 0.4pt
+  border-color: gray(0.55)
+  valign: middle
+  align: center
+
+section
+  height: 28pt
+  text "05b · NESTING, GAP AND THE BOX MODEL"
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 40pt
+  valign: bottom
+  text "Five levels of nesting, each 80% of its parent and inset 6pt. The innermost box is 0.8^5 = 32.8% of the outer width, and every edge is still on a whole tick."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 130pt
+  column
+    width: fill
+    box
+      height: fill
+      border-width: 0.5pt
+      border-color: gray(0.3)
+      padding: 6pt
+      column
+        width: 80%
+        box
+          height: fill
+          border-width: 0.5pt
+          border-color: gray(0.4)
+          padding: 6pt
+          column
+            width: 80%
+            box
+              height: fill
+              border-width: 0.5pt
+              border-color: gray(0.5)
+              padding: 6pt
+              column
+                width: 80%
+                box
+                  height: fill
+                  border-width: 0.5pt
+                  border-color: gray(0.6)
+                  padding: 6pt
+                  column
+                    width: 80%
+                    box
+                      height: fill
+                      border-width: 0.5pt
+                      border-color: gray(0.7)
+                      line-style: ruled
+                      line-pitch: 5mm
+                      line-color: gray(0.85)
+                  column
+                    width: 20%
+              column
+                width: 20%
+          column
+            width: 20%
+      column
+        width: 20%
+
+section
+  height: 32pt
+  valign: bottom
+  text "gap comes off the top of the axis before anything else is resolved: it is structural, not negotiable. Four fill columns at three gaps."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 30pt
+  gap: 0pt
+  column
+    width: fill
+    box
+      style: bar
+      text "gap: 0"
+        align: center
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+
+section
+  height: 32pt
+  padding-top: 4pt
+  gap: 6pt
+  column
+    width: fill
+    box
+      style: bar
+      text "gap: 6pt"
+        align: center
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+
+section
+  height: 32pt
+  padding-top: 4pt
+  gap: 18pt
+  column
+    width: fill
+    box
+      style: bar
+      text "gap: 18pt"
+        align: center
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+  column
+    width: fill
+    box
+      style: bar
+
+section
+  height: 32pt
+  valign: bottom
+  text "Border-box sizing (D4): every box below is declared 60pt tall. Padding and border eat into the content; they never inflate the box. Margin is the one that does take extra room, and margins never collapse."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 84pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 60pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+  column
+    width: fill
+    box
+      height: 60pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      padding: 10pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+  column
+    width: fill
+    box
+      height: 60pt
+      border-width: 3pt
+      border-color: gray(0.55)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+  column
+    width: fill
+    box
+      height: 60pt
+      margin: 8pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+
+section
+  height: 14pt
+  gap: 10pt
+  column
+    width: fill
+    text "plain"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+  column
+    width: fill
+    text "padding: 10pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+  column
+    width: fill
+    text "border-width: 3pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+  column
+    width: fill
+    text "margin: 8pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+
+section
+  height: 32pt
+  valign: bottom
+  text "Padding takes CSS shorthand arity — one, two or four values — and a per-side property refines one edge of whatever the shorthand said. The inner box shows where the content actually starts."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 78pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      padding: 10pt
+      box
+        height: fill
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        line-style: ruled
+        line-pitch: 4mm
+        line-color: gray(0.85)
+    text "padding: 10pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      padding: 4pt 16pt
+      box
+        height: fill
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        line-style: ruled
+        line-pitch: 4mm
+        line-color: gray(0.85)
+    text "padding: 4pt 16pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      padding: 2pt 8pt 16pt 24pt
+      box
+        height: fill
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        line-style: ruled
+        line-pitch: 4mm
+        line-color: gray(0.85)
+    text "2pt 8pt 16pt 24pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      padding: 8pt
+      padding-left: 28pt
+      box
+        height: fill
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        line-style: ruled
+        line-pitch: 4mm
+        line-color: gray(0.85)
+    text "8pt, then padding-left 28pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 3pt
+
+section
+  height: 32pt
+  valign: bottom
+  text "valign on a container decides where the leftover height goes when nothing on the axis was flexible. `spacer fill` is the other way to say it, and it is the one that works when only part of the stack should move."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 96pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: top
+      box
+        height: 18pt
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        align: center
+        valign: middle
+        text "valign: top"
+          font-size: 6pt
+          align: center
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: middle
+      box
+        height: 18pt
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        align: center
+        valign: middle
+        text "valign: middle"
+          font-size: 6pt
+          align: center
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      valign: bottom
+      box
+        height: 18pt
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        align: center
+        valign: middle
+        text "valign: bottom"
+          font-size: 6pt
+          align: center
+  column
+    width: fill
+    box
+      height: 82pt
+      border-width: 0.4pt
+      border-color: gray(0.55)
+      box
+        height: 18pt
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        align: center
+        valign: middle
+        text "top"
+          font-size: 6pt
+          align: center
+      spacer
+        height: fill
+      box
+        height: 18pt
+        border-width: 0.4pt
+        border-color: gray(0.3)
+        align: center
+        valign: middle
+        text "spacer fill, then this"
+          font-size: 6pt
+          align: center
+
+section
+  height: fill
+  valign: bottom
+  text "Every edge on this sheet is a whole number of ticks. Five nested 80% splits of a 522pt content width give 171.06pt at the innermost level, which is 2737 ticks — and the sum of each level's two children is still exactly its parent, because DistributeTicks apportions rather than multiplies."
+    font-size: 6.5pt
+    color: gray(0.5)

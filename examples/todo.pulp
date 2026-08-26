@@ -1,0 +1,79 @@
+# A checkbox list page: one big panel for today and three smaller ones for
+# everything that is not today.
+#
+# Change first: `line-pitch` on `defaults box` — it sets the row spacing AND,
+# through it, the checkbox size and gutter, so one number retunes the whole
+# sheet. `checkbox-size` overrides that if you want a bigger box to tick.
+
+page
+  size: letter
+  margin: 0.55in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 9pt
+  color: gray(0.12)
+
+defaults panel
+  border-width: 0.5pt
+  border-color: gray(0.68)
+  border-radius: 2pt
+  padding: 7pt
+  title-size: 6.5pt
+  title-style: underline
+  title-color: gray(0.3)
+  title-tracking: 0.8pt
+  line-style: checkbox
+  line-pitch: 8mm
+  line-color: gray(0.82)
+  line-width: 0.4pt
+  checkbox-radius: 1pt
+
+section
+  height: 34pt
+  column
+    width: fill
+    text "TO DO"
+      font-size: 20pt
+      font-weight: bold
+      tracking: 1.5pt
+  column
+    width: 150pt
+    valign: bottom
+    align: right
+    text "{today:%A, %B %-d, %Y}"
+      font-size: 8pt
+      color: gray(0.4)
+      align: right
+
+section
+  height: 8pt
+
+section
+  height: fill(3)
+  panel "Today"
+    height: fill
+
+section
+  height: 9pt
+
+section
+  height: fill(4)
+  gap: 9pt
+  column
+    width: fill
+    panel "This week"
+      height: fill
+  column
+    width: fill
+    panel "Waiting on"
+      height: fill
+
+section
+  height: 9pt
+
+section
+  height: fill(2)
+  panel "Someday / maybe"
+    height: fill
+    line-pitch: 7mm

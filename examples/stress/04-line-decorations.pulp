@@ -1,0 +1,260 @@
+# STRESS 04 — LINE DECORATIONS, EVERY STYLE
+#
+# The seven values of `line-style`, each at three pitches. Read it down a
+# column to see what a style does; read it across a row to see what pitch does
+# to it.
+#
+# What each one reads from the property table:
+#
+#   none       nothing
+#   ruled      line-pitch, line-color, line-width, line-inset, lines,
+#              line-distribute, line-partial
+#   dotted     dot-pitch (defaults to line-pitch), dot-size, grid-origin
+#   graph      line-pitch, grid-major, grid-major-width, grid-origin
+#   checkbox   the ruled set, plus checkbox-size / -radius / -gutter / -rule
+#   cornell    the ruled set, plus cornell-cue and cornell-summary
+#   time-grid  time-start / -end / -step / -subdivide / -gutter
+#
+# `dotted` and `graph` anchor to a PAGE-GLOBAL lattice by default, so their
+# cells line up across the three rows even though the boxes do not share an
+# edge. That is `grid-origin: page`; sheet 04b shows the `box` alternative.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.4in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 7pt
+  color: gray(0.12)
+
+style cell
+  height: 146pt
+  border-width: 0.4pt
+  border-color: gray(0.62)
+  line-color: gray(0.78)
+  line-width: 0.4pt
+
+section
+  height: 30pt
+  text "04 · LINE DECORATIONS"
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 16pt
+  gap: 5pt
+  column
+    width: 46pt
+  column
+    width: fill
+    text "none"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "ruled"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "dotted"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "graph"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "checkbox"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "cornell"
+      font-size: 7pt
+      color: gray(0.3)
+  column
+    width: fill
+    text "time-grid"
+      font-size: 7pt
+      color: gray(0.3)
+
+section
+  height: 162pt
+  gap: 5pt
+  column
+    width: 46pt
+    valign: middle
+    text "4mm"
+      font-size: 7pt
+      color: gray(0.45)
+  column
+    width: fill
+    box
+      style: cell
+      line-style: none
+      line-pitch: 4mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: ruled
+      line-pitch: 4mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: dotted
+      line-pitch: 4mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: graph
+      line-pitch: 4mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: checkbox
+      line-pitch: 4mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: cornell
+      line-pitch: 4mm
+      cornell-cue: 26pt
+  column
+    width: fill
+    box
+      style: cell
+      line-style: time-grid
+      line-pitch: 4mm
+      time-start: 9:00
+      time-end: 13:00
+      time-gutter: 18pt
+
+section
+  height: 162pt
+  gap: 5pt
+  column
+    width: 46pt
+    valign: middle
+    text "6mm"
+      font-size: 7pt
+      color: gray(0.45)
+  column
+    width: fill
+    box
+      style: cell
+      line-style: none
+      line-pitch: 6mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: ruled
+      line-pitch: 6mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: dotted
+      line-pitch: 6mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: graph
+      line-pitch: 6mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: checkbox
+      line-pitch: 6mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: cornell
+      line-pitch: 6mm
+      cornell-cue: 26pt
+  column
+    width: fill
+    box
+      style: cell
+      line-style: time-grid
+      line-pitch: 6mm
+      time-start: 9:00
+      time-end: 13:00
+      time-gutter: 18pt
+
+section
+  height: 162pt
+  gap: 5pt
+  column
+    width: 46pt
+    valign: middle
+    text "9mm"
+      font-size: 7pt
+      color: gray(0.45)
+  column
+    width: fill
+    box
+      style: cell
+      line-style: none
+      line-pitch: 9mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: ruled
+      line-pitch: 9mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: dotted
+      line-pitch: 9mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: graph
+      line-pitch: 9mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: checkbox
+      line-pitch: 9mm
+  column
+    width: fill
+    box
+      style: cell
+      line-style: cornell
+      line-pitch: 9mm
+      cornell-cue: 26pt
+  column
+    width: fill
+    box
+      style: cell
+      line-style: time-grid
+      line-pitch: 9mm
+      time-start: 9:00
+      time-end: 13:00
+      time-gutter: 18pt
+
+section
+  height: fill
+  valign: bottom
+  text "Every rule count is floored, so a box never ends in a stub of a line — the leftover becomes padding instead. That is line-partial: false, and sheet 04b shows what turning it on does."
+    font-size: 6.5pt
+    color: gray(0.5)

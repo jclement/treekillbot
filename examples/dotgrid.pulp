@@ -1,0 +1,41 @@
+# A full page of dot grid and almost nothing else — the bullet-journal sheet.
+#
+# Change first: `line-pitch`. 5mm is the notebook standard, 6mm is friendlier
+# for large handwriting, 0.25in if you think in inches. `dot-size` past about
+# 0.9pt starts to read as a grey wash instead of a guide.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  color: gray(0.12)
+
+# The only chrome on the sheet: a title you write in, and a date you write in.
+# Both are rules, because a box would fence off part of the grid.
+section
+  height: 24pt
+  gap: 12pt
+  padding-bottom: 9pt
+  column
+    width: fill
+    box
+      height: 15pt
+      border-bottom-width: 0.4pt
+      border-color: gray(0.62)
+  column
+    width: 110pt
+    box
+      height: 15pt
+      border-bottom-width: 0.4pt
+      border-color: gray(0.62)
+
+section
+  height: fill
+  box
+    height: fill
+    line-style: dotted
+    line-pitch: 5mm
+    dot-size: 0.7pt
+    line-color: gray(0.62)

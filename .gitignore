@@ -1,0 +1,33 @@
+# Build output
+/dist/
+/out/
+# The built binary. These are anchored paths on purpose: a bare `treekillbot`
+# pattern would also ignore the cmd/treekillbot/ SOURCE directory, which git
+# does silently and which is exactly the kind of thing you discover three
+# commits later.
+/treekillbot
+/tkb
+/cmd/treekillbot/treekillbot
+*.pdf
+# The negations must not be anchored to the repo root: a pattern containing a
+# slash is relative to the .gitignore's own directory, so `!testdata/**/*.pdf`
+# would silently fail to re-include internal/pdfout/testdata/. Golden files
+# vanishing from a commit is the kind of thing you notice a month later.
+!**/testdata/**
+!**/testdata/**/*.pdf
+
+# Local machine config
+mise.local.toml
+.env
+.dev.vars
+
+# Editor / OS
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Test artifacts
+*.test
+*.out
+coverage.*

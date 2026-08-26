@@ -1,0 +1,54 @@
+# High-contrast monochrome: black type, square corners, rules dark enough to photocopy.
+#
+# `default` is quiet. This one is not: it assumes the sheet will be scanned,
+# faxed, photocopied or read across a desk, all of which eat the light end of
+# the tonal range first. Everything moves two or three steps darker and the
+# rounded corners go away.
+#
+# The writing rules stop at gray(0.62). That is as dark as a rule can be before
+# pencil over it stops being legible, which is the limit that matters more than
+# how it looks on screen.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(1)
+  ink:    gray(0)
+  muted:  gray(0.35)
+  rule:   gray(0.62)
+  accent: gray(0)
+
+
+defaults
+  # 1. Body ink: actually black here, because a photocopy of gray(0.12) is not.
+  font: IBM Plex Mono
+  font-size: 9pt
+  color: gray(0)
+  line-height: 1.3
+
+  # 2. The writing surface: heavier and darker, at the legibility limit.
+  line-color: gray(0.62)
+  line-width: 0.5pt
+  line-pitch: 6mm
+  dot-size: 0.8pt
+  grid-major: 5
+  grid-major-width: 0.8pt
+  margin-rule-color: gray(0.45)
+
+  # 3. Frames: full weight, hard corners. A drawn box, not a soft one.
+  border-color: gray(0.15)
+  border-style: solid
+  border-radius: 0pt
+
+  # 4. Labels: black, underlined, and tracked wide enough that all-caps at
+  # 6.5pt does not set solid.
+  title-color: gray(0)
+  title-size: 6.5pt
+  title-weight: bold
+  title-style: underline
+  title-transform: upper
+  title-tracking: 1pt
+
+  # 5. The sheet: still unfilled. Contrast comes from the ink.
+  background: transparent

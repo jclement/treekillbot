@@ -1,0 +1,557 @@
+# STRESS 06 — TYPOGRAPHY
+#
+# Three embedded families, four faces each, and everything the property table
+# lets you do to a run of text.
+#
+# The faces are static instances of IBM Plex, not a variable font, so `regular`
+# and `bold` are the only weights that exist — `font-weight: 500` is not a
+# thing here and the schema only accepts regular/normal/bold/400/700.
+#
+# Letter-spacing is applied BETWEEN glyphs (n-1 times) and not after the last
+# one, which is why the centred tracked lines below are optically centred
+# rather than half a space to the left.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "06 · TYPOGRAPHY"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 22pt
+  text "Every family and face. The sample is set at 10pt in each."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 16pt
+  column
+    width: 88pt
+  column
+    width: fill
+    text "regular"
+      font-size: 6pt
+      color: gray(0.4)
+  column
+    width: fill
+    text "italic"
+      font-size: 6pt
+      color: gray(0.4)
+  column
+    width: fill
+    text "bold"
+      font-size: 6pt
+      color: gray(0.4)
+  column
+    width: fill
+    text "bold italic"
+      font-size: 6pt
+      color: gray(0.4)
+
+section
+  height: 24pt
+  column
+    width: 88pt
+    valign: middle
+    text "IBM Plex Mono"
+      font-size: 6.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Mono
+      font-size: 10pt
+      font-weight: regular
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Mono
+      font-size: 10pt
+      font-weight: regular
+      font-style: italic
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Mono
+      font-size: 10pt
+      font-weight: bold
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Mono
+      font-size: 10pt
+      font-weight: bold
+      font-style: italic
+
+section
+  height: 24pt
+  column
+    width: 88pt
+    valign: middle
+    text "IBM Plex Sans"
+      font-size: 6.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Sans
+      font-size: 10pt
+      font-weight: regular
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Sans
+      font-size: 10pt
+      font-weight: regular
+      font-style: italic
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Sans
+      font-size: 10pt
+      font-weight: bold
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Sans
+      font-size: 10pt
+      font-weight: bold
+      font-style: italic
+
+section
+  height: 24pt
+  column
+    width: 88pt
+    valign: middle
+    text "IBM Plex Serif"
+      font-size: 6.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Serif
+      font-size: 10pt
+      font-weight: regular
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Serif
+      font-size: 10pt
+      font-weight: regular
+      font-style: italic
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Serif
+      font-size: 10pt
+      font-weight: bold
+      font-style: normal
+  column
+    width: fill
+    valign: middle
+    text "Hamburg 0123"
+      font: IBM Plex Serif
+      font-size: 10pt
+      font-weight: bold
+      font-style: italic
+
+section
+  height: 24pt
+  valign: bottom
+  text "Size ramp. 6pt is the floor auto-shrink will go to; below about 5.5pt a laser printer stops resolving the counters."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "5pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 5pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "5.5pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 5.5pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "6pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 6pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "6.5pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 6.5pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "7pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "8pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "9pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 9pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "10pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 10pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "11pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 11pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "12pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 12pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "14pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 14pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "18pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 18pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "24pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 24pt
+
+section
+  height: auto
+  padding-top: 2pt
+  column
+    width: 44pt
+    valign: top
+    text "32pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "Hamburgefonstiv 0123456789"
+      font-size: 32pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "text-transform is applied at render time, so the source still says what you wrote."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 60pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 46pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "the Quick brown FOX"
+        font-size: 8pt
+        text-transform: none
+    text "text-transform: none"
+      font-size: 5.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    box
+      height: 46pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "the Quick brown FOX"
+        font-size: 8pt
+        text-transform: upper
+    text "text-transform: upper"
+      font-size: 5.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    box
+      height: 46pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "the Quick brown FOX"
+        font-size: 8pt
+        text-transform: lower
+    text "text-transform: lower"
+      font-size: 5.5pt
+      color: gray(0.4)
+  column
+    width: fill
+    box
+      height: 46pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "the Quick brown FOX"
+        font-size: 8pt
+        text-transform: title
+    text "text-transform: title"
+      font-size: 5.5pt
+      color: gray(0.4)
+
+section
+  height: 26pt
+  valign: bottom
+  text "tracking, in points, applied between glyphs. Negative values are legal and are how a big number gets set tight."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: auto
+  padding-top: 3pt
+  column
+    width: 60pt
+    valign: middle
+    text "-0.4pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "TRACKING SAMPLE 0123"
+      font-size: 11pt
+      tracking: -0.4pt
+
+section
+  height: auto
+  padding-top: 3pt
+  column
+    width: 60pt
+    valign: middle
+    text "0pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "TRACKING SAMPLE 0123"
+      font-size: 11pt
+      tracking: 0pt
+
+section
+  height: auto
+  padding-top: 3pt
+  column
+    width: 60pt
+    valign: middle
+    text "0.5pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "TRACKING SAMPLE 0123"
+      font-size: 11pt
+      tracking: 0.5pt
+
+section
+  height: auto
+  padding-top: 3pt
+  column
+    width: 60pt
+    valign: middle
+    text "1.5pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "TRACKING SAMPLE 0123"
+      font-size: 11pt
+      tracking: 1.5pt
+
+section
+  height: auto
+  padding-top: 3pt
+  column
+    width: 60pt
+    valign: middle
+    text "3pt"
+      font: IBM Plex Mono
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: fill
+    text "TRACKING SAMPLE 0123"
+      font-size: 11pt
+      tracking: 3pt
+
+section
+  height: fill
+  valign: bottom
+  text "A family name resolves case- and space-insensitively and answers to its suffixes, so `mono`, `plex mono` and `IBM Plex Mono` are the same family. An unknown family silently draws nothing rather than substituting, so check the summary's font count if a run disappears."
+    font-size: 6.5pt
+    color: gray(0.5)

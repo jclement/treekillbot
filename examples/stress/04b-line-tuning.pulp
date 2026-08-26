@@ -1,0 +1,552 @@
+# STRESS 04b — TUNING A LINE DECORATION
+#
+# The knobs that change how a decoration fills its box, rather than which
+# decoration it is. Every cell below is 94pt tall with a 6mm pitch, which does
+# NOT divide evenly — that is deliberate, because the leftover is what these
+# properties argue about.
+#
+# 94pt / 6mm = 5 rules and 8.9pt left over.
+
+page
+  size: letter
+  margin: 0.45in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 7pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "04b · TUNING A LINE DECORATION"
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 20pt
+  valign: bottom
+  text "line-distribute — where the leftover height goes. `grow` gives up the declared pitch so the last rule lands exactly on the bottom edge. The last two cells are inset 12pt at the foot so the stub line has somewhere visible to land."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 118pt
+  gap: 7pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-distribute: center
+    text "center (default)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-distribute: start
+    text "start"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-distribute: end
+    text "end"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-distribute: grow
+    text "grow"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-inset: 0pt 0pt 12pt 0pt
+      line-partial: false
+    text "line-partial: false"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-inset: 0pt 0pt 12pt 0pt
+      line-partial: true
+    text "line-partial: true"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 20pt
+  valign: bottom
+  text "lines — fix the count instead of filling. line-inset holds the rules off the content edge."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 118pt
+  gap: 7pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      lines: 0
+    text "lines: 0 (fill)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      lines: 3
+    text "lines: 3"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      lines: 8
+    text "lines: 8 (clamped to fit)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-inset: 0pt 14pt
+    text "line-inset: 0pt 14pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      line-inset: 10pt 0pt
+    text "line-inset: 10pt 0pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      baseline-on-rule: false
+    text "baseline-on-rule: false"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 20pt
+  valign: bottom
+  text "margin-rule wraps whatever style is underneath it; the offset is measured from the content box's left edge."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 118pt
+  gap: 7pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      margin-rule: true
+      margin-rule-offset: 14pt
+      margin-rule-color: gray(0.55)
+    text "offset 14pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: ruled
+      line-pitch: 6mm
+      margin-rule: true
+      margin-rule-offset: 28pt
+      margin-rule-color: gray(0.55)
+    text "offset 28pt (default)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 5mm
+      margin-rule: true
+      margin-rule-offset: 20pt
+      margin-rule-color: #e05a55
+    text "over dotted, #e05a55"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: graph
+      line-pitch: 4mm
+      margin-rule: true
+      margin-rule-offset: 20pt
+      margin-rule-color: gray(0.55)
+    text "over graph"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      margin-rule: true
+      margin-rule-offset: 30pt
+      margin-rule-color: gray(0.55)
+    text "over checkbox"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: cornell
+      line-pitch: 6mm
+      cornell-cue: 22pt
+      margin-rule: true
+      margin-rule-offset: 40pt
+      margin-rule-color: gray(0.55)
+    text "over cornell"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 20pt
+  valign: bottom
+  text "checkbox — size and gutter default to 0.62 and 0.45 of line-pitch, so retuning the pitch retunes the whole row."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 118pt
+  gap: 7pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+    text "default"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      checkbox-size: 14pt
+    text "checkbox-size: 14pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      checkbox-radius: 4pt
+    text "checkbox-radius: 4pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      checkbox-gutter: 20pt
+    text "checkbox-gutter: 20pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      checkbox-rule: false
+    text "checkbox-rule: false"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: checkbox
+      line-pitch: 8mm
+      lines: 3
+      checkbox-size: 18pt
+      checkbox-radius: 9pt
+    text "size 18pt, radius 9pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 20pt
+  valign: bottom
+  text "dot and graph lattices. The first two cells are adjacent and share the page lattice, so their dots line up across the gap; the third and fourth centre inside their own box instead."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 118pt
+  gap: 7pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 5mm
+    text "grid-origin: page"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 5mm
+    text "grid-origin: page"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 5mm
+      grid-origin: box
+    text "grid-origin: box"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 5mm
+      grid-origin: box
+    text "grid-origin: box"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: dotted
+      line-pitch: 6mm
+      dot-pitch: 3mm
+      dot-size: 1.2pt
+    text "dot-pitch 3mm, size 1.2pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 94pt
+      border-width: 0.4pt
+      border-color: gray(0.62)
+      line-color: gray(0.78)
+      line-width: 0.4pt
+      line-style: graph
+      line-pitch: 3mm
+      grid-major: 3
+      grid-major-width: 1pt
+    text "grid-major: 3 at 1pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: fill
+  valign: bottom
+  text "baseline-on-rule has no visible effect above: nothing in the painter consumes a decoration's Baselines() yet, so text in a ruled box flows normally rather than snapping to the rules. The property is read and the baselines are computed — they are simply not used."
+    font-size: 6.5pt
+    color: gray(0.5)

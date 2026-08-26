@@ -1,0 +1,100 @@
+# A day page: an hour grid down the left, priorities and notes down the right.
+#
+# Render a particular day with --date 2026-09-09; with no flag it is today.
+#
+# Change first: `time-start` / `time-end` on the schedule panel. The grid is an
+# exact partition of the panel height, so widening the day makes every slot
+# shorter rather than pushing the last hour off the bottom.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 9pt
+  color: gray(0.12)
+
+defaults panel
+  border-width: 0.5pt
+  border-color: gray(0.68)
+  border-radius: 2pt
+  padding: 7pt
+  title-size: 6.5pt
+  title-style: underline
+  title-color: gray(0.3)
+  title-tracking: 0.8pt
+  line-color: gray(0.82)
+  line-width: 0.4pt
+
+section
+  height: 46pt
+  gap: 12pt
+  column
+    width: 76pt
+    text "{today.dd}"
+      font-size: 40pt
+      font-weight: bold
+      tracking: -1pt
+  column
+    width: fill
+    valign: bottom
+    text "{today:%A}"
+      font-size: 15pt
+      font-weight: bold
+    text "{today:%B %-d, %Y}  ·  week {week.number} of {week.iso-year}  ·  day {day-of-year}"
+      font-size: 7pt
+      color: gray(0.45)
+      padding-top: 1pt
+  column
+    width: 96pt
+    valign: bottom
+    align: right
+    text "{today.iso}"
+      font: IBM Plex Mono
+      font-size: 9pt
+      color: gray(0.4)
+      align: right
+
+section
+  height: 8pt
+  padding-top: 3pt
+  rule
+    line-width: 0.8pt
+    line-color: gray(0.25)
+
+section
+  height: fill
+  padding-top: 9pt
+  gap: 10pt
+
+  # The schedule. `time-subdivide: 2` puts a light half-hour mark inside each
+  # labelled hour; set it to 4 for quarter hours, or 1 to turn them off.
+  column
+    width: fill(58)
+    panel "Schedule"
+      height: fill
+      line-style: time-grid
+      time-start: 7:00
+      time-end: 21:00
+      time-step: 60
+      time-subdivide: 2
+      time-gutter: 26pt
+
+  column
+    width: fill(42)
+    gap: 10pt
+    panel "Top three"
+      height: 118pt
+      line-style: checkbox
+      line-pitch: 9mm
+      checkbox-radius: 1pt
+    panel "Also today"
+      height: fill(4)
+      line-style: checkbox
+      line-pitch: 7mm
+      checkbox-radius: 1pt
+    panel "Notes"
+      height: fill(6)
+      line-style: ruled
+      line-pitch: 7mm

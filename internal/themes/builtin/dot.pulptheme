@@ -1,0 +1,57 @@
+# Bullet-journal dot grid: a 5mm lattice of dots, and as little chrome as a page can have.
+#
+# The whole design is one decision — that the page should be a surface rather
+# than a set of boxes — and everything else follows. Frames retreat to
+# gray(0.85), titles are small and grey, corners are soft, and nothing is
+# filled, so the dots are the only thing with any structure to them.
+#
+# The dots are DARKER than this tool's default rules, at gray(0.66), which looks
+# wrong next to the other themes and is right on paper: a 0.7pt dot has about a
+# fiftieth of the ink of a 0.4pt rule across a panel, so matching their tints
+# makes the dots disappear. Match the perceived weight, not the number.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(1)
+  ink:    gray(0.18)
+  muted:  gray(0.55)
+  rule:   gray(0.66)
+  accent: gray(0.35)
+
+
+defaults
+  # 1. Body ink.
+  font: IBM Plex Sans
+  font-size: 8.5pt
+  color: gray(0.18)
+  line-height: 1.4
+
+  # 2. The writing surface: a square 5mm module anchored to the page.
+  line-color: gray(0.66)
+  line-width: 0.4pt
+  line-pitch: 5mm
+  dot-pitch: 5mm
+  dot-size: 0.7pt
+  grid-origin: page
+  grid-major: 5
+  grid-major-width: 0.5pt
+  margin-rule-color: gray(0.78)
+
+  # 3. Frames: nearly gone.
+  border-color: gray(0.85)
+  border-style: solid
+  border-radius: 3pt
+
+  # 4. Labels: quiet enough to ignore, legible enough to find.
+  title-font: IBM Plex Sans
+  title-color: gray(0.5)
+  title-size: 6pt
+  title-weight: bold
+  title-style: plain
+  title-transform: upper
+  title-tracking: 1pt
+
+  # 5. The sheet.
+  background: transparent

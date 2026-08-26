@@ -1,0 +1,231 @@
+# STRESS 09 — OVERFLOW AND THE DIAGNOSTICS
+#
+# THIS SHEET DOES NOT BUILD WITHOUT --allow-overflow. That is the point.
+#
+#   treekillbot build examples/stress/09-overflow.pulp -o 09.pdf --allow-overflow
+#
+# Overflow is an ERROR by default (DESIGN.md D9): a dense form that does not
+# fit is a document bug, and the most useful thing the tool can do is name the
+# box, the height it needed and the height it had. `--allow-overflow`
+# downgrades every one of them to a warning; CI does not use it.
+#
+# The sheet prints the warnings it expects to provoke. Build it and compare
+# stderr against the list — if the tool says less than the sheet claims, the
+# tool has gone quiet about something.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "09 · OVERFLOW AND THE DIAGNOSTICS"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 20pt
+  text "Six diagnostics, in this order — they are sorted by source position — each prefixed with file:line:column in gcc format so an editor parses them for free:"
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 132pt
+  padding-top: 4pt
+  border-left-width: 2pt
+  border-color: gray(0.6)
+  padding-left: 9pt
+  text "warning: W031 `width` on a `section` has no effect"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "warning: W030 `line-height` sets text leading, not the spacing of ruled lines"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "warning: W010 content does not fit in this section  (needs 120pt, has 82pt, short by 38pt)"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "warning: W020 text was shrunk to 8.25pt to fit"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "warning: W020 text was shrunk to 8.50pt to fit"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "warning: W021 text does not fit and was clipped"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+  text "and once for the whole build, not tied to a line:"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+    color: gray(0.45)
+    padding-top: 3pt
+  text "warning: some characters are not in any embedded font and were dropped: 'Α' (U+0391), 'Β' (U+0392), 'Γ' (U+0393), 'Δ' (U+0394), 'α' (U+03B1), 'β' (U+03B2), 'γ' (U+03B3), 'δ' (U+03B4)"
+    font: IBM Plex Mono
+    font-size: 6.5pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "The exit code matters as much as the text. 3 is a source error, 4 is warnings under --strict, 1 is the tool itself failing. A build tool's callers ask exactly one question: is my input wrong, or is the tool broken?"
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 66pt
+  padding-top: 4pt
+  gap: 16pt
+  column
+    width: fill
+    text "without --allow-overflow"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+    text "E010 on every box that does not fit; nothing is written; exit 3."
+      font-size: 7.5pt
+      padding-top: 3pt
+  column
+    width: fill
+    text "with --allow-overflow"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+    text "W010 instead; the PDF is written and the content really does spill; exit 0."
+      font-size: 7.5pt
+      padding-top: 3pt
+  column
+    width: fill
+    text "with --allow-overflow --strict"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+    text "The same warnings, the PDF is still written, and exit 4."
+      font-size: 7.5pt
+      padding-top: 3pt
+
+# W031 — a width on a section has nothing to divide. Sections always fill their
+# parent's width; to divide space horizontally you put columns inside them.
+section
+  height: 24pt
+  width: 200pt
+  valign: bottom
+  text "W031 — this section carries `width: 200pt` and is still full width."
+    font-size: 7.5pt
+    color: gray(0.3)
+
+# W030 — the line-height / line-pitch trap. Both names are real, so a document
+# that sets the wrong one gets the default pitch and no error at all.
+section
+  height: 56pt
+  padding-top: 6pt
+  box
+    height: 46pt
+    border-width: 0.4pt
+    border-color: gray(0.6)
+    line-style: ruled
+    line-height: 2.5
+    line-color: gray(0.82)
+
+# W010 — an 82pt band asked to hold 120pt of fixed-height children. Under
+# --allow-overflow the third box really does hang past the bottom edge, into
+# the empty band left below it for exactly that purpose.
+section
+  height: 90pt
+  padding-top: 8pt
+  box
+    height: 40pt
+    border-width: 0.4pt
+    border-color: gray(0.5)
+    valign: middle
+    padding-left: 6pt
+    text "40pt"
+      font-size: 7pt
+  box
+    height: 40pt
+    border-width: 0.4pt
+    border-color: gray(0.5)
+    valign: middle
+    padding-left: 6pt
+    text "40pt"
+      font-size: 7pt
+  box
+    height: 40pt
+    border-width: 0.4pt
+    border-color: gray(0.5)
+    valign: middle
+    padding-left: 6pt
+    text "40pt — this one hangs out of the band"
+      font-size: 7pt
+
+section
+  height: 44pt
+
+section
+  height: 92pt
+  padding-top: 12pt
+  gap: 14pt
+
+  # W020 — auto-shrink lets a run step down in quarter-points to a 6pt floor.
+  column
+    width: fill
+    box
+      height: 66pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "W020 — auto-shrink: 0.6 lets this run step down in quarter-point increments until it fits, to a floor of 6pt. It started at 11pt and the warning names the size it landed on, so you can decide whether that size is acceptable or whether the box should simply be bigger."
+        font-size: 11pt
+        height: 50pt
+        auto-shrink: 0.6
+
+  # W021 — shrinking is allowed but only down to 0.95 of the size, which is
+  # not enough, so the tail is clipped and the warning says so. W021 is only
+  # reachable WITH auto-shrink: with it off, WrapText returns the unclipped
+  # layout and text overruns its box in silence.
+  column
+    width: fill
+    box
+      height: 66pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "W021 — auto-shrink: 0.95 is not enough room to manoeuvre, so this run is clipped instead and the warning names both the height available and the height the text needed. Several lines are lost off the bottom of the box, and the box itself is not redrawn: the text simply stops."
+        font-size: 9pt
+        height: 50pt
+        auto-shrink: 0.95
+
+section
+  height: 34pt
+  valign: bottom
+  text "Missing glyphs are the quiet one: gopdf substitutes a space, so a dropped character leaves a hole rather than a box. The line below is Greek set in IBM Plex Mono, which has no Greek."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 30pt
+  padding-top: 6pt
+  column
+    width: 200pt
+    text "ΑΒΓΔ αβγδ in Mono:"
+      font: IBM Plex Mono
+      font-size: 9pt
+  column
+    width: fill
+    text "ΑΒΓΔ αβγδ in Sans:"
+      font: IBM Plex Sans
+      font-size: 9pt
+
+section
+  height: fill
+  valign: bottom
+  text "Decorations never overflow: they floor their counts, so a ruled box that is one pitch too short simply draws one rule fewer. Only boxes and text can overflow, and only text can shrink."
+    font-size: 6.5pt
+    color: gray(0.5)

@@ -1,0 +1,440 @@
+# STRESS 07b — PANEL CHROME
+#
+# The title is the one piece of chrome that changes a box's geometry: it takes
+# a band out of the content area, and in the `notch` style it interrupts the
+# border. Every cell below is the same 76pt panel with the same ruled
+# decoration, so the band the title claims is visible as the rules moving.
+#
+# `panel`, `box` and `grid` all take a title and are otherwise the same
+# element as far as layout is concerned — `grid` draws no lattice of its own.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+defaults panel
+  title-size: 6.5pt
+  title-color: gray(0.3)
+  title-tracking: 0.6pt
+
+section
+  height: 28pt
+  text "07b · PANEL CHROME"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "title-style — how the title meets the border: floating, in a filled bar, interrupting the border, or over a rule."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 98pt
+  gap: 10pt
+  column
+    width: fill
+    panel "Plain"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: plain
+    text "title-style: plain"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Bar"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: bar
+      title-background: gray(0.9)
+    text "title-style: bar"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Notch"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: notch
+    text "title-style: notch"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Underline"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+    text "title-style: underline"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "title-position — which edge the title sits on. `top` and `bottom` hold the decoration off their band; `left` does not, because only a title height is subtracted and a left title has a width instead, so the rules run under it. `none` drops the title entirely."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 98pt
+  gap: 10pt
+  column
+    width: fill
+    panel "Top"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-position: top
+      title-style: underline
+    text "title-position: top"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Left"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-position: left
+    text "title-position: left"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Bottom"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-position: bottom
+      title-style: underline
+    text "title-position: bottom"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "None"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-position: none
+    text "title-position: none"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "title-align, along whichever edge the title is on."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 98pt
+  gap: 10pt
+  column
+    width: fill
+    panel "Left"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-align: left
+    text "title-align: left"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Centre"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-align: center
+    text "title-align: center"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Right"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-align: right
+    text "title-align: right"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Centre in a bar"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: bar
+      title-background: gray(0.9)
+      title-align: center
+    text "bar + center"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "title-transform, title-tracking, title-size and title-font. The default transform is `upper` and the default tracking 0.5pt, because small caps want a little air."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 98pt
+  gap: 10pt
+  column
+    width: fill
+    panel "mixed Case Title"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-transform: none
+      title-tracking: 0pt
+    text "transform none, tracking 0"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "mixed Case Title"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-transform: title
+    text "transform: title"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Wide"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-tracking: 3pt
+    text "tracking: 3pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Serif, 10pt"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: underline
+      title-font: IBM Plex Serif
+      title-size: 10pt
+      title-weight: regular
+      title-transform: none
+      title-color: gray(0.15)
+    text "title-font + title-size"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "title-padding and title-background. The padding is the space around the title text, and it is what makes a bar a band rather than a stripe."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 98pt
+  gap: 10pt
+  column
+    width: fill
+    panel "Tight"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: bar
+      title-background: gray(0.9)
+      title-padding: 0pt
+    text "title-padding: 0pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Roomy"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: bar
+      title-background: gray(0.9)
+      title-padding: 6pt 4pt
+    text "title-padding: 6pt 4pt"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Dark bar"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      title-style: bar
+      title-background: gray(0.25)
+      title-color: gray(1)
+      title-padding: 4pt
+    text "reversed out of gray(0.25)"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    panel "Notch, heavy"
+      height: 76pt
+      border-width: 0.5pt
+      border-color: gray(0.6)
+      padding: 5pt
+      line-style: ruled
+      line-pitch: 5mm
+      line-color: gray(0.85)
+      border-width: 1.5pt
+      border-color: gray(0.3)
+      title-style: notch
+      title-size: 8pt
+    text "notch on a 1.5pt border"
+      font-size: 5.5pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: fill
+  valign: bottom
+  text "A title is written as the element's argument — `panel \"Notes\"` — or as a `title:` property; they are the same thing. Note that the title band is held back from the DECORATION only: a text child of a titled panel is arranged over the full content box and prints on top of the title, so a panel that carries both wants an explicit spacer or padding-top."
+    font-size: 6.5pt
+    color: gray(0.5)

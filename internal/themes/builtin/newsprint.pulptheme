@@ -1,0 +1,59 @@
+# Editorial: Plex Serif, a wide 7mm rule, and titles set in a light bar like a section head.
+#
+# The one theme here whose body face is not technical. A serif at 9.5pt on a
+# 7mm rule is a page you write sentences on rather than one you fill in, so this
+# is the theme for meeting notes, a reading log or a journal — not for a form.
+#
+# The title bar is the only fill in any shipped theme, and it is deliberately
+# NOT under a writing area: gray(0.90) behind six-point caps is a section head,
+# and the same tint under a ruled panel would be a place you cannot write.
+
+# The five semantic slots. Every shipped theme defines all five, so a document
+# that writes `color: {ink}` rather than a literal grey survives a theme swap —
+# including onto `midnight`, where the ink is pale and the paper is dark.
+vars
+  paper:  gray(1)
+  ink:    gray(0.1)
+  muted:  gray(0.45)
+  rule:   gray(0.8)
+  accent: gray(0.05)
+
+
+defaults
+  # 1. Body ink. Serif text wants a touch more size and a touch more leading
+  # than mono at the same optical weight.
+  font: IBM Plex Serif
+  font-size: 9.5pt
+  color: gray(0.1)
+  line-height: 1.45
+
+  # 2. The writing surface: wide-ruled, and light, because a 7mm rule under
+  # longhand should be a guide rather than part of the composition.
+  line-color: gray(0.8)
+  line-width: 0.4pt
+  line-pitch: 7mm
+  dot-size: 0.7pt
+  grid-major: 4
+  grid-major-width: 0.6pt
+  margin-rule-color: gray(0.75)
+
+  # 3. Frames: hairline-square, so a panel reads as a rule around a column of
+  # text rather than as a box on a form.
+  border-color: gray(0.65)
+  border-style: solid
+  border-radius: 0pt
+
+  # 4. Labels: a filled bar, serif, tracked. The one place ink is spent.
+  title-font: IBM Plex Serif
+  title-color: gray(0.05)
+  title-background: gray(0.9)
+  title-size: 6.5pt
+  title-weight: bold
+  title-style: bar
+  title-transform: upper
+  title-tracking: 1.2pt
+  title-padding: 2.5pt 4pt
+
+  # 5. The sheet: unfilled. A page tint would be toner over 100% of the sheet
+  # for an effect nobody asked for.
+  background: transparent

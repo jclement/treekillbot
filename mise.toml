@@ -1,0 +1,150 @@
+# treekillbot — the repo's contract. `mise tasks` is the authoritative list.
+#
+# setup / dev / test / lint / fmt / check are the standard vocabulary and mean
+# the same thing here as everywhere else: setup is idempotent, test is
+# non-interactive and its exit code is the truth, lint never writes to a file,
+# fmt is the mutating half of lint, and check is the gate before calling work
+# done. Everything past those is specific to shipping a Go binary.
+
+[tools]
+go = "1.27.0"
+# Pinned rather than "latest" so that `mise run snapshot` locally and the
+# release job in CI agree about what the config file is allowed to contain.
+goreleaser = "2.18.0"
+
+[env]
+# The build stamp lives in internal/version, not main, because main is not
+# importable — see that package's doc comment. That makes the -X paths long
+# and easy to get subtly wrong, so the import path is written once here and
+# reused by every task that stamps a binary. .goreleaser.yml is the only other
+# place it appears; if this moves, that file moves with it.
+VERSION_PKG = "github.com/jclement/treekillbot/internal/version"
+
+[tasks.setup]
+description = "Zero → runnable: fetch module deps and the toolchain"
+run = """
+#!/bin/bash
+set -e
+go mod download
+echo "setup complete — run: mise run check"
+"""
+
+[tasks.dev]
+description = "Run treekillbot from source: mise run dev -- build doc.pulp -o out.pdf"
+run = "go run ./cmd/treekillbot"
+
+[tasks.test]
+description = "Full suite under the race detector, including the golden files"
+# -race is on by default rather than in a separate task: the golden-file tests
+# read shared fixtures, and a data race that only shows up in CI is the
+# expensive kind.
+run = "go test -race ./..."
+
+[tasks."test:cover"]
+description = "Run tests and open a coverage report"
+run = "go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out -o coverage.html"
+
+[tasks.lint]
+description = "gofmt check + go vet. Read-only — never writes a file"
+# gofmt -l, never gofmt -w: an agent must be able to ask "is this clean?"
+# without changing the tree underneath a diff it is about to show you.
+run = """
+#!/bin/bash
+set -e
+UNFORMATTED=$(gofmt -l .)
+if [ -n "$UNFORMATTED" ]; then
+  echo "gofmt needed on:"
+  echo "$UNFORMATTED"
+  exit 1
+fi
+go vet ./...
+"""
+
+[tasks.fmt]
+description = "The mutating counterpart of lint: gofmt -w"
+run = "gofmt -w ."
+
+[tasks.check]
+description = "lint + test — the gate before claiming work is done"
+depends = ["lint", "test"]
+
+[tasks.build]
+description = "Build a stamped binary into bin/treekillbot"
+run = """
+#!/bin/bash
+set -e
+VERSION=${VERSION:-$(git describe --tags --always --dirty 2>/dev/null || echo dev)}
+COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo none)
+BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+LDFLAGS="-s -w"
+LDFLAGS="$LDFLAGS -X ${VERSION_PKG}.Version=${VERSION#v}"
+LDFLAGS="$LDFLAGS -X ${VERSION_PKG}.Commit=$COMMIT"
+LDFLAGS="$LDFLAGS -X ${VERSION_PKG}.BuildDate=$BUILD_DATE"
+
+mkdir -p bin
+CGO_ENABLED=0 go build -ldflags "$LDFLAGS" -o bin/treekillbot ./cmd/treekillbot
+echo "built bin/treekillbot ($VERSION)"
+"""
+
+[tasks.snapshot]
+description = "Build the full release matrix locally, without tagging or publishing"
+run = "goreleaser release --snapshot --clean"
+
+[tasks."release:check"]
+description = "Validate .goreleaser.yml"
+run = "goreleaser check"
+
+[tasks.clean]
+description = "Remove build artifacts (bin/, dist/, coverage)"
+run = "rm -rf bin/ dist/ coverage.out coverage.html"
+
+[tasks.release]
+description = "Interactive release: bump version, tag, and push"
+run = """
+#!/bin/bash
+set -e
+
+CURRENT_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+echo "Current version: $CURRENT_TAG"
+
+VERSION_NUM=${CURRENT_TAG#v}
+IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NUM"
+
+NEXT_PATCH="v$MAJOR.$MINOR.$((PATCH + 1))"
+NEXT_MINOR="v$MAJOR.$((MINOR + 1)).0"
+NEXT_MAJOR="v$((MAJOR + 1)).0.0"
+
+echo ""
+echo "Select release type:"
+echo "  1) patch  → $NEXT_PATCH"
+echo "  2) minor  → $NEXT_MINOR"
+echo "  3) major  → $NEXT_MAJOR"
+echo "  q) quit"
+echo ""
+read -p "Choice [1]: " CHOICE
+CHOICE=${CHOICE:-1}
+
+case $CHOICE in
+    1) NEW_VERSION=$NEXT_PATCH ;;
+    2) NEW_VERSION=$NEXT_MINOR ;;
+    3) NEW_VERSION=$NEXT_MAJOR ;;
+    q|Q) echo "Cancelled."; exit 0 ;;
+    *) echo "Invalid choice"; exit 1 ;;
+esac
+
+echo ""
+echo "Creating release: $NEW_VERSION"
+git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION"
+echo "Created tag: $NEW_VERSION"
+
+read -p "Push tag to origin? [Y/n]: " CONFIRM
+CONFIRM=${CONFIRM:-Y}
+if [[ ! $CONFIRM =~ ^[Yy]$ ]]; then
+    git tag -d "$NEW_VERSION" >/dev/null 2>&1
+    echo "Cancelled. Tag removed."
+    exit 0
+fi
+
+git push origin "$NEW_VERSION"
+echo "Tag pushed! GitHub Actions will build and release."
+"""

@@ -1,0 +1,581 @@
+# STRESS 08 — UNICODE COVERAGE
+#
+# WHAT THE THREE EMBEDDED FACES ACTUALLY DRAW.
+#
+# This sheet is deliberately built so that nothing on it is dropped: every
+# sample is set in a family that has the glyphs, and everything the fonts do
+# NOT have is named in ASCII rather than shown. A stress sheet that silently
+# lost half its characters would teach exactly the wrong lesson, because that
+# is what the tool does with a glyph it cannot find: gopdf substitutes a space,
+# and only the CLI's summary tells you.
+#
+# The warning looks like this, on stderr, once per build:
+#
+#   treekillbot: warning: some characters are not in any embedded font and
+#   were dropped: 'Α' (U+0391), 'Β' (U+0392), … and 47 more
+#
+# There is no font fallback. Only IBM Plex Mono, Sans and Serif are embedded
+# (`--font-dir` adds more), so a document that needs CJK needs a CJK font.
+#
+# THERE IS NO RTL AND NO COMPLEX-SCRIPT SHAPING. Text is measured and drawn
+# left to right by advance width (DESIGN.md section 6). Hebrew and Arabic are
+# not merely unglyphed here — even with a font that had them, they would come
+# out in logical order, unshaped and unjoined. Do not use this tool for them.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 28pt
+  text "08 · UNICODE COVERAGE"
+    font: IBM Plex Mono
+    font-size: 14pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 24pt
+  text "Each sample is set in the family named at the head of its column. A dash means that family has no glyphs for the set."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 18pt
+  border-bottom-width: 0.5pt
+  border-color: gray(0.5)
+  gap: 8pt
+  column
+    width: 118pt
+    text "set"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+  column
+    width: fill
+    text "IBM Plex Mono"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+  column
+    width: fill
+    text "IBM Plex Sans"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+  column
+    width: fill
+    text "IBM Plex Serif"
+      font-size: 6pt
+      color: gray(0.4)
+      text-transform: upper
+      tracking: 0.6pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Basic Latin"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "ABC abc 0123 !?&@#"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "ABC abc 0123 !?&@#"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "ABC abc 0123 !?&@#"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Latin-1 and Extended"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "ÀÉÎÕÜ æøå ÇÑ ĐĦŁ ŠŽ ąęįų"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "ÀÉÎÕÜ æøå ÇÑ ĐĦŁ ŠŽ ąęįų"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "ÀÉÎÕÜ æøå ÇÑ ĐĦŁ ŠŽ ąęįų"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Cyrillic"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "АБВГДЕЖЗ абвгдежз Яя"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "АБВГДЕЖЗ абвгдежз Яя"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "АБВГДЕЖЗ абвгдежз Яя"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Greek"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "—"
+      font: IBM Plex Sans
+      font-size: 8pt
+      color: gray(0.6)
+  column
+    width: fill
+    text "ΑΒΓΔΠΣΩ αβγδπσω"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "—"
+      font: IBM Plex Sans
+      font-size: 8pt
+      color: gray(0.6)
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Typographic punctuation"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "— – … « » “ ” ‘ ’ † ‡ § ¶ • · ‰ ′ ″"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "— – … « » “ ” ‘ ’ † ‡ § ¶ • · ‰ ′ ″"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "— – … « » “ ” ‘ ’ † ‡ § ¶ • · ‰ ′ ″"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Mathematics"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "± × ÷ ≠ ≤ ≥ ≈ ∞ ∑ ∏ √ ∫ ∂ µ"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "± × ÷ ≠ ≤ ≥ ≈ ∞ ∑ ∏ √ ∫ ∂ µ"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "± × ÷ ≠ ≤ ≥ ≈ ∞ ∑ ∏ √ ∫ ∂ µ"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Currency"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "$ € £ ¥ ¢ ₹ ₽ ₩ ¤"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "$ € £ ¥ ¢ ₹ ₽ ₩ ¤"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "$ € £ ¥ ¢ ₹ ₽ ₩ ¤"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Vulgar fractions"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "½ ⅓ ¼ ⅔ ¾ ⅛"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "½ ⅓ ¼ ⅔ ¾ ⅛"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "½ ⅓ ¼ ⅔ ¾ ⅛"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Arrows"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "← → ↑ ↓ ↔ ↕"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "← → ↑ ↓ ↔ ↕"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "← → ↑ ↓ ↔ ↕"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Box drawing"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "┌─┬─┐ │ ├─┼─┤ └─┴─┘ ═ ║ ╔ ╗"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "—"
+      font: IBM Plex Sans
+      font-size: 8pt
+      color: gray(0.6)
+  column
+    width: fill
+    text "—"
+      font: IBM Plex Sans
+      font-size: 8pt
+      color: gray(0.6)
+
+section
+  height: auto
+  padding-top: 5pt
+  padding-bottom: 5pt
+  border-bottom-width: 0.3pt
+  border-color: gray(0.82)
+  gap: 8pt
+  column
+    width: 118pt
+    text "Check mark"
+      font-size: 7pt
+      color: gray(0.35)
+  column
+    width: fill
+    text "✓"
+      font: IBM Plex Mono
+      font-size: 8pt
+  column
+    width: fill
+    text "✓"
+      font: IBM Plex Sans
+      font-size: 8pt
+  column
+    width: fill
+    text "✓"
+      font: IBM Plex Serif
+      font-size: 8pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "Not in any embedded face. These are written as codepoints because writing them as glyphs would drop them."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: auto
+  padding-top: 6pt
+  gap: 14pt
+  column
+    width: fill
+    text "CJK ideographs      U+4E00-U+9FFF"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Hangul              U+AC00-U+D7A3"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Hiragana / katakana U+3040-U+30FF"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Emoji               U+1F300-U+1FAFF"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Hebrew              U+0590-U+05FF"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Arabic              U+0600-U+06FF"
+      font: IBM Plex Mono
+      font-size: 7pt
+  column
+    width: fill
+    text "BALLOT BOX          U+2610, U+2611, U+2612"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "BALLOT X            U+2717, HEAVY CHECK U+2714"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Geometric shapes    U+25A0-U+25FF"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Stars               U+2605, U+2606"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Double arrows       U+21D0, U+21D2, U+21E7"
+      font: IBM Plex Mono
+      font-size: 7pt
+    text "Mac modifier keys   U+2318, U+2325, U+232B"
+      font: IBM Plex Mono
+      font-size: 7pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "Two gaps worth knowing individually:"
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: auto
+  padding-top: 5pt
+  text "U+2011 NON-BREAKING HYPHEN is missing from IBM Plex Mono and present in Sans and Serif. U+03C0 GREEK SMALL LETTER PI is the one Greek letter IBM Plex Mono does have, so a maths label reading pi works in Mono while the rest of the alphabet does not."
+    font-size: 7pt
+    color: gray(0.3)
+
+section
+  height: 26pt
+  valign: bottom
+  text "Draw a checkbox with `line-style: checkbox` rather than with U+2610. It is not a font-coverage question — a drawn box is a rectangle of a stated size on a stated baseline, and a glyph is whatever the face felt like."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 60pt
+  padding-top: 6pt
+  gap: 12pt
+  column
+    width: 150pt
+    box
+      height: 48pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 4pt
+      line-style: checkbox
+      line-pitch: 7mm
+      line-color: gray(0.82)
+      checkbox-radius: 1pt
+  column
+    width: fill
+    valign: middle
+    text "line-style: checkbox — drawn, not set"
+      font-size: 7pt
+      color: gray(0.4)
+
+section
+  height: 26pt
+  valign: bottom
+  text "text-transform is Unicode-aware, because it is Go's strings.ToUpper and ToLower underneath: accented Latin, Cyrillic and the IJ ligature all case-fold. The German sharp s does NOT — Go's simple case mapping has no single uppercase for it, so `straße` uppercases to STRAßE and not to STRASSE."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 74pt
+  padding-top: 6pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 58pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "straße Éclair ĳsland Ярославль"
+        font-size: 8pt
+    text "text-transform: none"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 58pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "straße Éclair ĳsland Ярославль"
+        font-size: 8pt
+        text-transform: upper
+    text "text-transform: upper"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 58pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "straße Éclair ĳsland Ярославль"
+        font-size: 8pt
+        text-transform: lower
+    text "text-transform: lower"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 58pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      padding: 5pt
+      text "straße Éclair ĳsland Ярославль"
+        font-size: 8pt
+        text-transform: title
+    text "text-transform: title"
+      font-size: 5.5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 32pt
+  valign: bottom
+  text "Combining marks do NOT compose. Text is drawn glyph by glyph at its advance width with no mark positioning, so U+0301 lands beside its base letter rather than over it. Use precomposed characters."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: auto
+  padding-top: 5pt
+  gap: 14pt
+  column
+    width: 200pt
+    text "precomposed: é å ü ñ"
+      font-size: 13pt
+  column
+    width: fill
+    text "combining: é å ü ñ"
+      font-size: 13pt
+
+section
+  height: fill
+  valign: bottom
+  text "Everything on this sheet was verified by building it: the coverage table is what `treekillbot build` reported, family by family, not what the Unicode blocks suggest."
+    font-size: 6.5pt
+    color: gray(0.5)

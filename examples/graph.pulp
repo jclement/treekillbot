@@ -1,0 +1,78 @@
+# Engineering graph paper: 2mm squares with a heavier line every fifth one, so
+# the sheet reads as 10mm blocks subdivided five ways.
+#
+# Change first: `line-pitch` (the small square) and `grid-major` (how many
+# small squares make a big one). 0.1in with `grid-major: 5` gives the imperial
+# half-inch sheet instead.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Mono
+  color: gray(0.12)
+
+# A title strip rather than a title box: the grid is the page, and anything
+# with a border round it would fight the lattice.
+section
+  height: 22pt
+  gap: 12pt
+  padding-bottom: 8pt
+  column
+    width: fill
+    box
+      height: 14pt
+      border-bottom-width: 0.4pt
+      border-color: gray(0.55)
+  column
+    width: 90pt
+    box
+      height: 14pt
+      border-bottom-width: 0.4pt
+      border-color: gray(0.55)
+  column
+    width: 70pt
+    box
+      height: 14pt
+      border-bottom-width: 0.4pt
+      border-color: gray(0.55)
+
+section
+  height: auto
+  gap: 12pt
+  padding-bottom: 6pt
+  column
+    width: fill
+    text "TITLE"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.6pt
+  column
+    width: 90pt
+    text "DRAWN BY"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.6pt
+  column
+    width: 70pt
+    text "DATE"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.6pt
+
+# There is one `line-color` for both weights, so the major lines are told apart
+# by ink alone: 1pt against 0.4pt is two and a half times the coverage, which is
+# what makes the 10mm blocks read from arm's length.
+section
+  height: fill
+  box
+    height: fill
+    line-style: graph
+    line-pitch: 2mm
+    line-color: gray(0.76)
+    line-width: 0.4pt
+    grid-major: 5
+    grid-major-width: 1pt
+    border-width: 0.6pt
+    border-color: gray(0.55)

@@ -1,0 +1,146 @@
+# A meeting-notes page: who was there, what was on the agenda, what was
+# decided, and who owes what by when.
+#
+# The actions block is three panels sharing one line-pitch, which is how you
+# get a ruled table without a table element — the rules line up across the
+# columns because they are the same pitch in boxes of the same height.
+#
+# Change first: the `fill` weights on the four bands, and `line-pitch` on
+# `defaults panel`.
+
+page
+  size: letter
+  margin: 0.55in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 9pt
+  color: gray(0.12)
+
+defaults panel
+  border-width: 0.5pt
+  border-color: gray(0.7)
+  border-radius: 2pt
+  padding: 7pt
+  title-size: 6.5pt
+  title-style: underline
+  title-color: gray(0.3)
+  title-tracking: 0.8pt
+  line-style: ruled
+  line-pitch: 7mm
+  line-color: gray(0.84)
+  line-width: 0.4pt
+
+style field
+  height: 15pt
+  border-bottom-width: 0.5pt
+  border-color: gray(0.62)
+
+style field-label
+  font-size: 5.5pt
+  color: gray(0.45)
+  tracking: 0.7pt
+  padding-top: 2.5pt
+
+section
+  height: 30pt
+  gap: 12pt
+  column
+    width: 210pt
+    valign: bottom
+    text "MEETING"
+      font-size: 19pt
+      font-weight: bold
+      tracking: 1.4pt
+  column
+    width: fill
+    valign: bottom
+    box
+      style: field
+    text "SUBJECT"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.7pt
+      padding-top: 2.5pt
+  column
+    width: 96pt
+    valign: bottom
+    box
+      style: field
+    text "DATE"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.7pt
+      padding-top: 2.5pt
+  column
+    width: 66pt
+    valign: bottom
+    box
+      style: field
+    text "TIME"
+      font-size: 5.5pt
+      color: gray(0.45)
+      tracking: 0.7pt
+      padding-top: 2.5pt
+
+section
+  height: 14pt
+
+section
+  height: fill(24)
+  gap: 8pt
+  column
+    width: fill(34)
+    panel "Attendees"
+      height: fill
+      line-style: checkbox
+      line-pitch: 6.5mm
+      checkbox-radius: 1pt
+  column
+    width: fill(66)
+    panel "Purpose / desired outcome"
+      height: fill
+      line-pitch: 6.5mm
+
+section
+  height: 8pt
+
+section
+  height: fill(30)
+  panel "Agenda"
+    height: fill
+    line-style: checkbox
+    line-pitch: 7mm
+    checkbox-radius: 1pt
+
+section
+  height: 8pt
+
+section
+  height: fill(24)
+  panel "Decisions"
+    height: fill
+
+section
+  height: 8pt
+
+# The action table. The three panels are the same height with the same pitch,
+# so their rules meet across the gaps.
+section
+  height: fill(30)
+  gap: 6pt
+  column
+    width: fill(60)
+    panel "Action"
+      height: fill
+      line-pitch: 8mm
+  column
+    width: fill(22)
+    panel "Owner"
+      height: fill
+      line-pitch: 8mm
+  column
+    width: fill(18)
+    panel "Due"
+      height: fill
+      line-pitch: 8mm

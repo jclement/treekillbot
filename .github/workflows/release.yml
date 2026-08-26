@@ -1,0 +1,78 @@
+name: CI & Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+  id-token: write # needed for cosign keyless signing
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: jdx/mise-action@v4
+
+      # Everything below is a mise task, not a raw go invocation, so that a
+      # green local `mise run check` and a green CI run mean the same thing.
+      - name: Build
+        run: CGO_ENABLED=0 go build ./...
+
+      # `check` is lint + `go test -race ./...`. The correctness story here is
+      # golden files — the --dump-layout rect tree, --emit-ops, the
+      # deterministic byte hash and the diagnostics golden — and those are
+      # ordinary Go tests reading testdata/, so a layout that moved by a tick
+      # fails this step like any other assertion. There is nothing extra to
+      # wire up; there is just no path that skips them.
+      - name: Lint and test
+        run: mise run check
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # GoReleaser builds the changelog from history, so a shallow clone
+          # produces a release with nothing in it.
+          fetch-depth: 0
+
+      - uses: jdx/mise-action@v4
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v4
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          # Pinned to the v2 line rather than "latest" so a future v3, which
+          # is where deprecated config actually gets removed, cannot break a
+          # release at tag time. mise.toml pins the exact version used by
+          # `mise run release:check` locally; keep the two in the same major.
+          version: "~> v2"
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # A GitHub PAT with write access to jclement/homebrew-tap. Without
+          # it the release still publishes; only the formula update fails.
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}

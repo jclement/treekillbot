@@ -1,0 +1,88 @@
+# A month of habits: one row per habit, one narrow column per day of the month.
+#
+# Change first: the habit names in the `for habit in …` list — that comma list is
+# the whole configuration — and `repeat 9` at the foot, which is how many blank
+# rows are left to fill in by hand.
+#
+# The grid is built from real columns rather than from a graph decoration, so
+# every cell lines up with the day number above it however many days the month
+# has. February and July both come out right.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.5in
+
+defaults box
+  border-width: 0.4pt
+  height: fill
+
+# ---- Header ----
+
+section
+  height: auto
+  column
+    width: auto
+    text "{month.name}"
+      font-size: 26pt
+      font-weight: bold
+  column
+    padding-left: 12pt
+    valign: bottom
+    text "{year}"
+      font-size: 14pt
+      font-weight: bold
+    text "Habit tracker · {month.start:%-d %b} to {month.end:%-d %b}"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 4pt
+  rule
+    line-width: 1pt
+
+# ---- The day-number strip ----
+#
+# The empty first column is the same width as the habit-name column below, which
+# is what keeps the numbers over their cells. Change one and change the other.
+
+section
+  height: auto
+  padding-top: 10pt
+  column
+    width: 130pt
+  for day in month.days
+    column
+      text "{day.num}"
+        font-size: 5.5pt
+        align: center
+
+# ---- One row per habit ----
+
+section
+  height: fill
+  padding-top: 2pt
+  for habit in Move, Read, Write, Sleep by 11, No screens after 9
+    section
+      height: fill
+      column
+        width: 130pt
+        box
+          padding: 4pt
+          text "{habit}"
+            font-size: 7.5pt
+      for day in month.days
+        column
+          box
+
+  # Blank rows, for the habits you have not thought of yet. Every row is `fill`,
+  # so adding or removing one re-divides the page instead of leaving a gap.
+  repeat 9
+    section
+      height: fill
+      column
+        width: 130pt
+        box
+      for day in month.days
+        column
+          box

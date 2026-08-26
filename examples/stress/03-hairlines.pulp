@@ -1,0 +1,707 @@
+# STRESS 03 — HAIRLINES
+#
+# A weight ramp from 0.1pt to 3pt, with the value printed beside every stroke.
+# Print it and find the first weight your printer renders at its declared
+# thickness rather than at one device pixel — everything below that line is a
+# property of the printer, not of the document.
+#
+# TWO THINGS THIS SHEET WILL TEACH YOU ABOUT THE TOOL ITSELF:
+#
+#   * Every stroke is floored at 0.25pt (geom.TicksPerPt/4). The 0.1pt, 0.15pt
+#     and 0.2pt rows are therefore drawn at 0.25pt and are identical to it. The
+#     floor is silent — there is no diagnostic — so the three rows looking the
+#     same is correct behaviour, not a rasterisation artefact.
+#   * Horizontal and vertical strokes of the same weight rasterise differently
+#     on most laser printers, so both are on the sheet.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 26pt
+  text "03 · HAIRLINES"
+    font-size: 15pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 26pt
+  text "Left column gray(0), right column gray(0.6). The first three rows are below the 0.25pt floor and are drawn at 0.25pt."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 14pt
+  column
+    width: 52pt
+  column
+    width: fill
+    text "gray(0)"
+      font-size: 6pt
+      color: gray(0.45)
+  column
+    width: 24pt
+  column
+    width: fill
+    text "gray(0.6)"
+      font-size: 6pt
+      color: gray(0.45)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.1pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.1pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.1pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.15pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.15pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.15pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.2pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.2pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.2pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.25pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.25pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.25pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.3pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.3pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.3pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.35pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.35pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.35pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.4pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.4pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.4pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.5pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.5pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.5pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.6pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.6pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.6pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.75pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.75pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.75pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "0.9pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.9pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 0.9pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "1pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "1.25pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1.25pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1.25pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "1.5pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1.5pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 1.5pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "2pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 2pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 2pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "2.5pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 2.5pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 2.5pt
+      line-color: gray(0.6)
+
+section
+  height: 19pt
+  column
+    width: 52pt
+    valign: middle
+    text "3pt"
+      font-size: 7pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 3pt
+      line-color: gray(0)
+  column
+    width: 24pt
+  column
+    width: fill
+    valign: middle
+    rule
+      line-width: 3pt
+      line-color: gray(0.6)
+
+section
+  height: 26pt
+  valign: bottom
+  text "The same weights as vertical strokes — a box border on one side only, same ramp, left to right."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 8pt
+
+section
+  height: 80pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.1pt
+      border-color: gray(0)
+    text "0.1"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.15pt
+      border-color: gray(0)
+    text "0.15"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.2pt
+      border-color: gray(0)
+    text "0.2"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.25pt
+      border-color: gray(0)
+    text "0.25"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.3pt
+      border-color: gray(0)
+    text "0.3"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.35pt
+      border-color: gray(0)
+    text "0.35"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.4pt
+      border-color: gray(0)
+    text "0.4"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.5pt
+      border-color: gray(0)
+    text "0.5"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.6pt
+      border-color: gray(0)
+    text "0.6"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.75pt
+      border-color: gray(0)
+    text "0.75"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 0.9pt
+      border-color: gray(0)
+    text "0.9"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 1pt
+      border-color: gray(0)
+    text "1"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 1.25pt
+      border-color: gray(0)
+    text "1.25"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 1.5pt
+      border-color: gray(0)
+    text "1.5"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 2pt
+      border-color: gray(0)
+    text "2"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 2.5pt
+      border-color: gray(0)
+    text "2.5"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+  column
+    width: fill
+    box
+      height: 62pt
+      border-left-width: 3pt
+      border-color: gray(0)
+    text "3"
+      font-size: 5pt
+      color: gray(0.4)
+      padding-top: 3pt
+
+section
+  height: 26pt
+  valign: bottom
+  text "And the weight that matters most: the same ruled panel at five line-widths. This is the choice you are really making when you set line-width."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 8pt
+
+section
+  height: 156pt
+  gap: 10pt
+  column
+    width: fill
+    box
+      height: 134pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      line-style: ruled
+      line-pitch: 6mm
+      line-width: 0.25pt
+      line-color: gray(0.78)
+    text "line-width: 0.25pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 134pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      line-style: ruled
+      line-pitch: 6mm
+      line-width: 0.4pt
+      line-color: gray(0.78)
+    text "line-width: 0.4pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 134pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      line-style: ruled
+      line-pitch: 6mm
+      line-width: 0.5pt
+      line-color: gray(0.78)
+    text "line-width: 0.5pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 134pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      line-style: ruled
+      line-pitch: 6mm
+      line-width: 0.7pt
+      line-color: gray(0.78)
+    text "line-width: 0.7pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+  column
+    width: fill
+    box
+      height: 134pt
+      border-width: 0.4pt
+      border-color: gray(0.6)
+      line-style: ruled
+      line-pitch: 6mm
+      line-width: 1pt
+      line-color: gray(0.78)
+    text "line-width: 1pt"
+      font-size: 6pt
+      color: gray(0.4)
+      align: center
+      padding-top: 4pt
+
+section
+  height: fill
+  valign: bottom
+  text "A rule element is exactly as tall as its line-width, so a 3pt rule occupies 3pt of vertical flow and a 0.1pt rule occupies 0.25pt. Rule B of DESIGN.md D4 applies to every stroke here: the coordinate is the CENTRE of the stroke, so thickening a rule does not move it."
+    font-size: 6.5pt
+    color: gray(0.5)

@@ -1,0 +1,51 @@
+# The Cornell note-taking page: a cue column, a notes area, and a summary band.
+#
+# Change first: `cornell-cue`, the width of the question column on the left, and
+# `cornell-summary`, the height of the band across the foot.
+#
+# The method: notes on the right during the lecture, questions in the left
+# column afterwards, and a two-sentence summary at the bottom the same day.
+
+page
+  size: letter
+  margin: 0.6in
+
+# ---- Header: what this page is about ----
+
+section
+  height: auto
+  column
+    valign: bottom
+    text "Subject"
+      font-size: 7pt
+    rule
+      line-width: 0.6pt
+      margin-top: 12pt
+  column
+    width: 34%
+    padding-left: 16pt
+    valign: bottom
+    align: right
+    text "{today:%A, %-d %B %Y}"
+      font-size: 9pt
+      font-weight: bold
+    text "Week {week.number}"
+      font-size: 7pt
+
+# ---- The three regions ----
+#
+# `line-style: cornell` draws all three at once: the cue divider, the summary
+# divider and the writing rules, in one decoration that cannot disagree with
+# itself about where the bands start.
+
+section
+  height: fill
+  padding-top: 12pt
+  panel
+    height: fill
+    border-width: 0.5pt
+    padding: 6pt
+    line-style: cornell
+    line-pitch: 7mm
+    cornell-cue: 108pt
+    cornell-summary: 22%

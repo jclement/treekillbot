@@ -1,0 +1,46 @@
+# A sheet of 5mm dot-grid paper with a date and a title line along the top.
+#
+# Change first: `dot-pitch` on the grid box — 5mm is the bullet-journal
+# standard, 4mm is denser — and the page `margin`, which is what decides how
+# much grid you get.
+
+page
+  size: letter
+  margin: 0.45in
+
+# ---- A header light enough to ignore ----
+
+section
+  height: auto
+  column
+    valign: bottom
+    text "{today:%A, %-d %B %Y}"
+      font-size: 8pt
+      font-weight: bold
+  column
+    width: auto
+    valign: bottom
+    align: right
+    text "W{week.number}"
+      font-size: 8pt
+
+section
+  height: auto
+  padding-top: 4pt
+  rule
+    line-width: 0.6pt
+
+# ---- The grid ----
+#
+# `grid-origin: page` anchors the lattice to the page rather than to this box,
+# which is what makes the dots line up with any other panel you add later
+# instead of restarting inside each one.
+
+section
+  height: fill
+  padding-top: 8pt
+  box
+    height: fill
+    line-style: dotted
+    dot-pitch: 5mm
+    grid-origin: page

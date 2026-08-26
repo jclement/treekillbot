@@ -1,0 +1,574 @@
+# STRESS 02 — COLOURS
+#
+# Two things at once. The top half is a 21-step DeviceGray ramp with its value
+# printed under every patch — print it on the paper you actually use and keep
+# it, because it tells you where your printer's dot gain starts closing up the
+# light end and where the dark end stops separating. That is the number you
+# need before choosing any tint in a document.
+#
+# The bottom half is every colour form the parser accepts, one per row, with
+# the literal that produced it printed beside it.
+#
+# gray() is emitted as DeviceGray and everything else as DeviceRGB or DeviceCMYK
+# (DESIGN.md D10), so the tint written is the tint the printer receives.
+
+page
+  size: letter
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Mono
+  font-size: 8pt
+  color: gray(0.12)
+
+style swatch
+  height: 20pt
+  border-width: 0.3pt
+  border-color: gray(0.45)
+
+style form-label
+  valign: middle
+  font-size: 7.5pt
+  padding-left: 8pt
+
+section
+  height: 26pt
+  text "02 · COLOURS"
+    font-size: 15pt
+    font-weight: bold
+    tracking: 1.2pt
+
+section
+  height: 24pt
+  text "gray() ramp — 21 steps of 0.05, emitted as DeviceGray. Ring the last step you can still tell from its neighbour."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 76pt
+  for tint in 1.00, 0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10, 0.05, 0.00
+    column
+      box
+        height: 58pt
+        background: gray({tint})
+        border-width: 0.3pt
+        border-color: gray(0.45)
+      text "{tint}"
+        font-size: 4.5pt
+        color: gray(0.35)
+        align: center
+        padding-top: 3pt
+
+section
+  height: 22pt
+  valign: bottom
+  text "The same ramp again at 3mm, which is closer to the size a rule or a hairline actually covers."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 20pt
+  padding-top: 5pt
+  for tint in 1.00, 0.95, 0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60, 0.55, 0.50, 0.45, 0.40, 0.35, 0.30, 0.25, 0.20, 0.15, 0.10, 0.05, 0.00
+    column
+      box
+        height: 3mm
+        background: gray({tint})
+
+section
+  height: 30pt
+  valign: bottom
+  text "Every colour form. The four alpha rows sit over white paper, so an alpha of 0.5 shows as the half-strength tint it is."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 10pt
+
+section
+  height: fill
+  gap: 20pt
+
+  column
+    width: fill
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: #c00
+      column
+        style: form-label
+        text "#c00"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: #c008
+      column
+        style: form-label
+        text "#c008"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: #1f6feb
+      column
+        style: form-label
+        text "#1f6feb"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: #1f6feb80
+      column
+        style: form-label
+        text "#1f6feb80"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: rgb(31, 111, 235)
+      column
+        style: form-label
+        text "rgb(31, 111, 235)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: rgb(0.12, 0.44, 0.92)
+      column
+        style: form-label
+        text "rgb(0.12, 0.44, 0.92)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: rgb(12%, 44%, 92%)
+      column
+        style: form-label
+        text "rgb(12%, 44%, 92%)"
+
+  column
+    width: fill
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: rgba(31, 111, 235, 0.5)
+      column
+        style: form-label
+        text "rgba(31, 111, 235, 0.5)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: gray(0.5)
+      column
+        style: form-label
+        text "gray(0.5)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: gray(0.5, 0.5)
+      column
+        style: form-label
+        text "gray(0.5, 0.5)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: grey(0.25)
+      column
+        style: form-label
+        text "grey(0.25)  — British spelling"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: cmyk(0, 0.81, 1, 0)
+      column
+        style: form-label
+        text "cmyk(0, 0.81, 1, 0)"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: slategray
+      column
+        style: form-label
+        text "slategray  — one of 148 CSS names"
+    section
+      height: 24pt
+      column
+        width: 78pt
+        box
+          style: swatch
+          background: transparent
+      column
+        style: form-label
+        text "transparent  — zero alpha, not white"
+
+section
+  height: 26pt
+  valign: bottom
+  text "And once more as 0.4pt rules, which is how a tint is actually spent in this tool. gray(0.78) is the shipped default for a writing rule."
+    font-size: 7.5pt
+    color: gray(0.45)
+
+section
+  height: 6pt
+
+section
+  height: fill
+  gap: 24pt
+  column
+    width: fill
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "1.00"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(1.00)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.95"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.95)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.90"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.90)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.85"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.85)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.80"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.80)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.75"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.75)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.70"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.70)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.65"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.65)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.60"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.60)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.55"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.55)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.50"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.50)
+  column
+    width: fill
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.45"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.45)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.40"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.40)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.35"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.35)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.30"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.30)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.25"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.25)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.20"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.20)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.15"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.15)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.10"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.10)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.05"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.05)
+
+    section
+      height: 13pt
+      column
+        width: 52pt
+        valign: middle
+        text "0.00"
+          font-size: 6.5pt
+          color: gray(0.3)
+      column
+        width: fill
+        valign: middle
+        rule
+          line-width: 0.4pt
+          line-color: gray(0.00)
+
+section
+  height: 34pt
+  valign: bottom
+  text "cmyk() passes through untouched: no ICC profile, no separation, no overprint. Rebuild with --grayscale to see every row above converted to DeviceGray; the gray() rows are unchanged by it, which is the point of authoring in the output space."
+    font-size: 6.5pt
+    color: gray(0.5)

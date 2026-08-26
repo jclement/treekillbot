@@ -1,0 +1,93 @@
+# A month habit tracker: one row per habit, one narrow cell per day.
+#
+# The number of columns comes from the month, so February is 28 cells wide and
+# March is 31 — build it with --date 2027-02-01 and see. Weekend numbers are
+# set in grey so the week boundaries read without a fill.
+#
+# The lattice is drawn by the cells themselves: every cell carries a right and
+# a bottom border only, and the frame supplies the top and left edges. Giving
+# each cell all four sides would double every interior line.
+#
+# Change first: `repeat 14` — the number of habit rows — and the 118pt label
+# column width.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.5in
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+section
+  height: 34pt
+  gap: 12pt
+  column
+    width: 260pt
+    valign: bottom
+    text "{month.name} {year}"
+      font-size: 22pt
+      font-weight: bold
+      tracking: 0.5pt
+  column
+    width: fill
+    valign: bottom
+    align: right
+    text "HABIT TRACKER"
+      font-size: 7pt
+      color: gray(0.45)
+      tracking: 1.4pt
+      align: right
+
+section
+  height: 6pt
+  padding-top: 1pt
+  rule
+    line-width: 0.8pt
+    line-color: gray(0.25)
+
+# The day-number strip. It shares the 118pt label offset with every row below
+# it, which is what keeps the numbers over their columns.
+section
+  height: 15pt
+  padding-top: 4pt
+  column
+    width: 118pt
+  for day in month.days
+    column
+      align: center
+      text "{day.num}"
+        font-size: 6pt
+        align: center
+        color: {day.weekend ? "gray(0.55)" : "gray(0.2)"}
+
+section
+  height: fill
+  box
+    height: fill
+    border-top-width: 0.5pt
+    border-left-width: 0.5pt
+    border-color: gray(0.6)
+    repeat 14
+      section
+        height: fill
+        border-bottom-width: 0.4pt
+        border-color: gray(0.72)
+        column
+          width: 118pt
+          border-right-width: 0.5pt
+          border-color: gray(0.6)
+          padding-left: 4pt
+        for day in month.days
+          column
+            border-right-width: 0.4pt
+            border-color: gray(0.72)
+
+section
+  height: 16pt
+  valign: bottom
+  text "One row per habit; write the name on the left and fill a cell for every day you did it."
+    font-size: 6.5pt
+    color: gray(0.5)
