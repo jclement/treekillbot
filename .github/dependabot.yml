@@ -1,4 +1,12 @@
 # A release you cannot safely rebuild in six months has not really shipped.
+#
+# Everything is grouped, because this is a one-person repository and the failure
+# mode is not "an update was missed" but "six open pull requests, none of them
+# read". One PR per ecosystem per week is a thing you actually look at.
+#
+# Majors are grouped separately and deliberately: a major is a decision, and it
+# should not arrive folded in with six patch bumps that were going to be merged
+# without much thought.
 version: 2
 updates:
   - package-ecosystem: gomod
@@ -7,6 +15,11 @@ updates:
       interval: weekly
     commit-message:
       prefix: "deps"
+    groups:
+      go-minor-and-patch:
+        update-types: ["minor", "patch"]
+      go-major:
+        update-types: ["major"]
 
   - package-ecosystem: github-actions
     directory: /
@@ -14,6 +27,9 @@ updates:
       interval: weekly
     commit-message:
       prefix: "ci"
+    groups:
+      actions:
+        patterns: ["*"]
 
   # Dockerfile.goreleaser pins an Alpine tag; this is what moves it.
   - package-ecosystem: docker
@@ -22,3 +38,6 @@ updates:
       interval: weekly
     commit-message:
       prefix: "docker"
+    groups:
+      images:
+        patterns: ["*"]
