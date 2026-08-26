@@ -128,7 +128,7 @@ func Compile(doc *pulp.Document, opts Options) (*Result, pulp.Diagnostics) {
 	for _, node := range doc.TopLevel() {
 		if node.Name == schema.EPage {
 			for _, child := range node.Children {
-				if !schema.IsLayoutElement(child.Name) && child.Name != "for" && child.Name != "repeat" {
+				if !isContentNode(child.Name) {
 					continue
 				}
 				for _, built := range c.buildNode(child, ctx, pageProps) {
@@ -137,7 +137,7 @@ func Compile(doc *pulp.Document, opts Options) (*Result, pulp.Diagnostics) {
 			}
 			continue
 		}
-		if !schema.IsLayoutElement(node.Name) {
+		if !isContentNode(node.Name) {
 			continue
 		}
 		for _, built := range c.buildNode(node, ctx, pageProps) {
@@ -255,6 +255,9 @@ func (c *Compiler) collectDirectives(nodes []*pulp.Node, ctx cascadeContext) {
 	for _, node := range nodes {
 		switch node.Name {
 		case "style":
+			if isStyleReference(node) {
+				continue // a reference, resolved by the cascade, not a definition
+			}
 			c.defineStyle(node)
 		case "defaults":
 			c.applyDefaults(node, ctx)
@@ -487,7 +490,7 @@ func (c *Compiler) buildNode(node *pulp.Node, ctx cascadeContext, parent *schema
 	}
 
 	for _, child := range node.Children {
-		if !schema.IsLayoutElement(child.Name) && child.Name != "for" && child.Name != "repeat" {
+		if !isContentNode(child.Name) {
 			continue
 		}
 		for _, built := range c.buildNode(child, childCtx, props) {
@@ -504,6 +507,10 @@ func (c *Compiler) textContent(node *pulp.Node, props *schema.Props) string {
 	span := node.ArgSpan
 	if content := node.Child("content"); content != nil {
 		text, span = content.Arg, content.ArgSpan
+	}
+	// Single quotes are fully raw, so the check has to come before substitution.
+	if isRawQuoted(text) {
+		return applyTransform(unquote(strings.TrimSpace(text)), props.Enum(schema.PTextTransform, "none"))
 	}
 	text = unquote(c.scope.Interpolate(text, span, c.src, c.diags))
 	return applyTransform(text, props.Enum(schema.PTextTransform, "none"))
@@ -572,6 +579,23 @@ func (c *Compiler) buildRepeat(node *pulp.Node, ctx cascadeContext, parent *sche
 		c.scope.Pop()
 	}
 	return out
+}
+
+// isContentNode reports whether a name produces something on the page.
+//
+// Loops count: they are transparent, and expand to whatever they contain. This
+// is one predicate rather than a repeated `IsLayoutElement || for || repeat`
+// because the version at the top level once omitted the loop cases, and a
+// top-level `for` was then dropped in silence — a blank page and exit 0, which
+// is the worst way for a tool to be wrong.
+// isStyleReference distinguishes `style: name` from a `style <name>` block, the
+// same way the schema validator does.
+func isStyleReference(n *pulp.Node) bool {
+	return n.Name == "style" && n.HasArg && len(n.Children) == 0
+}
+
+func isContentNode(name string) bool {
+	return schema.IsLayoutElement(name) || name == "for" || name == "repeat"
 }
 
 // declaresDirectives reports whether a node carries its own defaults, styles or

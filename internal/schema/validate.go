@@ -63,6 +63,15 @@ func (v *validator) node(n *pulp.Node, ctx context) {
 		v.binding(n)
 		return
 	}
+	// `style` is both an element and a property: `style ruled` with an indented
+	// block DEFINES a bundle, while `style: ruled` with no children REFERENCES
+	// one. Resolving it as an element unconditionally made `style: small` a
+	// "text cannot contain style" error on every leaf element, which is where
+	// applying a style is most useful.
+	if isStyleReference(n) {
+		v.property(n, PStyle, ctx)
+		return
+	}
 	if def, ok := Element(n.Name); ok {
 		v.element(n, def)
 		return
@@ -72,6 +81,11 @@ func (v *validator) node(n *pulp.Node, ctx context) {
 		return
 	}
 	v.unknownName(n, ctx)
+}
+
+// isStyleReference distinguishes `style: name` from a `style <name>` block.
+func isStyleReference(n *pulp.Node) bool {
+	return n.Name == "style" && n.HasArg && len(n.Children) == 0
 }
 
 // binding validates a variable declaration inside `vars` or `let`. A variable
@@ -109,7 +123,7 @@ func (v *validator) element(n *pulp.Node, def *ElementDef) {
 		// Properties beneath a leaf element are fine — `text` takes `align` —
 		// so only complain about child *elements*.
 		for _, c := range n.Children {
-			if IsElement(c.Name) {
+			if IsElement(c.Name) && !isStyleReference(c) {
 				v.diags.Errorf(v.src, c.NameSpan, "E122", "`%s` cannot contain `%s`", n.Name, c.Name).
 					WithLabel("not allowed here").
 					WithHelp("`%s` holds no other elements. %s", n.Name, def.Doc)
@@ -169,7 +183,7 @@ func (v *validator) property(n *pulp.Node, id PropID, ctx context) {
 
 	if len(n.Children) > 0 {
 		for _, c := range n.Children {
-			if IsElement(c.Name) {
+			if IsElement(c.Name) && !isStyleReference(c) {
 				v.diags.Errorf(v.src, c.NameSpan, "E123",
 					"`%s` is a property, so it cannot contain the element `%s`", n.Name, c.Name).
 					WithLabel("unexpected element").

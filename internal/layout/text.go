@@ -47,6 +47,45 @@ type TextLayout struct {
 	Clipped bool
 }
 
+// FitHeight is what decides whether text fits its box: the sum of its line
+// boxes, which is exactly the number Measure reported to the layout engine.
+//
+// Using the same quantity for both is the whole point, and it took three
+// attempts to see that. Judging by the last baseline instead looks more precise
+// and is worse: with `line-height: 1.0` the final baseline sits BELOW the
+// line-box total, so text allotted exactly its own natural height was reported
+// as clipped. Judging by ink extent (baseline plus the face's nominal descent)
+// warned on overshoots of a hundredth of a point, because a box sized to its
+// text is over by exactly the descent — and half the strings in question have
+// no descenders at all.
+//
+// What actually works is the last line's baseline, less one descent of slack.
+// In words: text is clipped when a line's baseline falls more than a
+// descender's depth below the box — which is precisely when a whole line has
+// been lost, and is what a person means by "it does not fit". A descender
+// grazing the bottom edge is not that.
+func (t TextLayout) FitHeight() geom.Tick {
+	if len(t.Lines) == 0 || t.Face == nil {
+		return 0
+	}
+	depth := t.Lines[len(t.Lines)-1].Baseline - t.Face.Descent(t.SizeQpt)
+	if depth < 0 {
+		return 0
+	}
+	return depth
+}
+
+// InkHeight is how far down the block's ink can reach: the last baseline plus
+// the face's descent. It is reported in diagnostics, where the full extent is
+// the more useful number to act on, but it is not what decides fit.
+func (t TextLayout) InkHeight() geom.Tick {
+	if len(t.Lines) == 0 || t.Face == nil {
+		return 0
+	}
+	last := t.Lines[len(t.Lines)-1]
+	return last.Baseline + t.Face.Descent(t.SizeQpt)
+}
+
 // TextStyle is the subset of resolved properties that affects wrapping.
 type TextStyle struct {
 	Face       *fonts.Face
@@ -88,7 +127,15 @@ func WrapText(text string, st TextStyle, measure, maxHeight geom.Tick) TextLayou
 	}
 
 	layout := wrapAt(text, st, measure, st.SizeQpt)
-	if maxHeight <= 0 || layout.Height <= maxHeight || st.AutoShrink <= 0 {
+	if maxHeight <= 0 || layout.FitHeight() <= maxHeight {
+		return layout
+	}
+	if st.AutoShrink <= 0 {
+		// Shrinking is off, so the text simply does not fit. Reporting that is
+		// not optional: returning early here made over-long text silently
+		// overflow its box, which is the one outcome DESIGN.md D9 exists to
+		// prevent.
+		layout.Clipped = true
 		return layout
 	}
 
@@ -101,7 +148,7 @@ func WrapText(text string, st TextStyle, measure, maxHeight geom.Tick) TextLayou
 	}
 	for size := st.SizeQpt - 1; size >= floor; size-- {
 		candidate := wrapAt(text, st, measure, size)
-		if candidate.Height <= maxHeight {
+		if candidate.FitHeight() <= maxHeight {
 			candidate.Shrunk = true
 			return candidate
 		}
@@ -109,7 +156,7 @@ func WrapText(text string, st TextStyle, measure, maxHeight geom.Tick) TextLayou
 
 	smallest := wrapAt(text, st, measure, floor)
 	smallest.Shrunk = smallest.SizeQpt != st.SizeQpt
-	smallest.Clipped = smallest.Height > maxHeight
+	smallest.Clipped = smallest.FitHeight() > maxHeight
 	return smallest
 }
 

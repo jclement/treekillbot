@@ -45,7 +45,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         align: left
     text "align: left"
@@ -59,7 +59,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         align: center
     text "align: center"
@@ -73,7 +73,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         align: right
     text "align: right"
@@ -87,7 +87,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         align: justify
     text "align: justify"
@@ -163,7 +163,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         line-height: 1.0
     text "line-height: 1.0"
@@ -177,7 +177,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         line-height: 1.2
     text "line-height: 1.2"
@@ -191,7 +191,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         line-height: 1.35
     text "line-height: 1.35"
@@ -205,7 +205,7 @@ section
       border-width: 0.4pt
       border-color: gray(0.6)
       padding: 6pt
-      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so the output never moves because a penalty constant was tuned."
+      text "Greedy line breaking, not Knuth-Plass: the wrapper takes as many words as fit and moves on, so output never shifts."
         font-size: 7.5pt
         line-height: 1.8
     text "line-height: 1.8"
@@ -359,8 +359,8 @@ section
     width: fill
 
 section
-  height: fill
+  height: auto
   valign: bottom
-  text "auto-shrink is not on this sheet: it works by definition only when the text does not fit, and a text that does not fit emits W020. Sheet 09 is where the deliberate warnings live."
+  text "auto-shrink is not on this sheet: it only acts when text does not fit. Sheet 09 carries the deliberate warnings."
     font-size: 6.5pt
     color: gray(0.5)

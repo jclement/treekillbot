@@ -226,6 +226,10 @@ func (c *Compiler) applyDirectProperties(node *pulp.Node, props *schema.Props) {
 
 // propertyValues interpolates and parses one property's argument.
 func (c *Compiler) propertyValues(node *pulp.Node, id schema.PropID, arg string, span pulp.Span) ([]pulp.Value, bool) {
+	if isRawQuoted(arg) {
+		raw := unquote(strings.TrimSpace(arg))
+		return []pulp.Value{{Kind: pulp.KindString, Str: raw, Raw: arg, Span: span}}, true
+	}
 	text := c.scope.Interpolate(arg, span, c.src, c.diags)
 	switch schema.Def(id).Kind {
 	case schema.KindString, schema.KindPageSize:
@@ -236,6 +240,17 @@ func (c *Compiler) propertyValues(node *pulp.Node, id schema.PropID, arg string,
 	}
 	values := pulp.ParseValues(c.src, span, text, c.diags)
 	return values, len(values) > 0
+}
+
+// isRawQuoted reports whether text is wrapped in single quotes, which the
+// language defines as fully raw: no escapes and no interpolation.
+//
+// It has to be checked BEFORE interpolation, not after. Substituting first and
+// unquoting second means `text '{today}'` expands anyway, which defeats the one
+// escape hatch the language offers for text that is mostly braces.
+func isRawQuoted(text string) bool {
+	trimmed := strings.TrimSpace(text)
+	return len(trimmed) >= 2 && trimmed[0] == '\'' && trimmed[len(trimmed)-1] == '\''
 }
 
 // unquote strips one layer of matching surrounding quotes.

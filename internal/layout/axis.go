@@ -81,7 +81,10 @@ func ResolveAxis(avail, gap geom.Tick, items []AxisItem) AxisResult {
 	for i, item := range items {
 		switch item.Dim.Mode {
 		case geom.SizeFixed:
-			sizes[i] = item.Dim.Length
+			// Clamped here, because a fixed child is frozen against later
+			// adjustment and applyBounds would never see it — so `height: 120pt`
+			// with `max-height: 44pt` silently stayed 120pt.
+			sizes[i] = clampItem(item, item.Dim.Length)
 			frozen[i] = true
 			claimed += sizes[i]
 		case geom.SizeAuto:

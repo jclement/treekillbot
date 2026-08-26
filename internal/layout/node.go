@@ -136,6 +136,10 @@ type Node struct {
 	naturalWidth geom.Tick
 	measured     bool
 
+	// titleBand is the room the node's title claims, computed during Arrange
+	// and read back by the painter.
+	titleBand TitleBand
+
 	// text holds the wrapped lines once measured, so Arrange and Paint use the
 	// same line breaks that Measure sized the box against. Recomputing them is
 	// how a box ends up one line short of its own content.

@@ -324,10 +324,15 @@ var errorDocs = []ErrorDoc{
 		Fix:         "Give the box more height, shorten the text, or set `auto-shrink: 0` to make it an error instead.",
 	},
 	{
-		Code:        "W021",
-		Title:       "Text was clipped",
-		Explanation: "The text did not fit even at the smallest size shrinking allows, so some of it was dropped.",
-		Fix:         "Give the box more room or shorten the text.",
+		Code:  "W021",
+		Title: "Text was clipped",
+		Explanation: "A whole line of text fell outside its box, so it was clipped to the box rather " +
+			"than painted past the border. `auto-shrink` is off by default, so this is the ordinary " +
+			"outcome for text that does not fit; with shrinking enabled it means the text did not fit " +
+			"even at the smallest size allowed.\n\nA descender grazing the bottom edge is not this: " +
+			"the check asks whether a line's baseline falls more than a descender's depth below the box, " +
+			"so a box sized snugly to its own text does not warn.",
+		Fix: "Give the box more room, shorten the text, or set `auto-shrink` to let it shrink to fit.",
 	},
 	{
 		Code:  "W030",

@@ -191,12 +191,28 @@ func decorationArea(n *layout.Node, title titleInfo) geom.Rect {
 }
 
 // paintText draws a text node's wrapped lines.
+//
+// Text that overflows its box is clipped to it rather than painted past the
+// border and off the page. Without this, `overflow: clip` clipped the box's
+// decorations and let its text escape, which is the opposite of what the
+// property says.
 func paintText(n *layout.Node, canvas render.Canvas, env *Env) {
 	wrapped := n.TextLayout()
 	if wrapped == nil || len(wrapped.Lines) == 0 || wrapped.Face == nil {
 		return
 	}
 	content := n.Frame.Content
+
+	if wrapped.Clipped || n.Props.Enum(schema.POverflow, "error") == "clip" {
+		canvas.Save()
+		defer canvas.Restore()
+		// A little slack below the last baseline so descenders are not shaved
+		// off a line that does fit.
+		clip := content
+		clip.H += wrapped.LineHeight / 4
+		canvas.AddRect(clip, 0)
+		canvas.Clip()
+	}
 	color := colorOf(n.Props, schema.PColor, paint.Black, env)
 	align := n.Props.Enum(schema.PAlign, "left")
 	shift := layout.VAlignOffset(n.Props.Enum(schema.PValign, "top"), wrapped.Height, content.H)

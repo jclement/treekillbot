@@ -121,8 +121,11 @@ once, and every geometry function names which rule it follows:
 - **Rule B — line decorations are centre-aligned.** A rule at `y` covers
   `[y-w/2, y+w/2]`. A writing rule *is* the line; changing its weight must not move it.
 
-At `gap: 0` with uniform child borders, the **container draws the lattice** and children
-draw no border, so shared edges are exactly `w` rather than `2w`.
+At `gap: 0` with uniform child borders, two flush panels produce a `2w` internal line. The
+intended fix is for the **container to draw the lattice** — its outer rect plus the interior
+lines, each centred on the shared edge — with children drawing no border. **That is not
+implemented.** A grid of bordered cells at `gap: 0` currently has doubled interior lines, and
+the workaround is to give cells borders on two sides only (`examples/habit.pulp` does this).
 
 ### D5 — Every line is a node
 
@@ -403,7 +406,31 @@ non-TTY even with a terminal attached.
 
 ---
 
-## 6. Known limitations
+## 6. Declared but not implemented
+
+These have a place in the schema and no effect on the output. They are listed rather than
+removed because each is a decision already made and worth keeping, but a property that
+silently does nothing is worse than one that does not exist — so until they are wired up,
+this is where they are recorded.
+
+| Name | State |
+|---|---|
+| `numeric-style` | Parsed, never read. Tabular figures are whatever the face defaults to. |
+| `opacity` | Parsed, never read. Use an alpha channel on the colour instead. |
+| `bleed` | Parsed, never read. No bleed area is added to the media box. |
+| `image` | Parses and measures as zero; nothing is painted. |
+| `include` | Validates; the file is never spliced in. |
+| `baseline-on-rule` | `Decoration.Baselines()` is computed correctly and the painter never asks for it, so text in a ruled box flows normally instead of snapping to the rules. |
+| `grid` element | Accepted, and lays out exactly like `box`. The repeating lattice its documentation promises is not there; use `repeat` or `for`. |
+
+Two smaller ones: `width` is honoured only on a `column` (a `section` warns with W031; a
+`box`, `panel` or `text` silently fills), and a ternary condition can only compare a path
+against a literal, so `{a.n == b.n ? … }` compares against the *characters* of `b.n` and is
+always false, with no diagnostic.
+
+---
+
+## 7. Known limitations
 
 - No arithmetic in the DSL. No `calc()`, no `100% - 1in`. `fill`, `%`, `auto`, `gap` and
   `padding` cover page-size-independent layout, and every expression language starts with

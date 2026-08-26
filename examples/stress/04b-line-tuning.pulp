@@ -545,8 +545,8 @@ section
       padding-top: 3pt
 
 section
-  height: fill
+  height: auto
   valign: bottom
-  text "baseline-on-rule has no visible effect above: nothing in the painter consumes a decoration's Baselines() yet, so text in a ruled box flows normally rather than snapping to the rules. The property is read and the baselines are computed — they are simply not used."
+  text "baseline-on-rule has no visible effect: nothing in the painter consumes a decoration's Baselines() yet."
     font-size: 6.5pt
     color: gray(0.5)

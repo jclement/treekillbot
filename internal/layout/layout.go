@@ -69,7 +69,15 @@ func measureNode(n *Node, width geom.Tick, env *Env) geom.Tick {
 	// its natural height is however many ruled lines were asked for, or zero
 	// when it is meant to fill whatever it is given.
 	if len(n.Children) == 0 {
-		return decorationNaturalHeight(n) + chrome.Vertical()
+		return decorationNaturalHeight(n) + measureTitle(n, env).Height + chrome.Vertical()
+	}
+
+	band := measureTitle(n, env)
+	if band.Width > 0 {
+		contentWidth -= band.Width
+		if contentWidth < 0 {
+			contentWidth = 0
+		}
 	}
 
 	gap := n.Props.Tick(schema.PGap, 0)
@@ -81,7 +89,7 @@ func measureNode(n *Node, width geom.Tick, env *Env) geom.Tick {
 			total += gap
 		}
 	}
-	return total + chrome.Vertical()
+	return total + band.Height + chrome.Vertical()
 }
 
 // measureText wraps a text node and records the layout for Arrange to reuse.
@@ -203,12 +211,14 @@ func resolveColumnWidths(columns []*Node, contentWidth, gap geom.Tick) []geom.Ti
 // parent has decided on.
 func Arrange(n *Node, border geom.Rect, env *Env) {
 	n.Frame = n.buildFrame(border)
+	n.titleBand = measureTitle(n, env)
 	if !n.Kind.IsContainer() || len(n.Children) == 0 {
 		arrangeLeaf(n, env)
 		return
 	}
 
-	content := n.Frame.Content
+	// Children go below the title, not on top of it.
+	content := contentAfterTitle(n.Frame.Content, n.titleBand)
 	gap := n.Props.Tick(schema.PGap, 0)
 	groups := groupChildren(n.Children)
 
@@ -269,11 +279,13 @@ func arrangeLeaf(n *Node, env *Env) {
 	}
 	content := n.Frame.Content
 	st := textStyleFor(n, env)
-	maxHeight := geom.Tick(0)
-	if n.Props.Dimension(schema.PHeight, geom.Auto).Mode != geom.SizeAuto {
-		maxHeight = content.H
-	}
-	layout := WrapText(n.Text, st, content.W, maxHeight)
+
+	// The bound is the height this node was actually GIVEN, whatever it asked
+	// for. Bounding only explicitly-sized nodes missed the common case: an
+	// auto-height text node inside a fixed-height panel is shrunk to fit its
+	// slot by the axis resolver, so the box reports no overflow while the text
+	// quietly runs past it.
+	layout := WrapText(n.Text, st, content.W, content.H)
 	n.text = &layout
 
 	if layout.Shrunk && n.Source != nil {
@@ -286,7 +298,8 @@ func arrangeLeaf(n *Node, env *Env) {
 		env.Diags.Warnf(n.Source, n.Span, "W021",
 			"text does not fit and was clipped").
 			WithLabel("clipped").
-			WithHelp("The box is %.2fpt tall but the text needs %.2fpt.", content.H.Points(), layout.Height.Points())
+			WithHelp("The box is %.2fpt tall but the text needs %.2fpt.",
+				content.H.Points(), layout.InkHeight().Points())
 	}
 }
 

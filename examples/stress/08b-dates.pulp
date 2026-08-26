@@ -685,7 +685,7 @@ section
           color: gray(0.12)
 
 section
-  height: 26pt
+  height: auto
   valign: bottom
   text "The month grid, built from month.weeks — full rows that spill into the neighbouring months, because that is what a month on paper looks like. Weekends are set in grey; the SPILL days are not distinguished, because a ternary condition can only compare a path against a literal and `day.month.number == month.number` compares against the six characters of that path."
     font-size: 7.5pt

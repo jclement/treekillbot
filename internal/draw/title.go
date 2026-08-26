@@ -60,16 +60,10 @@ func titleMetrics(n *layout.Node, env *Env) titleInfo {
 	}
 	info.textWide = info.run.Width()
 
-	ascent, descent := face.Ascent(size), face.Descent(size)
-	textHeight := ascent + descent
-	switch info.position {
-	case "left":
-		info.width = info.textWide + info.padding.Horizontal()
-		info.baseline = ascent
-	default:
-		info.height = textHeight + info.padding.Vertical()
-		info.baseline = info.padding.Top + ascent
-	}
+	// Geometry comes from the band layout already computed and reserved, so the
+	// text cannot land anywhere other than the room set aside for it.
+	band := n.TitleBand()
+	info.height, info.width, info.baseline = band.Height, band.Width, band.Baseline
 	return info
 }
 
