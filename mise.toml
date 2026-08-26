@@ -10,7 +10,13 @@
 go = "1.27.0"
 # Pinned rather than "latest" so that `mise run snapshot` locally and the
 # release job in CI agree about what the config file is allowed to contain.
-goreleaser = "2.18.0"
+#
+# The ubi backend rather than the default aqua one: aqua verifies GitHub
+# artifact attestations against a pinned workflow identity, and GoReleaser now
+# publishes through GitHub's immutable-releases identity instead. aqua therefore
+# refuses the download and CI cannot install it at all. ubi fetches the release
+# asset directly. Revert to `goreleaser = "..."` once aqua's registry catches up.
+"ubi:goreleaser/goreleaser" = "2.18.0"
 
 [env]
 # The build stamp lives in internal/version, not main, because main is not
