@@ -112,16 +112,27 @@ func TestOnlyTheTextareaScrolls(t *testing.T) {
 	}
 }
 
-// Whatever scrolls has to be followed by the layers behind it.
-func TestScrollIsSynchronised(t *testing.T) {
+// The layers must follow the textarea by TRANSFORM, not by scrollTop.
+//
+// A textarea with a horizontal scrollbar is ~15px shorter than the layers
+// behind it, so its maximum scrollTop is ~15px larger. Assigning that value to
+// theirs clamps silently, and the caret drifts further from the text the closer
+// you get to the end of the document. A translate has no maximum.
+func TestScrollIsSynchronisedByTransform(t *testing.T) {
 	page := pageSource(t)
-	for _, needed := range []string{"highlightPre.scrollTop", "highlightPre.scrollLeft", "gutter.scrollTop"} {
-		if !strings.Contains(page, needed) {
-			t.Errorf("the scroll handler no longer syncs %s", needed)
-		}
-	}
 	if !strings.Contains(page, "source.addEventListener('scroll', syncScroll)") {
 		t.Error("the textarea's scroll event is not wired to the sync")
+	}
+	for _, needed := range []string{"highlight.style.transform", "gutter.style.transform"} {
+		if !strings.Contains(page, needed) {
+			t.Errorf("the sync no longer moves %s", needed)
+		}
+	}
+	// The clamping mechanism must not come back.
+	for _, forbidden := range []string{"highlightPre.scrollTop", "gutter.scrollTop ="} {
+		if strings.Contains(page, forbidden) {
+			t.Errorf("%s reintroduces the clamping drift; sync by transform instead", forbidden)
+		}
 	}
 }
 

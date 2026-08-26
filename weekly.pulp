@@ -1,0 +1,77 @@
+# A week to a spread: seven ruled day columns under a dated header, on landscape Letter.
+#
+# Change first: `line-pitch` in `defaults panel` — 15pt suits small writing, 18pt
+# is roomier — and `week-start` on the page if your week begins on Sunday.
+#
+# Nothing here sets a colour. That is deliberate: the ink belongs to the theme,
+# so `treekillbot build weekly.pulp --theme dot` redraws the whole page.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.4in
+  week-start: monday
+
+defaults panel
+  border-width: 0.4pt
+  padding: 5pt
+  line-style: ruled
+  line-pitch: 15pt
+
+# ---- Header: the week number, the dates it spans, and the ISO week ----
+
+section
+  height: auto
+  column
+    width: auto
+    text "W{week.number}"
+      font-size: 30pt
+      font-weight: bold
+  column
+    padding-left: 12pt
+    valign: bottom
+    text "{week.start:%A, %-d %B} — {week.end:%A, %-d %B %Y}"
+      font-size: 11pt
+      font-weight: bold
+    text "ISO {week.iso}"
+      font-size: 7pt
+
+section
+  height: auto
+  padding-top: 5pt
+  rule
+    line-width: 1pt
+
+# ---- The week itself ----
+#
+# `for day in week.days` gives seven columns in week-start order. Each one is a
+# panel titled with the short day name and the day of the month, which is the
+# label that stays right whatever `--date` says.
+
+section
+  height: fill
+  padding-top: 7pt
+  gap: 4pt
+  for day in week.days
+    column
+      panel "{day.short} {day.dd}"
+        height: fill
+        # Today gets a heavier frame. `?:` is the whole of Pulp's conditional
+        # vocabulary — there are no `if` blocks — and it is enough for this.
+        border-width: {day.today ? "0.9pt" : "0.4pt"}
+
+# ---- The strip along the foot ----
+
+section
+  height: 92pt
+  padding-top: 6pt
+  gap: 4pt
+  column
+    width: 30%
+    panel "Carried over"
+      height: fill
+      line-style: checkbox
+      line-pitch: 18pt
+  column
+    panel "Notes for the week"
+      height: fill

@@ -88,15 +88,20 @@
   .splitter:hover { background: var(--brand); }
 
   /* --- editor ---
-     The textarea is the ONE scroller. The highlighted <pre> and the gutter sit
-     in their own overflow:hidden boxes and are scrolled programmatically to
-     match it. An earlier version let the wrapper scroll as well, which gave two
-     scroll contexts, a gutter that stayed put while the text moved, and a caret
-     that drifted from the text under it. */
+     The textarea is the ONE scroller. The highlight layer and the gutter follow
+     it by TRANSFORM, never by scrollTop.
+     
+     That distinction is the whole bug this fixes. A textarea with a horizontal
+     scrollbar has 15px less client height than the <pre> behind it, so its
+     maximum scrollTop is 15px larger. Assigning `pre.scrollTop = ta.scrollTop`
+     therefore clamps silently through the last 15px of travel, and the caret
+     drifts further from the text the closer you get to the end of the document.
+     A translate has no maximum, so it mirrors the textarea exactly wherever it
+     is. */
   .editor-wrap { flex: 1; display: flex; min-height: 0; overflow: hidden; background: var(--panel); }
   .gutter {
-    flex: none; width: 52px; overflow: hidden;
-    padding: var(--editor-pad) 8px 40vh 0; text-align: right;
+    flex: none; width: 52px; overflow: hidden; position: relative;
+    padding: var(--editor-pad) 8px 0 0; text-align: right;
     font-family: var(--editor-font); font-size: var(--editor-size); line-height: var(--editor-leading);
     color: var(--comment); user-select: none;
     border-right: 1px solid var(--border);
@@ -112,6 +117,9 @@
     letter-spacing: 0; word-spacing: 0;
   }
   .code pre { pointer-events: none; overflow: hidden; color: var(--text); }
+  /* The transformed layers. Both start at their container's padding and are
+     moved by exactly the textarea's scroll offset. */
+  .code pre > code, .gutter > .lines { display: block; will-change: transform; }
   .code textarea {
     overflow: auto; resize: none; display: block;
     background: transparent; color: transparent; caret-color: var(--brand);
@@ -176,7 +184,7 @@
 <main>
   <section class="pane left" id="left">
     <div class="editor-wrap">
-      <div class="gutter" id="gutter"></div>
+      <div class="gutter"><div class="lines" id="gutter"></div></div>
       <div class="code" id="code">
         <pre aria-hidden="true"><code id="highlight"></code></pre>
         <textarea id="source" wrap="off" spellcheck="false"
@@ -451,12 +459,16 @@ source.addEventListener('input', () => {
   clearTimeout(renderTimer);
   renderTimer = setTimeout(requestRender, 140);
 });
-// The textarea is the only scroller; everything else follows it.
-const highlightPre = highlight.parentElement;
+// The textarea is the only scroller; the other layers follow it by transform.
+//
+// Not by scrollTop: the textarea's horizontal scrollbar makes it 15px shorter
+// than the layers behind it, so its maximum scrollTop is 15px larger and any
+// assignment to theirs clamps — which is what made the caret drift further from
+// the text the further down the document you went. A translate has no maximum.
 function syncScroll() {
-  highlightPre.scrollTop = source.scrollTop;
-  highlightPre.scrollLeft = source.scrollLeft;
-  gutter.scrollTop = source.scrollTop;
+  const x = -source.scrollLeft, y = -source.scrollTop;
+  highlight.style.transform = `translate(${x}px, ${y}px)`;
+  gutter.style.transform = `translateY(${y}px)`;
 }
 source.addEventListener('scroll', syncScroll);
 
