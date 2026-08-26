@@ -289,7 +289,30 @@ A theme that resolves to no properties at all is an error rather than a silent n
 `themes --show mono > mono.pulptheme` in the document's own directory truncates the target
 before the command runs, and discovery would then prefer the empty file forever after.
 
-### D14 — The live preview is SVG in a browser, not a native window
+### D14 — Templates and examples are both shipped, and are not the same thing
+
+Everything the tool can show you is compiled in: fonts, themes, templates and the example
+documents. A binary installed from Homebrew has no repository beside it, so a document that
+lives only in `examples/` may as well not exist.
+
+The two sets overlap by subject and are deliberately different in kind:
+
+- **Templates** (`internal/templates`) are what `new` scaffolds: deliberately plain, and
+  setting no colours at all, so they scaffold cleanly under any `--theme`.
+- **Examples** (`examples/`) are finished designs with their own typography and chosen
+  greys. They are the documents worth printing, and the stress sheets among them double as
+  printable references.
+
+Keeping both is a judgement, not an oversight. Collapsing them would mean either shipping
+designed documents as starting points — where a theme swap fights the author's greys — or
+shipping plain ones as the shop window. The pair costs 174KB in a 14MB binary.
+
+`go:embed` cannot reach upward out of its own package directory, so the directive for
+`examples/` lives in a package at the module root. The alternative was duplicating the
+documents into `internal/`, or making `examples/` build output that nobody could browse on
+GitHub, and both are worse than one small file in an odd place.
+
+### D15 — The live preview is SVG in a browser, not a native window
 
 `treekillbot edit` serves a local page: the document on the left, a live preview on the
 right. The preview is drawn by `internal/svgout`, another `render.Canvas`, so it receives

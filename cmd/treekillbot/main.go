@@ -113,6 +113,7 @@ func newRootCommand(console *ui.Console) *cobra.Command {
 		newDocsCommand(console),
 		newNewCommand(console),
 		newTemplatesCommand(console),
+		newExamplesCommand(console),
 		newThemesCommand(console),
 		newVersionCommand(console),
 	)

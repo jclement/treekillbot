@@ -21,10 +21,22 @@ release ships a `checksums.txt` signed with keyless cosign.
 ## Quick start
 
 ```sh
-treekillbot new weekly -o weekly.pulp     # start from a template
+treekillbot new weekly -o weekly.pulp     # a plain starting point to edit
 treekillbot build weekly.pulp             # → weekly.pdf
 treekillbot edit weekly.pulp              # side-by-side editor + live preview
 ```
+
+Everything ships inside the binary, so a `brew install` is all you need:
+
+```sh
+treekillbot examples                              # the finished, designed documents
+treekillbot examples --show daily -o daily.pulp   # start from one
+treekillbot examples --all                        # plus the stress-test sheets
+```
+
+`new` gives you something deliberately plain that scaffolds cleanly under any
+`--theme`; `examples --show` gives you a finished design with its own typography and
+greys. Both are `.pulp` files you own from that point on.
 
 Or write one by hand. Put this in `notes.pulp`:
 
@@ -116,7 +128,8 @@ and `treekillbot themes --show blueprint` prints a theme's source to copy and ed
 | `check` | Parse and validate without rendering — for editors and CI |
 | `fmt` | Rewrite documents in canonical form |
 | `new` | Start a document from a built-in template |
-| `templates` | List the built-in templates |
+| `templates` | List the built-in starting points |
+| `examples` | List the example documents; `--show <name>` prints or writes one |
 | `themes` | List themes; `--show <name>` prints one's source to copy and edit |
 | `docs` | Reference for properties, elements, errors, colours and page sizes |
 | `version` | Version, commit, build date, Go version, OS/arch |

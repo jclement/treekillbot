@@ -71,14 +71,25 @@
   .status.err { color: var(--err); }
   .status.ok { color: var(--ok); }
   button {
+    display: inline-flex; align-items: baseline; gap: 7px;
     font: inherit; font-weight: 600; font-size: 12px;
-    padding: 6px 13px; border-radius: 6px; cursor: pointer;
+    padding: 6px 12px; border-radius: 6px; cursor: pointer;
     border: 1px solid var(--border); background: transparent; color: var(--text);
   }
   button:hover { border-color: var(--dim); }
   button.primary { background: var(--brand); border-color: var(--brand); color: #16171b; }
   button.primary:disabled { opacity: .35; cursor: default; }
   @media (prefers-color-scheme: light) { button.primary { color: #fff; } }
+
+  /* The shortcut inside a button is a hint, not a key to press on screen, so it
+     is set in the button's own colour at reduced weight rather than boxed. The
+     generic `kbd` chip below is styled for a panel background: its grey border
+     and dim text land on the brand orange as mud, which is what this overrides. */
+  button kbd {
+    border: 0; background: none; padding: 0; border-radius: 0;
+    color: inherit; opacity: .68; font-weight: 500;
+    font-size: 11px; letter-spacing: .02em;
+  }
 
   main { flex: 1; display: flex; min-height: 0; }
   .pane { display: flex; flex-direction: column; min-width: 0; min-height: 0; }

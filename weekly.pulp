@@ -52,7 +52,7 @@ section
   height: fill
   padding-top: 7pt
   gap: 4pt
-  for day in week.days
+  for day in week.weekdays
     column
       panel "{day.short} {day.dd}"
         height: fill
