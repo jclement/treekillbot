@@ -238,9 +238,60 @@ breaks both CI and editor integration.
 the reasoning behind them — why geometry is integer ticks, why overflow is an error, why
 themes are written in Pulp, and what the PDF backend cannot do.
 
+## Why this exists
+
+Sometimes you need to write on paper. Not because paper is better — because the screen is
+where all the work already is, and a page is the one surface that cannot notify you.
+
+The trouble is that a blank page is a dare. A box is an invitation. Give me a ruled
+rectangle with a small grey word over the top of it and I will fill it in. Give me an empty
+sheet of A4 and I will consider it, think seriously about how I ought to be using this time,
+and go make coffee. The boxes are not decoration. The boxes are load-bearing.
+
+So: buy a planner. Everyone says buy a planner.
+
+Every planner on the market was designed by someone who gets up at five. They have a slot
+for every half hour from 06:00, which is not a schedule, it is a hostage note. They have a
+gratitude section. They have a habit tracker with twelve rows, for the twelve habits you do
+not have. They begin the week on Sunday. There is a flag for that now. There is a flag for
+everything now. That is what happened here, and we will get to it.
+
+And they are *notebooks*. Two hundred pages, bound, of which the number relevant to me on
+any given Tuesday is one. I think a week at a time. I would like to carry a week — folded in
+quarters, in a jacket pocket, on the train — and not the other fifty-one. A notebook is a
+commitment device for a person I am not.
+
+So I made my own. In a drawing program. Then I adjusted a margin. Then I adjusted it again,
+because the rules in one box did not line up with the rules in the box beside it, and once
+you have seen that you cannot stop seeing it. Then I noticed that rolling the sheet forward
+a week meant retyping seven dates by hand, and that I had been doing this every Sunday
+evening for some time, and that I had started to look forward to it, which was the actual
+warning sign.
+
+The rest was inevitable and took a while:
+
+- a small language, so a page is a file I can diff
+- a layout engine, so the boxes line up
+- integer geometry in sixteenths of a point, because floating-point rounding made a hairline
+  land half a pixel off and I found that I cared, deeply, at one in the morning
+- exact apportionment, so seven columns across a page are seven columns and not six columns
+  and a slightly wider one
+- border collapsing, so a grid of cells has interior lines the same weight as its frame
+- a dithering routine, for reasons that are purely aesthetic and entirely defensible
+- a browser preview, a theme system, an embedded font stack, a reproducible-build mode, and
+  a signed release pipeline
+
+All of this to avoid spending forty-eight dollars on a leather-bound object I would have felt
+guilty about by March.
+
+The planner would have been cheaper. The planner would not have had `--next 13w`.
+
 ## Why the name
 
 It turns text into paper. `.pulp` is what you feed it.
+
+The honesty is deliberate. This is not a productivity system and it will not change your
+life; it prints rectangles, and you still have to write in them.
 
 ## Licence
 
