@@ -312,7 +312,39 @@ shipping plain ones as the shop window. The pair costs 174KB in a 14MB binary.
 documents into `internal/`, or making `examples/` build output that nobody could browse on
 GitHub, and both are worse than one small file in an odd place.
 
-### D15 — The live preview is SVG in a browser, not a native window
+### D15 — Patterned fills are strokes, not fields of squares
+
+`pattern` and `title-pattern` fill a region with a dither, a scanline or a hatch instead of
+a tint. The reason to want one is not only nostalgia: a pattern is built from marks of a
+single solid ink, so a printer reproduces it exactly, whereas the light grey it stands in
+for goes through a halftone screen and dot-gains two or three steps darker than it looked
+on screen. It is the tint you can predict — the concern behind D10, solved rather than
+worked around.
+
+**A dither is drawn as one dashed line per row.** A dash array can encode any repeating
+on/off sequence, and a row of a dither mask is exactly that. Stroke a line whose width
+equals the cell size, dashed to the row's pattern, and the result is a row of squares. A
+12pt heading band at a 1pt cell costs twelve stroke operations; the same band drawn cell by
+cell would be six thousand rectangles, and a page of headings would be a file nobody wants
+to open.
+
+**The masks are hand-authored, not thresholded out of a Bayer matrix.** A general matrix is
+the right tool when you need every level; at these four densities it degenerates. At 25%
+the standard 4×4 matrix inks the same columns on rows 0 and 2, so the dots line up
+vertically and the fill reads as stripes. Choosing four patterns by eye is simpler and
+better, which is why the classic system patterns were drawn that way too. A test asserts
+that no two partially-inked rows share a column pattern.
+
+**A title over a pattern is knocked out of it**, not set on top — the only way to stay
+legible on a dense dither, and the authentic treatment: it is what a System 6 window title
+did to the stripes in its own title bar. A title aligned to an edge takes the knockout all
+the way to that edge, because stopping short by the title padding leaves a two-point sliver
+of pattern that reads as a mistake.
+
+Patterns anchor to the page lattice rather than to each region, so a dither behind one
+heading lines up with the dither behind the next — the same reasoning as the dot grid.
+
+### D16 — The live preview is SVG in a browser, not a native window
 
 `treekillbot edit` serves a local page: the document on the left, a live preview on the
 right. The preview is drawn by `internal/svgout`, another `render.Canvas`, so it receives

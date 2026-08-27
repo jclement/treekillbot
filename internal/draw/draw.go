@@ -39,6 +39,9 @@ type Env struct {
 	Fonts     layout.FontResolver
 	Decor     DecorFactory
 	Grayscale bool
+	// Origin anchors patterned fills to the page rather than to each region, so
+	// a dither behind one heading lines up with the dither behind the next.
+	Origin geom.Rect
 	// DebugLayout draws every box's rectangles over the artwork.
 	DebugLayout bool
 
@@ -92,15 +95,21 @@ func paintNode(n *layout.Node, canvas render.Canvas, env *Env) {
 	paintTitleText(n, canvas, env, title)
 }
 
-// paintBackground fills the border box.
+// paintBackground fills the border box, then lays any pattern over it.
+//
+// A solid fill and a pattern compose deliberately: a pale wash under a dither
+// is a different texture from either alone, and the alternative — making them
+// exclusive — would mean picking a winner for no reason.
 func paintBackground(n *layout.Node, canvas render.Canvas, env *Env, radius geom.Tick) {
 	bg := colorOf(n.Props, schema.PBackground, paint.Transparent, env)
-	if bg.IsInvisible() {
-		return
+	if !bg.IsInvisible() {
+		canvas.SetFill(bg)
+		canvas.AddRect(n.Frame.Border, radius)
+		canvas.Fill()
 	}
-	canvas.SetFill(bg)
-	canvas.AddRect(n.Frame.Border, radius)
-	canvas.Fill()
+	patternFill(n.Props.Enum(schema.PPattern, "none"), n.Frame.Border, radius,
+		colorOf(n.Props, schema.PPatternColor, paint.Black, env),
+		n.Props.Tick(schema.PPatternPitch, geom.Pt(1)), env.Origin, canvas)
 }
 
 // paintBorder strokes the border, following Rule A: the stroke path is inset by

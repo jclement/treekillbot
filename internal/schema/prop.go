@@ -142,6 +142,9 @@ const (
 	PBorderRadius
 	PBorderCollapse
 	POpacity
+	PPattern
+	PPatternColor
+	PPatternPitch
 
 	// ---- Panel chrome ----
 	PTitle
@@ -154,6 +157,7 @@ const (
 	PTitleBackground
 	PTitlePadding
 	PTitleStyle
+	PTitlePattern
 	PTitleTransform
 	PTitleTracking
 
@@ -300,6 +304,18 @@ var props = [NumProps]PropDef{
 		Doc: "Draw a shared edge between two touching boxes once rather than twice. On by default; turn it off to get a deliberate double rule."},
 	POpacity: {Name: "opacity", Kind: KindNumber, Default: "1", AppliesTo: boxElements, Doc: "Opacity from 0 to 1. Discouraged: transparency and print do not always agree."},
 
+	// A dither is not nostalgia, or not only nostalgia. It is built from marks
+	// of one solid ink, so a printer reproduces it exactly; a flat grey goes
+	// through a halftone screen and gains two or three steps in the process
+	// (see DESIGN.md D10). It is the tint you can actually predict.
+	PPattern: {Name: "pattern", Kind: KindEnum, Default: "none", AppliesTo: boxElements,
+		Enum: []string{"none", "dither-12", "dither-25", "dither-50", "dither-75", "scanline", "hatch"},
+		Doc:  "A patterned fill behind the content, drawn in solid ink rather than as a tint."},
+	PPatternColor: {Name: "pattern-color", Kind: KindColor, Inherited: true, Default: "gray(0)", AppliesTo: boxElements,
+		Doc: "The ink a pattern is drawn in. Solid black by default, because a pattern's whole point is that it is not a tint."},
+	PPatternPitch: {Name: "pattern-pitch", Kind: KindLength, Inherited: true, Default: "1pt", AppliesTo: boxElements,
+		Doc: "The cell size of a pattern. 1pt reads as texture at arm's length; 0.5pt reads as a tint."},
+
 	// ---- Panel chrome ----
 	PTitle:           {Name: "title", Kind: KindString, AppliesTo: []string{EPanel, EBox, EGrid}, Doc: "Panel title. Usually written as the panel's argument instead."},
 	PTitlePosition:   {Name: "title-position", Kind: KindEnum, Default: "top", AppliesTo: []string{EPanel, EBox, EGrid}, Enum: []string{"top", "left", "bottom", "none"}, Doc: "Which edge the title sits on."},
@@ -310,6 +326,9 @@ var props = [NumProps]PropDef{
 	PTitleColor:      {Name: "title-color", Kind: KindColor, Default: "gray(0.35)", AppliesTo: []string{EPanel, EBox, EGrid}, Doc: "Title colour."},
 	PTitleBackground: {Name: "title-background", Kind: KindColor, Default: "transparent", AppliesTo: []string{EPanel, EBox, EGrid}, Doc: "Fill behind the title, for the bar style."},
 	PTitlePadding:    {Name: "title-padding", Kind: KindEdges, Default: "2pt 0pt", AppliesTo: []string{EPanel, EBox, EGrid}, Doc: "Space around the title text."},
+	PTitlePattern: {Name: "title-pattern", Kind: KindEnum, Default: "none", AppliesTo: []string{EPanel, EBox, EGrid},
+		Enum: []string{"none", "dither-12", "dither-25", "dither-50", "dither-75", "scanline", "hatch"},
+		Doc:  "A patterned fill behind the title. Implies the `bar` title style, since a pattern needs a band to sit in."},
 	PTitleStyle: {Name: "title-style", Kind: KindEnum, Default: "plain", AppliesTo: []string{EPanel, EBox, EGrid},
 		Enum: []string{"plain", "bar", "notch", "underline"}, Doc: "How the title meets the border: floating, in a filled bar, interrupting the border, or over a rule."},
 	PTitleTransform: {Name: "title-transform", Kind: KindEnum, Default: "upper", AppliesTo: []string{EPanel, EBox, EGrid}, Enum: []string{"none", "upper", "lower", "title"}, Doc: "Case transformation for the title."},

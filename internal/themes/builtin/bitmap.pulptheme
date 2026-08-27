@@ -1,0 +1,73 @@
+# Bitmap: the look of a 72dpi screen printed at 600. Titles knocked out of a
+# dithered bar, square corners, hairlines at full strength, and nothing anywhere
+# rendered as a tint.
+#
+# The nostalgia is the obvious half. The other half is that it prints better
+# than it has any right to: a dither is built from marks of one solid ink, so a
+# laser reproduces it exactly, while the 12% grey it stands in for goes through
+# a halftone screen and gains two or three steps on the way (DESIGN.md D10).
+# This is the one theme whose panel headings are dark and still safe on cheap
+# stock, because there is no tint to gain.
+#
+# It wants a monospace document. Applied to a serif one it will look like a
+# ransom note, which is either wrong or exactly right.
+
+vars
+  paper:  gray(1)
+  ink:    gray(0)
+  muted:  gray(0.4)
+  rule:   gray(0.55)
+  accent: gray(0)
+
+defaults
+  # 1. Type. Plex Mono at full black: the era had one weight of ink and used it.
+  font: IBM Plex Mono
+  color: gray(0)
+
+  # 2. The sheet and its frames. No fill anywhere: the dithered headings are the
+  #    only dark thing on the page, and a wash under them would fight.
+  background: transparent
+  border-color: gray(0)
+  title-color: gray(0)
+
+  # 3. Rules. Darker than the other themes ship, because a dithered heading sets
+  #    a heavy top note and a 0.85 hairline under it looks like a printing
+  #    fault rather than a choice.
+  line-color: gray(0.55)
+  line-width: 0.5pt
+
+  # 4. The pattern ink. Solid black, always — a pattern drawn in grey is a tint
+  #    wearing a costume and gives up the only thing a pattern is for.
+  pattern-color: gray(0)
+  # 5. One point is the cell of a 72dpi screen. It reads as texture at arm's
+  #    length; drop it to 0.5pt and it reads as a tint again.
+  pattern-pitch: 1pt
+
+defaults panel
+  # 6. Square. A rounded corner is from a later decade.
+  border-radius: 0pt
+  border-color: gray(0)
+  title-color: gray(0)
+  title-background: transparent
+  title-style: bar
+  title-transform: upper
+  title-tracking: 1pt
+  # 7. The heading. Twenty-five percent, not the fifty everybody pictures: a
+  #    page of this tool's documents runs to a dozen panels, and a dozen
+  #    half-black bars is a wall of texture and a real amount of toner. At a
+  #    quarter the bars read as headings rather than as redactions, and a
+  #    document that wants the heavier one can say `title-pattern: dither-50`
+  #    on the panel that deserves it.
+  #
+  #    The title is knocked out of whichever it is, automatically — which is
+  #    what a System 6 window did to the stripes in its own title bar.
+  title-pattern: dither-25
+  title-padding: 3pt 5pt
+
+defaults box
+  border-radius: 0pt
+  border-color: gray(0)
+
+defaults grid
+  border-radius: 0pt
+  border-color: gray(0)

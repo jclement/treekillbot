@@ -70,19 +70,32 @@ func titleMetrics(n *layout.Node, env *Env) titleInfo {
 // paintTitleBar fills the band behind a `bar`-style title. It runs before the
 // decoration so ruled lines cannot show through the bar.
 func paintTitleBar(n *layout.Node, canvas render.Canvas, env *Env, title titleInfo, radius geom.Tick) {
-	if !title.present() || title.style != "bar" {
+	if !title.present() {
 		return
 	}
-	fill := colorOf(n.Props, schema.PTitleBackground, paint.GrayN(0.92), env)
-	if fill.IsInvisible() {
+	pattern := n.Props.Enum(schema.PTitlePattern, "none")
+	if title.style != "bar" && pattern == "none" {
 		return
 	}
+
 	band := titleBand(n, title)
-	canvas.SetFill(fill)
-	// The bar shares the panel's top corners, so it uses the same radius there
-	// and square corners where it meets the content.
-	canvas.AddRect(band, geom.MinTick(radius, band.H/2))
-	canvas.Fill()
+	bandRadius := geom.MinTick(radius, band.H/2)
+
+	if title.style == "bar" {
+		if fill := colorOf(n.Props, schema.PTitleBackground, paint.GrayN(0.92), env); !fill.IsInvisible() {
+			canvas.SetFill(fill)
+			// The bar shares the panel's top corners, so it uses the same
+			// radius there and square corners where it meets the content.
+			canvas.AddRect(band, bandRadius)
+			canvas.Fill()
+		}
+	}
+
+	// A pattern behind a title implies a band, whatever the title style says:
+	// there is nowhere else for it to go.
+	patternFill(pattern, band, bandRadius,
+		colorOf(n.Props, schema.PPatternColor, paint.Black, env),
+		n.Props.Tick(schema.PPatternPitch, geom.Pt(1)), env.Origin, canvas)
 }
 
 // titleBand returns the rectangle the title occupies.
@@ -137,6 +150,15 @@ func paintTitleText(n *layout.Node, canvas render.Canvas, env *Env, title titleI
 	case "right":
 		x = band.Right() - title.padding.Right - title.textWide
 	}
+
+	// Over a pattern, the title is knocked out of it rather than set on top.
+	// This is both the only way to stay legible on a dense dither and the
+	// authentic treatment: it is what a System 6 window title did to the
+	// stripes in its title bar.
+	if n.Props.Enum(schema.PTitlePattern, "none") != "none" {
+		knockOutTitle(n, canvas, env, band, x, title)
+	}
+
 	canvas.DrawText(x, band.Y+title.baseline, title.run)
 
 	if title.style == "underline" {
@@ -148,6 +170,34 @@ func paintTitleText(n *layout.Node, canvas render.Canvas, env *Env, title titleI
 		canvas.LineTo(band.Right(), y)
 		canvas.Stroke()
 	}
+}
+
+// knockOutTitle clears the pattern behind the title text.
+func knockOutTitle(n *layout.Node, canvas render.Canvas, env *Env, band geom.Rect, x geom.Tick, title titleInfo) {
+	knockout := pageBackground(n, env)
+	if knockout.IsInvisible() {
+		return
+	}
+	// Enough air that the glyphs are not touched by the pattern, and no more:
+	// a generous halo reads as a sticker rather than as a knockout.
+	const haloPt = 3
+	halo := geom.Pt(haloPt)
+	left, right := x-halo, x+title.textWide+halo
+
+	// A title set against an edge takes the knockout all the way to it.
+	// Stopping short of the edge by the title padding leaves a two-point sliver
+	// of pattern outside the knockout, which reads as a mistake rather than as
+	// a margin.
+	switch title.align {
+	case "left":
+		left = band.X
+	case "right":
+		right = band.Right()
+	}
+	gap := geom.Rect{X: left, Y: band.Y, W: right - left, H: band.H}
+	canvas.SetFill(knockout)
+	canvas.AddRect(gap.Intersect(band), 0)
+	canvas.Fill()
 }
 
 // paintNotch knocks a gap in the border where the title crosses it, the way a

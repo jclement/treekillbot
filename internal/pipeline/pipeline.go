@@ -279,6 +279,7 @@ func buildPage(src *pulp.Source, stage Stage, opts Options, page pageContext) (*
 func Render(root *layout.Node, canvas render.Canvas, resolver layout.FontResolver, grid decor.Grid, opts Options) {
 	draw.Paint(root, canvas, &draw.Env{
 		Fonts:       resolver,
+		Origin:      grid.Origin,
 		Decor:       decorFactory(resolver, grid),
 		Grayscale:   opts.Grayscale,
 		DebugLayout: opts.DebugLayout,

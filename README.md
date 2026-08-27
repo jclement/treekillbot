@@ -76,6 +76,11 @@ That is why `panel "Notes"` can carry both a value and children, and why three s
   construct.
 - **Lengths carry a unit** — `16pt`, `0.5in`, `12mm`. A bare number is an error that tells
   you what to write instead. The exception is `0`, whose unit cannot matter.
+- **Headings can be dithered** rather than tinted — `title-pattern: dither-25` — which is
+  both the old-school look and the one that prints predictably: a dither is solid ink, so
+  it reproduces exactly, while a light grey goes through a halftone screen and gains two or
+  three steps. The title is knocked out of the pattern automatically. `treekillbot --theme
+  bitmap` is the whole aesthetic.
 - **Touching borders collapse.** Two boxes that share an edge draw it once, so a lattice of
   cells has interior lines the same weight as its outer frame. `border-collapse: false` if
   you want the double rule.
