@@ -22,7 +22,10 @@ type Summary struct {
 	Theme  string
 	Date   string
 
-	Result  *pipeline.Result
+	Result *pipeline.Result
+	// Span describes the dates a multi-page run covers, so you can see what you
+	// are about to send to a printer before you send it.
+	Span    string
 	Bytes   int
 	Fonts   int
 	Elapsed time.Duration
@@ -45,8 +48,12 @@ func (c *Console) PrintSummary(s Summary) {
 	if !c.Color {
 		// One line, on stderr, in a shape a log scraper can read. No box, no
 		// colour, no emoji, and never a partially-styled hybrid.
-		fmt.Fprintf(c.Err, "treekillbot: built %s (%d page%s, %d bytes, %s)\n",
-			s.Output, s.Result.PageCount, plural(s.Result.PageCount), s.Bytes, roundDuration(s.Elapsed))
+		span := ""
+		if s.Span != "" {
+			span = ", " + s.Span
+		}
+		fmt.Fprintf(c.Err, "treekillbot: built %s (%d page%s%s, %d bytes, %s)\n",
+			s.Output, s.Result.PageCount, plural(s.Result.PageCount), span, s.Bytes, roundDuration(s.Elapsed))
 		return
 	}
 	p := c.Palette
@@ -68,9 +75,14 @@ func (c *Console) PrintSummary(s Summary) {
 	rows := []string{
 		p.Heading.Render(s.Output),
 		fmt.Sprintf("%d page%s · %s", s.Result.PageCount, plural(s.Result.PageCount), describePage(s.Result)),
+	}
+	if s.Span != "" {
+		rows = append(rows, p.Value.Render(s.Span))
+	}
+	rows = append(rows,
 		fmt.Sprintf("%s · %d font%s embedded", humanBytes(s.Bytes), s.Fonts, plural(s.Fonts)),
 		p.Dim.Render(describeTimings(s.Result.Timings)),
-	}
+	)
 	b.WriteString(c.box(rows))
 
 	b.WriteString("\n  " + p.Success.Render("✓") + " built in " + p.Value.Render(roundDuration(s.Elapsed)))

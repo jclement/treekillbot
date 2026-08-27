@@ -74,7 +74,7 @@ func ParseStep(text string) (stepOffset, error) {
 	if digits > 0 {
 		parsed, err := strconv.Atoi(trimmed[:digits])
 		if err != nil || parsed <= 0 {
-			return stepOffset{}, fmt.Errorf("--step count must be a positive whole number, got %q", text)
+			return stepOffset{}, fmt.Errorf("the count must be a positive whole number, got %q", text)
 		}
 		count = parsed
 	}
@@ -89,7 +89,39 @@ func ParseStep(text string) (stepOffset, error) {
 	case "y", "year", "years":
 		return stepOffset{unit: stepYears, count: count}, nil
 	}
-	return stepOffset{}, fmt.Errorf("--step unit must be d, w, m or y, got %q", text)
+	return stepOffset{}, fmt.Errorf("the unit must be d, w, m or y, got %q", text)
+}
+
+// ParseSpan reads a --next value: a count and a unit, as in "4w", "30d",
+// "3 months". It returns the page count and the per-page step.
+//
+// This is the ergonomic spelling of --repeat N --step 1<unit>, and it exists
+// because pre-printing is the common case and "the next four weeks" should not
+// require two flags and a mental multiplication.
+func ParseSpan(text string) (count int, step string, err error) {
+	offset, err := ParseStep(text)
+	if err != nil {
+		// The flag the reader typed is the one the message should name.
+		return 0, "", fmt.Errorf("--next %s: %w", text, err)
+	}
+	if offset.count > maxRepeat {
+		return 0, "", fmt.Errorf("--next %s is more than the limit of %d pages", text, maxRepeat)
+	}
+	return offset.count, "1" + offset.unit.suffix(), nil
+}
+
+// suffix returns the single-letter spelling of a unit.
+func (u stepUnit) suffix() string {
+	switch u {
+	case stepWeeks:
+		return "w"
+	case stepMonths:
+		return "m"
+	case stepYears:
+		return "y"
+	default:
+		return "d"
+	}
 }
 
 // maxRepeat bounds a run. A thousand pages is already an unreasonable print
@@ -112,7 +144,7 @@ func BuildDocument(src *pulp.Source, opts Options) (*Result, error) {
 	}
 	step, err := ParseStep(opts.Step)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("--step %s: %w", opts.Step, err)
 	}
 
 	pdf := pdfout.New(pdfout.Options{
@@ -125,11 +157,20 @@ func BuildDocument(src *pulp.Source, opts Options) (*Result, error) {
 	})
 
 	var combined *Result
+	// --next asks for the periods AFTER this one, so every page shifts a further
+	// step along. Printing next week's page on a Friday is the whole reason the
+	// flag exists; starting from the week you are already most of the way
+	// through would be useless.
+	skip := 0
+	if opts.StartAtNext {
+		skip = 1
+	}
+
 	for index := 0; index < count; index++ {
 		page := pageContext{
 			number:      index + 1,
 			count:       count,
-			anchorShift: stepOffset{unit: step.unit, count: step.count * index},
+			anchorShift: stepOffset{unit: step.unit, count: step.count * (index + skip)},
 		}
 		// Each page compiles from source with its own scope, so no state — and
 		// no mistake — can carry from one page to the next.
@@ -161,11 +202,26 @@ func BuildDocument(src *pulp.Source, opts Options) (*Result, error) {
 	if err != nil {
 		return combined, fmt.Errorf("writing PDF: %w", err)
 	}
+	combined.FirstDate = step.applyN(baseAnchor(opts), skip)
+	combined.LastDate = step.applyN(baseAnchor(opts), skip+count-1)
 	combined.PDF = bytes
 	combined.PageCount = pdf.PageCount()
 	combined.MissingGlyphs = pdf.MissingGlyphs()
 	combined.Diags.Sort()
 	return combined, nil
+}
+
+// applyN moves a time by the offset repeated n times.
+func (s stepOffset) applyN(t time.Time, n int) time.Time {
+	return stepOffset{unit: s.unit, count: s.count * n}.apply(t)
+}
+
+// baseAnchor is the run's starting date before any per-page shift.
+func baseAnchor(opts Options) time.Time {
+	if opts.Anchor.IsZero() {
+		return time.Now()
+	}
+	return opts.Anchor
 }
 
 // renderPage paints one already-laid-out page.

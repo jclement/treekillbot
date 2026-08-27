@@ -74,6 +74,9 @@ type Options struct {
 	Repeat int
 	// Step is how far the anchor moves between pages: 1d, 2w, 1m, 1y.
 	Step string
+	// StartAtNext skips the current period, so a run covers the periods after
+	// this one rather than starting with it. This backs --next.
+	StartAtNext bool
 
 	Title  string
 	Author string
@@ -90,9 +93,12 @@ type Result struct {
 	PDF      []byte
 	Diags    pulp.Diagnostics
 
-	PageCount     int
-	PageSize      compile.PageSize
-	MissingGlyphs []rune
+	PageCount int
+	PageSize  compile.PageSize
+	// FirstDate and LastDate are the anchors of the first and last page, so a
+	// caller can say what a run actually covers.
+	FirstDate, LastDate time.Time
+	MissingGlyphs       []rune
 	// FontsUsed counts the distinct faces embedded, for the build summary.
 	FontsUsed int
 	// LayoutDump is the rectangle tree, the primary golden-file format.

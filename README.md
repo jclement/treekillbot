@@ -99,8 +99,18 @@ section
 ```
 
 ```sh
-treekillbot build weekly.pulp --date 2026-09-09          # print next week's page today
-treekillbot build weekly.pulp --repeat 13 --step 1w      # a quarter of spreads, one job
+treekillbot build weekly.pulp --date 2026-09-09   # print one particular week
+treekillbot build weekly.pulp --next 13w          # a quarter of spreads, one job
+treekillbot build daily.pulp  --next 30d          # a month of day pages
+```
+
+`--next` covers the periods **after** this one, which is what pre-printing means: run it on
+a Friday and you get next week, not the week you have nearly finished. `--repeat N` is the
+explicit form and starts with the current period. Either way the summary tells you what the
+run covers before you send it to a printer:
+
+```
+treekillbot: built weekly.pdf (13 pages, 3 Sep 2026 → 26 Nov 2026, 68543 bytes, 23ms)
 ```
 
 A document can pick its own theme with a `theme` directive, and `--theme` on the command
@@ -147,7 +157,8 @@ and `treekillbot themes --show blueprint` prints a theme's source to copy and ed
 | `--var name=value` | Set a document variable (repeatable) |
 | `--vars-file` | Read `name=value` lines from a file |
 | `--date YYYY-MM-DD` | Render as though today were this date |
-| `--repeat N` | Render N pages, advancing the date by `--step` each time |
+| `--next 4w` | Pre-print the coming period — one page each, starting with the next one |
+| `--repeat N` | Render N pages starting with the *current* one, advancing by `--step` |
 | `--step` | How far the date moves between pages: `1d`, `2w`, `1m`, `1y` |
 | `--week-start` | `monday` (default), `sunday` or `saturday` |
 | `--theme` | Apply a named theme |

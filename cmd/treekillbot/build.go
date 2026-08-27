@@ -37,6 +37,7 @@ type buildFlags struct {
 	allowUndefined bool
 	repeat         int
 	step           string
+	next           string
 	unsafeEnv      bool
 	strict         bool
 	open           bool
@@ -77,7 +78,8 @@ func newBuildCommand(console *ui.Console) *cobra.Command {
 	f.BoolVar(&flags.allowUndefined, "allow-undefined", false, "render undefined variables as empty instead of failing")
 	f.BoolVar(&flags.unsafeEnv, "unsafe-env", false, "allow a document to read any environment variable (see DESIGN.md D11)")
 	f.BoolVar(&flags.strict, "strict", false, "treat warnings as failures")
-	f.IntVar(&flags.repeat, "repeat", 1, "render this many pages, advancing the date by --step each time")
+	f.StringVar(&flags.next, "next", "", "pre-print the coming period: 4w, 30d, 3m — one page each, starting with the next one")
+	f.IntVar(&flags.repeat, "repeat", 1, "render this many pages, starting with the current one, advancing by --step")
 	f.StringVar(&flags.step, "step", "1w", "how far the date moves between repeated pages: 1d, 2w, 1m, 1y")
 	f.BoolVar(&flags.open, "open", false, "open the PDF when it is written")
 	return cmd
@@ -128,6 +130,7 @@ func runBuild(console *ui.Console, args []string, flags buildFlags) error {
 		Theme:   flags.theme,
 		Date:    flags.date,
 		Result:  result,
+		Span:    describeSpan(result),
 		Bytes:   len(result.PDF),
 		Fonts:   countFonts(result),
 		Elapsed: time.Since(started),
@@ -192,6 +195,17 @@ func buildOptionsFor(sourceDir string, flags buildFlags) (pipeline.Options, erro
 		default:
 			return opts, usageError{fmt.Errorf("--week-start must be monday, sunday or saturday, got %q", flags.weekStart)}
 		}
+	}
+
+	if flags.next != "" {
+		if flags.repeat > 1 {
+			return opts, usageError{fmt.Errorf("--next and --repeat both set the page count; use one or the other")}
+		}
+		count, step, err := pipeline.ParseSpan(flags.next)
+		if err != nil {
+			return opts, usageError{err}
+		}
+		opts.Repeat, opts.Step, opts.StartAtNext = count, step, true
 	}
 
 	if flags.theme != "" {
@@ -343,6 +357,19 @@ func countErrors(diags pulp.Diagnostics) int {
 		}
 	}
 	return count
+}
+
+// describeSpan says what dates a multi-page run covers.
+//
+// A single page needs no such line — the document says its own date — but a
+// thirty-page run is about to become thirty sheets of paper, and knowing what
+// it covers before that happens is worth one line of output.
+func describeSpan(result *pipeline.Result) string {
+	if result.PageCount < 2 || result.FirstDate.IsZero() {
+		return ""
+	}
+	const layout = "2 Jan 2006"
+	return result.FirstDate.Format(layout) + " → " + result.LastDate.Format(layout)
 }
 
 // countFonts reports how many distinct faces the document embedded.
