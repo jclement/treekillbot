@@ -1,0 +1,144 @@
+# A week to a landscape page, laid out for working rather than for scheduling:
+# a narrow column of day boxes for the few appointments that matter, priorities
+# and a to-do list across the top right, and then the rest of the sheet given
+# over to two columns of free-form notes. A summary band closes it.
+#
+# Print next week today with --date 2026-09-14.
+#
+# Change first: the `32%` on the day column — widen it if your days are busy,
+# narrow it to give the notes more room. Then `lines` on the two lists.
+
+page
+  size: letter
+  orientation: landscape
+  margin: 0.4in
+  week-start: monday
+
+defaults
+  font: IBM Plex Sans
+  font-size: 8pt
+  color: gray(0.12)
+
+defaults panel
+  border-width: 0.4pt
+  border-color: gray(0.72)
+  padding: 6pt
+  title-size: 6pt
+  title-color: gray(0.42)
+  title-tracking: 0.9pt
+  title-style: underline
+  line-color: gray(0.86)
+  line-width: 0.35pt
+
+# Every writing area uses this, so the whole sheet rules to one rhythm.
+style write
+  line-style: ruled
+  line-pitch: 6mm
+
+# ── masthead ────────────────────────────────────────────────────────────────
+
+section
+  height: auto
+  column
+    width: auto
+    text "W{week.number}"
+      font-size: 21pt
+      font-weight: bold
+      tracking: -0.5pt
+  column
+    padding-left: 9pt
+    valign: bottom
+    text "{week.start:%-d %B} — {week.end:%-d %B %Y}"
+      font-size: 10.5pt
+      font-weight: bold
+  column
+    width: auto
+    valign: bottom
+    text "{week.iso}"
+      align: right
+      font-size: 6pt
+      color: gray(0.55)
+
+section
+  height: auto
+  padding-top: 4pt
+  padding-bottom: 7pt
+  rule
+    line-width: 0.7pt
+    line-color: gray(0.3)
+
+# ── the body ────────────────────────────────────────────────────────────────
+
+section
+  height: fill
+  gap: 9pt
+
+  # Seven small boxes, one per day. Two or three ruled lines each: enough for
+  # the appointments that actually constrain the day, not a schedule.
+  column
+    width: 32%
+    gap: 4pt
+    for day in week.days
+      panel "{day.short} {day.dd}"
+        height: fill
+        style: write
+        line-pitch: 4.4mm
+        line-distribute: start
+        # Without this the first rule sits right under the title's underline and
+        # the two read as one heavy double rule.
+        line-inset: 3pt 0 0 0
+        padding: 4pt
+        title-size: 5.5pt
+        title-color: {day.weekend ? "gray(0.62)" : "gray(0.35)"}
+
+  column
+    gap: 9pt
+
+    # Priorities and the to-do list share one band so that the notes below get
+    # the rest of the sheet.
+    section
+      height: 104pt
+      gap: 9pt
+      column
+        width: 36%
+        panel "The three that matter"
+          height: fill
+          line-style: checkbox
+          line-pitch: 22pt
+          checkbox-size: 9pt
+      column
+        panel "To do"
+          height: fill
+          gap: 12pt
+          column
+            line-style: checkbox
+            line-pitch: 15pt
+            checkbox-size: 7pt
+          column
+            line-style: checkbox
+            line-pitch: 15pt
+            checkbox-size: 7pt
+
+    # The point of the sheet.
+    panel "Notes"
+      height: fill
+      gap: 14pt
+      column
+        style: write
+      column
+        style: write
+
+# ── the week in retrospect ──────────────────────────────────────────────────
+
+section
+  height: 104pt
+  padding-top: 8pt
+  gap: 9pt
+  column
+    panel "Highlights"
+      height: fill
+      style: write
+  column
+    panel "Learnings"
+      height: fill
+      style: write
