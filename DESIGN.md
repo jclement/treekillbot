@@ -337,9 +337,15 @@ that no two partially-inked rows share a column pattern.
 
 **A title over a pattern is knocked out of it**, not set on top — the only way to stay
 legible on a dense dither, and the authentic treatment: it is what a System 6 window title
-did to the stripes in its own title bar. A title aligned to an edge takes the knockout all
-the way to that edge, because stopping short by the title padding leaves a two-point sliver
-of pattern that reads as a mistake.
+did to the stripes in its own title bar.
+
+The knockout hugs the text on every side, so the pattern runs the full band and the title
+floats *in* it. An earlier version ran the knockout out to the band edge whenever the title
+was edge-aligned, which removed a two-point sliver of pattern and took the effect with it:
+the dither then appeared only on one side of the text. The sliver was a padding problem,
+not a knockout problem. Give the title enough side padding and the pattern before it reads
+as a margin; below three points it is absorbed into the knockout rather than left looking
+like an accident.
 
 Patterns anchor to the page lattice rather than to each region, so a dither behind one
 heading lines up with the dither behind the next — the same reasoning as the dot grid.

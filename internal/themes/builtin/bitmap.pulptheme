@@ -62,7 +62,10 @@ defaults panel
   #    The title is knocked out of whichever it is, automatically — which is
   #    what a System 6 window did to the stripes in its own title bar.
   title-pattern: dither-25
-  title-padding: 3pt 5pt
+  # 8. Wide side padding, because the title is knocked out of the pattern with
+  #    a tight halo: the padding is what leaves a band of dither before the
+  #    text rather than starting the bar with a sliver of it.
+  title-padding: 3pt 11pt
 
 defaults box
   border-radius: 0pt

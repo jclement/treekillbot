@@ -178,26 +178,44 @@ func knockOutTitle(n *layout.Node, canvas render.Canvas, env *Env, band geom.Rec
 	if knockout.IsInvisible() {
 		return
 	}
+	canvas.SetFill(knockout)
+	canvas.AddRect(titleKnockout(band, x, title.textWide), 0)
+	canvas.Fill()
+}
+
+// titleKnockout returns the rectangle cleared behind a title set over a
+// pattern.
+//
+// The knockout hugs the text on every side, so the pattern runs the full band
+// and the title sits IN it rather than after it. That is the whole look: a
+// System 6 title bar striped edge to edge with the title floating in a clear
+// box.
+//
+// An earlier version ran the knockout out to the band edge for an edge-aligned
+// title. That removed a two-point sliver of pattern and lost the effect with
+// it — the dither then only appeared on one side of the text. The sliver is a
+// padding problem, not a knockout problem: give the title enough side padding
+// and the pattern before it reads as a margin. Below that width it is absorbed
+// into the knockout rather than left looking like a mistake.
+func titleKnockout(band geom.Rect, x, textWidth geom.Tick) geom.Rect {
 	// Enough air that the glyphs are not touched by the pattern, and no more:
 	// a generous halo reads as a sticker rather than as a knockout.
-	const haloPt = 3
+	const haloPt = 4
 	halo := geom.Pt(haloPt)
-	left, right := x-halo, x+title.textWide+halo
 
-	// A title set against an edge takes the knockout all the way to it.
-	// Stopping short of the edge by the title padding leaves a two-point sliver
-	// of pattern outside the knockout, which reads as a mistake rather than as
-	// a margin.
-	switch title.align {
-	case "left":
-		left = band.X
-	case "right":
-		right = band.Right()
+	gap := geom.Rect{X: x - halo, Y: band.Y, W: textWidth + halo*2, H: band.H}
+
+	// A margin of pattern too narrow to read as deliberate is worse than none.
+	const minMarginPt = 3
+	minMargin := geom.Pt(minMarginPt)
+	if gap.X-band.X < minMargin {
+		gap.W += gap.X - band.X
+		gap.X = band.X
 	}
-	gap := geom.Rect{X: left, Y: band.Y, W: right - left, H: band.H}
-	canvas.SetFill(knockout)
-	canvas.AddRect(gap.Intersect(band), 0)
-	canvas.Fill()
+	if band.Right()-gap.Right() < minMargin {
+		gap.W = band.Right() - gap.X
+	}
+	return gap.Intersect(band)
 }
 
 // paintNotch knocks a gap in the border where the title crosses it, the way a

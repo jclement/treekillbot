@@ -219,3 +219,57 @@ func TestPatternAnchorsToThePage(t *testing.T) {
 		}
 	}
 }
+
+// The title floats in the pattern rather than sitting after it: that is the
+// look, and an earlier version lost it by running the knockout out to the band
+// edge whenever the title was edge-aligned.
+func TestTitleKnockoutLeavesPatternOnBothSides(t *testing.T) {
+	band := geom.Rect{X: 0, Y: 0, W: geom.Pt(400), H: geom.Pt(12)}
+	// Title inset 14pt from the left, 100pt wide.
+	gap := titleKnockout(band, geom.Pt(14), geom.Pt(100))
+
+	if gap.X <= band.X {
+		t.Fatalf("knockout starts at %.2fpt, want a margin of pattern before it", gap.X.Points())
+	}
+	if gap.Right() >= band.Right() {
+		t.Fatalf("knockout ends at %.2fpt, want pattern after it too", gap.Right().Points())
+	}
+	// It must actually clear the text, with air on each side.
+	if gap.X > geom.Pt(14) || gap.Right() < geom.Pt(114) {
+		t.Fatalf("knockout %s does not cover the text plus a halo", gap)
+	}
+}
+
+// A margin too narrow to read as deliberate is absorbed rather than left as a
+// sliver of pattern against the edge.
+func TestTitleKnockoutAbsorbsASliver(t *testing.T) {
+	band := geom.Rect{X: 0, Y: 0, W: geom.Pt(400), H: geom.Pt(12)}
+
+	// One point of title padding: the halo alone would leave nothing sensible.
+	gap := titleKnockout(band, geom.Pt(1), geom.Pt(100))
+	if gap.X != band.X {
+		t.Fatalf("knockout starts at %.2fpt; a sub-3pt margin should be absorbed to the edge", gap.X.Points())
+	}
+
+	// The same at the right-hand end.
+	right := titleKnockout(band, geom.Pt(299), geom.Pt(100))
+	if right.Right() != band.Right() {
+		t.Fatalf("knockout ends at %.2fpt, want the band edge %.2fpt",
+			right.Right().Points(), band.Right().Points())
+	}
+}
+
+func TestTitleKnockoutStaysInsideTheBand(t *testing.T) {
+	band := geom.Rect{X: geom.Pt(10), Y: geom.Pt(5), W: geom.Pt(200), H: geom.Pt(12)}
+	for _, x := range []geom.Tick{geom.Pt(-50), geom.Pt(10), geom.Pt(150), geom.Pt(400)} {
+		gap := titleKnockout(band, x, geom.Pt(80))
+		// A title placed entirely outside its band has nothing to clear, and an
+		// empty rectangle paints nothing. Anything else must be inside.
+		if gap.IsEmpty() {
+			continue
+		}
+		if !band.Contains(gap) {
+			t.Errorf("knockout %s for x=%.0fpt escapes the band %s", gap, x.Points(), band)
+		}
+	}
+}
