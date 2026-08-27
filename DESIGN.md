@@ -412,6 +412,21 @@ arrived from a `defaults` block. Only explicit values propagate down. So a neste
 broader `defaults` block, and the nesting rule still works — but a `font-size` you actually
 wrote on a section reaches the panels inside it, which is what everyone expects.
 
+**A `defaults <type>` block counts as explicit; a global `defaults` block does not.** That
+asymmetry is the whole of layer 4, and it is deliberate: naming an element and saying
+something about it is a statement about that element *and its contents*, the same as writing
+the property on the node. Without it the block does half its job — `defaults panel {
+font-size: 14pt }` sets the panel's own title and the text inside the panel quietly falls
+back to the document-wide default. That shipped: a sheet whose rules were set once, on
+`defaults panel`, drew the rules inside its panels' columns at the theme's weight instead,
+so one page carried two line weights. It was found by eye on a printout.
+
+The global block stays non-explicit, because that is the layer the CSS gotcha lives in and
+demoting it is the entire point of the paragraph above.
+
+Both halves are pinned by tests, and by the ink golden described in section 4 — a cascade
+regression moves no rectangle, so the layout golden cannot see one.
+
 **What inherits:** if it describes ink on a glyph or on a ruled line, it inherits
 (`font`, `font-size`, `color`, `align`, `valign`, `line-*`, `tracking`). If it describes
 the box, it does not (`width`, `height`, `padding`, `margin`, `background`, `border`).
@@ -444,9 +459,15 @@ Test tiers, in the order they are useful:
 1. **`--dump-layout` rect tree** — the primary golden. A diff says *what moved and by how
    much*, in the vocabulary of the design, and does not churn when compression or object
    order changes. Built before the PDF writer.
-2. **`--emit-ops`** — structural JSON-lines drawing ops. The tier a human reviews.
-3. **Byte hash** under `--deterministic`.
-4. **Diagnostics golden** — overflow and ink warnings are behaviour, and regress silently
+2. **Ink dump** (`.ink` beside each `.layout`) — the resolved drawing properties of every
+   node: border and rule weights and colours, checkbox size, title pattern, text size.
+   It exists because tier 1 is blind to a whole class of regression. A rule that changes
+   weight, a checkbox that changes size, a heading that loses its pattern — none of them
+   move a rectangle, all of them reach paper, and one shipped. Tier 1 says where the
+   boxes are; this says what ink lands in them.
+3. **`--emit-ops`** — structural JSON-lines drawing ops. The tier a human reviews.
+4. **Byte hash** under `--deterministic`.
+5. **Diagnostics golden** — overflow and ink warnings are behaviour, and regress silently
    otherwise.
 
 A synthetic test font (1000 upem, every advance 500, ascent 800, descent 200) turns most

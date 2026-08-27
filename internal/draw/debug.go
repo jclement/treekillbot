@@ -8,6 +8,10 @@
 package draw
 
 import (
+	"fmt"
+	"strconv"
+
+	"github.com/jclement/treekillbot/internal/decor"
 	"github.com/jclement/treekillbot/internal/fonts"
 	"github.com/jclement/treekillbot/internal/geom"
 	"github.com/jclement/treekillbot/internal/layout"
@@ -132,4 +136,109 @@ func titleFaceStyle(n *layout.Node) fonts.Style {
 		weight = 400
 	}
 	return fonts.StyleFor(weight, n.Props.Enum(schema.PFontStyle, "normal") == "italic")
+}
+
+// DumpInk renders the resolved drawing properties of every node as indented
+// text: the second golden format, and the companion to DumpLayout.
+//
+// The two answer different questions and neither substitutes for the other.
+// DumpLayout says where the boxes are; this says what ink lands in them. A
+// cascade regression that leaves every rectangle exactly where it was — a rule
+// drawn at the wrong weight, a checkbox that changed size, a heading that lost
+// its pattern — moves nothing in the layout tree and is invisible to it.
+//
+// That is not hypothetical. `defaults panel { line-width: … }` once failed to
+// reach the columns inside a panel, so a sheet ruled at two different weights;
+// it was spotted by eye on a printout, having passed the whole suite.
+//
+// Only properties a node can actually use are printed, and only when they would
+// put something on the page, so the file stays readable enough to diff by hand.
+func DumpInk(root *layout.Node) string {
+	var b []byte
+	var walk func(n *layout.Node, depth int)
+	walk = func(n *layout.Node, depth int) {
+		for i := 0; i < depth; i++ {
+			b = append(b, ' ', ' ')
+		}
+		b = append(b, n.Label()...)
+
+		if w := n.Props.Tick(schema.PBorderWidth, 0); w > 0 {
+			b = appendProp(b, "border", inkLen(w)+"/"+inkColor(n.Props.Color(schema.PBorderColor, paint.Black)))
+			if r := n.Props.Tick(schema.PBorderRadius, 0); r > 0 {
+				b = appendProp(b, "radius", inkLen(r))
+			}
+		}
+		if bg := n.Props.Color(schema.PBackground, paint.Transparent); !bg.IsInvisible() {
+			b = appendProp(b, "bg", inkColor(bg))
+		}
+
+		// A `rule` is a single stroke and carries no line-style, so the block
+		// below would say nothing about it and a change in its weight would
+		// diff clean.
+		if n.Kind == layout.KindRule {
+			b = appendProp(b, "stroke", inkLen(n.Props.Tick(schema.PLineWidth, 0))+
+				"/"+inkColor(n.Props.Color(schema.PLineColor, paint.Black)))
+		}
+
+		if style := n.Props.Enum(schema.PLineStyle, "none"); style != "none" {
+			b = appendProp(b, "rules", style+"@"+inkLen(n.Props.Tick(schema.PLinePitch, 0))+
+				"/"+inkLen(n.Props.Tick(schema.PLineWidth, 0))+
+				"/"+inkColor(n.Props.Color(schema.PLineColor, paint.Black)))
+			if style == "checkbox" {
+				b = appendProp(b, "box", inkLen(decor.CheckboxSide(
+					n.Props.Tick(schema.PCheckboxSize, 0),
+					n.Props.Tick(schema.PLinePitch, 0))))
+			}
+		}
+
+		if n.Title != "" {
+			b = appendProp(b, "title", inkLen(n.Props.Tick(schema.PTitleSize, 0))+
+				"/"+inkColor(n.Props.Color(schema.PTitleColor, paint.Black))+
+				"/"+n.Props.Enum(schema.PTitleStyle, "plain"))
+			if p := n.Props.Enum(schema.PTitlePattern, "none"); p != "none" {
+				b = appendProp(b, "pattern", p+"@"+inkLen(n.Props.Tick(schema.PPatternPitch, 0))+
+					"/"+inkColor(n.Props.Color(schema.PPatternColor, paint.Black)))
+			}
+		}
+
+		if wrapped := n.TextLayout(); wrapped != nil && len(wrapped.Lines) > 0 {
+			b = appendProp(b, "text", inkLen(n.Props.Tick(schema.PFontSize, 0))+
+				"/"+inkColor(n.Props.Color(schema.PColor, paint.Black))+
+				"/"+n.Props.Enum(schema.PFontWeight, "normal"))
+		}
+
+		b = append(b, '\n')
+		for _, c := range n.Children {
+			walk(c, depth+1)
+		}
+	}
+	walk(root, 0)
+	return string(b)
+}
+
+func appendProp(b []byte, name, value string) []byte {
+	b = append(b, ' ')
+	b = append(b, name...)
+	b = append(b, '=')
+	return append(b, value...)
+}
+
+// inkLen and inkColor format a value for the ink dump. Both are deliberately
+// exact and stable rather than pretty: this is a diff format, and a colour that
+// prints as its source spelling would hide a theme swap that resolved to the
+// same words but different ink.
+func inkLen(t geom.Tick) string {
+	return strconv.FormatFloat(t.Points(), 'f', 2, 64) + "pt"
+}
+
+func inkColor(c paint.Color) string {
+	if c.IsInvisible() {
+		return "none"
+	}
+	r, g, b := c.ToRGB8()
+	out := fmt.Sprintf("#%02x%02x%02x", r, g, b)
+	if c.Alpha < 1 {
+		out += "@" + strconv.FormatFloat(c.Alpha, 'f', 2, 64)
+	}
+	return out
 }

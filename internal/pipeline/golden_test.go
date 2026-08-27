@@ -101,6 +101,13 @@ func examplePaths(t *testing.T) []string {
 	return out
 }
 
+// inkGoldenPath is goldenPath's companion, for the ink dump.
+func inkGoldenPath(rel string) string {
+	name := strings.TrimSuffix(rel, ".pulp")
+	name = strings.ReplaceAll(name, "/", "_")
+	return filepath.Join(goldenDir, name+".ink")
+}
+
 // goldenPath maps an example's relative path to its golden file, flattening the
 // directory so testdata/golden/ is one readable listing rather than a tree.
 func goldenPath(rel string) string {
@@ -129,6 +136,32 @@ func TestGoldenLayout(t *testing.T) {
 				t.Fatalf("%s produced an empty layout dump", rel)
 			}
 			compareGolden(t, goldenPath(rel), result.LayoutDump)
+		})
+	}
+}
+
+// TestGoldenInk is the companion golden: what each node draws, rather than
+// where it is.
+//
+// TestGoldenLayout cannot see a rule that changes weight, a checkbox that
+// changes size, or a heading that loses its pattern, because none of those move
+// a rectangle. All three are cascade regressions, all three reach paper, and one
+// of them shipped — a sheet ruled at two weights, spotted by eye on a printout
+// after passing the entire suite.
+func TestGoldenInk(t *testing.T) {
+	for _, rel := range examplePaths(t) {
+		t.Run(rel, func(t *testing.T) {
+			result, err := BuildFile(filepath.Join(examplesDir, rel), StageLayout, goldenOptions())
+			if err != nil {
+				t.Fatalf("building %s: %v", rel, err)
+			}
+			if errs := errorDiagnostics(result.Diags); len(errs) > 0 {
+				t.Fatalf("%s did not compile:\n%s", rel, strings.Join(errs, "\n"))
+			}
+			if result.InkDump == "" {
+				t.Fatalf("%s produced an empty ink dump", rel)
+			}
+			compareGolden(t, inkGoldenPath(rel), result.InkDump)
 		})
 	}
 }

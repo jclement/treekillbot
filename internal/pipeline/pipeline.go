@@ -104,6 +104,10 @@ type Result struct {
 	// LayoutDump is the rectangle tree, the primary golden-file format.
 	LayoutDump string
 
+	// InkDump is the resolved drawing properties of every node: the companion
+	// golden, for the regressions that move no rectangle.
+	InkDump string
+
 	Timings Timings
 
 	// resolver and grid are retained so a second Canvas — the SVG preview, the
@@ -273,6 +277,7 @@ func buildPage(src *pulp.Source, stage Stage, opts Options, page pageContext) (*
 	result.resolver = resolver
 	result.grid = pageGrid(compiled)
 	result.LayoutDump = draw.DumpLayout(compiled.Root)
+	result.InkDump = draw.DumpInk(compiled.Root)
 
 	result.Diags.Sort()
 	return result, nil

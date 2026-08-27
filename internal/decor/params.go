@@ -133,7 +133,7 @@ func readParams(p *schema.Props, resolver FontResolver) params {
 	// Sizes that default to a proportion of line-pitch rather than to a length,
 	// so a square dot grid or a checklist is one number to tune.
 	if prm.checkboxSize <= 0 {
-		prm.checkboxSize = pitch.Scale(checkboxSizeNum, checkboxSizeDen)
+		prm.checkboxSize = CheckboxSide(0, pitch)
 	}
 	if prm.checkboxGutter <= 0 {
 		prm.checkboxGutter = pitch.Scale(checkboxGutterNum, checkboxGutterDen)
@@ -160,4 +160,23 @@ func quarterPoints(t geom.Tick) int32 {
 		q = 1
 	}
 	return q
+}
+
+// CheckboxSide is the edge length of a checkbox: the stated `checkbox-size`, or
+// a proportion of the row pitch when the document did not state one.
+//
+// Exported so a caller that needs to report the size — the ink dump, which
+// exists to catch exactly this sort of resolved value drifting — computes it
+// the same way the painter does rather than keeping a second copy of the
+// constant.
+//
+// Note the consequence of the proportional default: two checklists on one sheet
+// with different row pitches get visibly different boxes unless the document
+// says otherwise. That is the right default for a lone list and the wrong one
+// for a page of them, which is a document's call to make.
+func CheckboxSide(stated, pitch geom.Tick) geom.Tick {
+	if stated > 0 {
+		return stated
+	}
+	return pitch.Scale(checkboxSizeNum, checkboxSizeDen)
 }

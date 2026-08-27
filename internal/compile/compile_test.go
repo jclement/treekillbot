@@ -162,6 +162,58 @@ section
 	}
 }
 
+// A `defaults <element>` block styles the element AND what it contains. It once
+// styled only the element: inheritance carried explicit values only, a defaults
+// block set nothing explicitly, so the text inside a panel fell back to the
+// document-wide default and the block silently did half its job.
+func TestDefaultsForOneElementTypeReachTheContents(t *testing.T) {
+	src := `defaults
+  font-size: 8pt
+
+defaults panel
+  font-size: 14pt
+
+section
+  panel "P"
+    text "inside"
+`
+	result, diags := compileString(t, src)
+	if diags.HasErrors() {
+		t.Fatalf("errors: %v", diags)
+	}
+	text := find(t, result.Root, layout.KindText, "")
+	if got := text.Props.Tick(schema.PFontSize, 0); got != geom.Pt(14) {
+		t.Fatalf("text inside the panel = %.2fpt, want 14pt from `defaults panel` — the block must reach the contents, not just the panel",
+			got.Points())
+	}
+}
+
+// The case that found the bug: a sheet whose rules were set once, on
+// `defaults panel`, drew the rules inside a panel's columns at the theme's
+// weight instead — two line weights on one page.
+func TestLineWeightSetOnPanelDefaultsReachesInnerColumns(t *testing.T) {
+	src := `defaults
+  line-width: 0.5pt
+
+defaults panel
+  line-width: 0.35pt
+
+section
+  panel "Notes"
+    column
+      line-style: ruled
+`
+	result, diags := compileString(t, src)
+	if diags.HasErrors() {
+		t.Fatalf("errors: %v", diags)
+	}
+	col := find(t, result.Root, layout.KindColumn, "")
+	if got := col.Props.Tick(schema.PLineWidth, 0); got != geom.Pt(0.35) {
+		t.Fatalf("column rules at %.2fpt, want 0.35pt — a column inside the panel must rule at the panel's weight",
+			got.Points())
+	}
+}
+
 func TestDefaultsForOneElementType(t *testing.T) {
 	src := `defaults panel
   padding: 5pt

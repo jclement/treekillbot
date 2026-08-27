@@ -18,6 +18,11 @@ defaults
   font: IBM Plex Sans
   font-size: 8pt
   color: gray(0.12)
+  # Once, for the whole sheet. Left alone, a checkbox is 0.62 of its line-pitch,
+  # so the priority rows and the to-do rows — 22pt and 15pt apart — would get
+  # visibly different boxes. Row spacing is set for handwriting; a checkbox is
+  # sized for the tick that goes in it, and there is only one pen.
+  checkbox-size: 8pt
 
 defaults panel
   border-width: 0.4pt
@@ -105,7 +110,6 @@ section
           height: fill
           line-style: checkbox
           line-pitch: 22pt
-          checkbox-size: 9pt
       column
         panel "To do"
           height: fill
@@ -113,11 +117,9 @@ section
           column
             line-style: checkbox
             line-pitch: 15pt
-            checkbox-size: 7pt
           column
             line-style: checkbox
             line-pitch: 15pt
-            checkbox-size: 7pt
 
     # The point of the sheet.
     panel "Notes"

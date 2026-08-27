@@ -86,8 +86,18 @@ func (c *Compiler) resolveProps(node *pulp.Node, element string, ctx cascadeCont
 	// 1-2. Built-in defaults, then whatever `defaults` blocks are in force.
 	props.MergeFrom(c.base)
 	props.MergeFrom(ctx.global)
+	// A `defaults <element>` block is the author naming this element and saying
+	// something about it, so its values count as explicit and propagate to the
+	// element's contents the way a property written on the node would.
+	//
+	// They did not, and the block therefore did half its job: `defaults panel {
+	// font-size: 14pt }` set the panel's own font and the text inside it fell
+	// back to the document-wide default, because inheritance carried only
+	// explicit values and this was not one. The global `defaults` block is
+	// deliberately still not explicit — that is the whole distinction, and D8
+	// turns on it.
 	if typed := ctx.forType(element); typed != nil {
-		props.MergeFrom(typed)
+		props.MergeAsExplicit(typed)
 	}
 
 	// 3. Inherited values from the nearest ancestor that stated them.
