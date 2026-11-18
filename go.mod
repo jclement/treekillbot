@@ -3,11 +3,11 @@ module github.com/jclement/treekillbot
 go 1.27.0
 
 require (
-	charm.land/lipgloss/v2 v2.0.6
-	github.com/signintech/gopdf v0.38.0
+	charm.land/lipgloss/v2 v2.1.0
+	github.com/signintech/gopdf v0.38.4
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/image v0.45.0
-	golang.org/x/term v0.45.0
+	golang.org/x/image v0.48.0
+	golang.org/x/term v0.48.0
 )
 
 require (
@@ -28,7 +28,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/xo/terminfo v1.0.0 // indirect
-	golang.org/x/sync v0.22.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 )
